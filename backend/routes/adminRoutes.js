@@ -7,6 +7,7 @@ import {
     listAdminBuyers,
     listAdminInquiries,
     listAdminProducts,
+    listAdminReports,
     listAdminUsers,
     listKycDocuments,
     reviewKycDocument,
@@ -44,5 +45,6 @@ router.patch("/buyers/:id/verify", verifyBuyer);
 router.get("/products", listAdminProducts);
 router.patch("/products/:id/approval", updateProductApproval);
 router.get("/inquiries", listAdminInquiries);
+router.get("/reports", listAdminReports);
 
 export default router;

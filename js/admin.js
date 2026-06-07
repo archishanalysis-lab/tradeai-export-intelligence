@@ -6,6 +6,7 @@
   const inquiriesBody = document.getElementById("adminInquiriesBody");
   const feedbackBody = document.getElementById("adminFeedbackBody");
   const reportRequestsBody = document.getElementById("adminReportRequestsBody");
+  const savedReportsBody = document.getElementById("adminSavedReportsBody");
   const feedbackStatusFilter = document.getElementById("feedbackStatusFilter");
   const feedbackPriorityFilter = document.getElementById("feedbackPriorityFilter");
   const feedbackTypeFilter = document.getElementById("feedbackTypeFilter");
@@ -119,6 +120,26 @@
         priority: "High priority",
         status: "action_required",
         message: "Compare corridor priority before deciding whether buyer lead unlocks should be paid.",
+        createdAt: new Date().toISOString(),
+        demo: true,
+      },
+    ],
+    savedReports: [
+      {
+        title: "MVP Sample: India to Kenya turmeric opportunity",
+        product: "Organic turmeric",
+        hsCode: "0910",
+        originCountry: "India",
+        targetCountry: "Kenya",
+        createdBy: {
+          name: "Sample Data: SME Exporter",
+          email: "sme@example.com",
+        },
+        structuredReport: {
+          opportunityScore: 72,
+          riskLevel: "Medium",
+          dataSourceLabel: "TradeAI MVP sample report metadata. Not live verified trade data.",
+        },
         createdAt: new Date().toISOString(),
         demo: true,
       },
@@ -385,6 +406,37 @@
       `<tr><td colspan="7">${previewMode ? ADMIN_PREVIEW_MESSAGE : "No export report requests yet."}</td></tr>`;
   }
 
+  function renderSavedReports(reports = [], previewMode = false) {
+    if (!savedReportsBody) return;
+
+    savedReportsBody.innerHTML =
+      reports
+        .map((report) => {
+          const structured = report.structuredReport || {};
+
+          return `
+            <tr>
+              <td>
+                <strong>${escapeHtml(report.title || "Export opportunity report")}</strong>
+                <div class="table-subtext">${escapeHtml(report.product || "-")} ${report.hsCode ? `- HS ${escapeHtml(report.hsCode)}` : ""}</div>
+                ${report.demo || report.isDemo ? `<div class="table-subtext">MVP sample data</div>` : ""}
+              </td>
+              <td>
+                <strong>${escapeHtml(report.createdBy?.name || "User")}</strong>
+                <div class="table-subtext">${escapeHtml(report.createdBy?.email || "-")}</div>
+              </td>
+              <td>${escapeHtml(report.originCountry || "India")} to ${escapeHtml(report.targetCountry || "-")}</td>
+              <td>${badge(escapeHtml(structured.opportunityScore ?? "-"))}</td>
+              <td>${badge(escapeHtml(structured.riskLevel || "Not scored"))}</td>
+              <td>${formatDate(report.createdAt)}</td>
+              <td>${escapeHtml(summarize(structured.dataSourceLabel || report.provider || "TradeAI report engine", 90))}</td>
+            </tr>
+          `;
+        })
+        .join("") ||
+      `<tr><td colspan="7">${previewMode ? ADMIN_PREVIEW_MESSAGE : "No saved export opportunity reports yet."}</td></tr>`;
+  }
+
   function renderIntroRequests(requests = [], previewMode = false) {
     if (!introRequestsBody) return;
 
@@ -463,7 +515,7 @@
     }
 
     try {
-      const [overview, users, buyers, products, inquiries, feedback, reportRequests, introRequests] = await Promise.all([
+      const [overview, users, buyers, products, inquiries, feedback, reportRequests, savedReports, introRequests] = await Promise.all([
         TradeAI.api.admin.overview(),
         TradeAI.api.admin.users(),
         TradeAI.api.admin.buyers(),
@@ -482,6 +534,7 @@
             priority: reportPriorityFilter,
           }),
         ),
+        TradeAI.api.admin.reports(),
         TradeAI.api.admin.marketplaceIntroRequests(
           getSelectedFilters({
             status: introStatusFilter,
@@ -499,6 +552,7 @@
       renderInquiries(inquiries.inquiries?.length ? inquiries.inquiries : previewData.inquiries);
       renderFeedback(feedback.feedback || []);
       renderReportRequests(reportRequests.requests || []);
+      renderSavedReports(savedReports.reports || []);
       renderIntroRequests(introRequests.requests || []);
     } catch (error) {
       renderPreview();
@@ -517,6 +571,7 @@
     renderInquiries(previewData.inquiries);
     renderFeedback(previewData.feedback, true);
     renderReportRequests(previewData.reportRequests, true);
+    renderSavedReports(previewData.savedReports, true);
     renderIntroRequests(previewData.introRequests, true);
   }
 

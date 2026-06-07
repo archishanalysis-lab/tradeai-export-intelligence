@@ -1,4 +1,5 @@
 import Buyer from "../models/Buyer.js";
+import AiReport from "../models/AiReport.js";
 import CompanyProfile from "../models/CompanyProfile.js";
 import Contact from "../models/Contact.js";
 import KycDocument from "../models/KycDocument.js";
@@ -302,6 +303,21 @@ const listAdminInquiries = async (req, res, next) => {
     }
 };
 
+const listAdminReports = async (req, res, next) => {
+    try {
+        const reports = await AiReport.find()
+            .populate("createdBy", "name email company")
+            .populate("organizationId", "name")
+            .select("-answer")
+            .sort({ createdAt: -1 })
+            .limit(80);
+
+        res.json({ reports });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export {
     getAdminOverview,
     listContactFeedback,
@@ -309,6 +325,7 @@ export {
     listAdminBuyers,
     listAdminInquiries,
     listAdminProducts,
+    listAdminReports,
     listAdminUsers,
     listKycDocuments,
     reviewKycDocument,

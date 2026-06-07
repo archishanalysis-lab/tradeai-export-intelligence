@@ -30,6 +30,9 @@
     inquiries() {
       return TradeAI.request("/admin/inquiries");
     },
+    reports() {
+      return TradeAI.request("/admin/reports");
+    },
     contactFeedback(params = {}) {
       return TradeAI.request(`/admin/contact-feedback?${new URLSearchParams(params).toString()}`);
     },
