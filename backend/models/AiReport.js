@@ -65,6 +65,10 @@ const aiReportSchema = new mongoose.Schema(
             enum: ["generated", "failed"],
             default: "generated",
         },
+        isDemo: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,
@@ -73,6 +77,7 @@ const aiReportSchema = new mongoose.Schema(
 
 aiReportSchema.index({ organizationId: 1, createdAt: -1 });
 aiReportSchema.index({ reportType: 1, hsCode: 1, targetCountry: 1 });
+aiReportSchema.index({ isDemo: 1 });
 
 const AiReport = mongoose.model("AiReport", aiReportSchema);
 

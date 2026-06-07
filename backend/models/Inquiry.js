@@ -70,6 +70,10 @@ const inquirySchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Organization",
         },
+        isDemo: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,
@@ -79,6 +83,7 @@ const inquirySchema = new mongoose.Schema(
 inquirySchema.index({ exporter: 1, status: 1, updatedAt: -1 });
 inquirySchema.index({ organizationId: 1, status: 1 });
 inquirySchema.index({ product: 1, createdAt: -1 });
+inquirySchema.index({ isDemo: 1 });
 
 const Inquiry = mongoose.model("Inquiry", inquirySchema);
 

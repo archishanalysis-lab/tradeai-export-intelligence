@@ -23,6 +23,10 @@ const organizationSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
+        isDemo: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,
@@ -30,6 +34,7 @@ const organizationSchema = new mongoose.Schema(
 );
 
 organizationSchema.index({ plan: 1 });
+organizationSchema.index({ isDemo: 1 });
 
 const Organization = mongoose.model("Organization", organizationSchema);
 

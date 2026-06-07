@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    
+        <meta name="robots" content="noindex, nofollow" />
     <title>TradeAI Copilot</title>
     <meta
       name="description"
@@ -54,39 +57,128 @@
       <div class="container">
         <section class="dashboard-hero">
           <div>
+            <span class="section-kicker">AI assistant</span>
             <h1>AI Trade Copilot</h1>
-            <p>Ask trade questions and get guided next actions.</p>
+            <p>
+              Ask market, buyer discovery, HS-code and export planning
+              questions. Backend answers appear when connected; MVP fallback
+              guidance is clearly labeled.
+            </p>
           </div>
         </section>
-        <section class="dashboard-panel">
-          <form class="settings-form" id="copilotForm">
-            <div class="input-group">
-              <label for="copilotPrompt">Prompt</label>
-              <textarea
-                id="copilotPrompt"
-                name="prompt"
-                rows="5"
-                maxlength="600"
-                required
-                aria-describedby="copilotPromptHint"
-                placeholder="Find textile buyers in Germany"
-              ></textarea>
-              <p class="table-subtext" id="copilotPromptHint">
-                Try: Find UAE buyers for spices, suggest best export market for turmeric, or recommend an HS code.
+
+        <section class="management-grid copilot-workspace">
+          <article class="dashboard-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="section-kicker">Prompt</span>
+                <h2>Ask Copilot</h2>
+              </div>
+            </div>
+
+            <form class="settings-form" id="copilotForm">
+              <div class="input-group">
+                <label for="copilotPrompt">Prompt input</label>
+                <textarea
+                  id="copilotPrompt"
+                  name="prompt"
+                  rows="7"
+                  maxlength="800"
+                  required
+                  aria-describedby="copilotPromptHint"
+                  placeholder="best markets for turmeric from India"
+                ></textarea>
+                <p class="table-subtext" id="copilotPromptHint">
+                  Ask about target markets, buyer segments, HS-code direction,
+                  compliance risks or next actions.
+                </p>
+              </div>
+
+              <div class="copilot-chip-group" aria-label="Sample prompts">
+                <button type="button" class="secondary copilot-chip" data-prompt="best markets for turmeric from India">
+                  Turmeric markets
+                </button>
+                <button type="button" class="secondary copilot-chip" data-prompt="Find UAE buyers for Indian spices">
+                  UAE spice buyers
+                </button>
+                <button type="button" class="secondary copilot-chip" data-prompt="Recommend HS codes for cotton T-shirts">
+                  HS code help
+                </button>
+                <button type="button" class="secondary copilot-chip" data-prompt="Create a buyer outreach plan for Kenya">
+                  Kenya outreach
+                </button>
+              </div>
+
+              <div class="form-actions">
+                <button class="primary" type="submit" id="copilotSubmit">
+                  <span class="button-label">Ask Copilot</span>
+                  <span class="button-spinner" aria-hidden="true"></span>
+                </button>
+              </div>
+            </form>
+          </article>
+
+          <article class="dashboard-panel copilot-response-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="section-kicker">Response</span>
+                <h2>Copilot answer</h2>
+              </div>
+              <span id="copilotStatus" class="status-badge">Ready</span>
+            </div>
+
+            <div
+              id="copilotLoading"
+              class="empty-state copilot-state"
+              hidden
+              aria-live="polite"
+            >
+              <h3>Thinking...</h3>
+              <p>TradeAI Copilot is preparing a practical trade recommendation.</p>
+            </div>
+
+            <div
+              id="copilotError"
+              class="empty-state copilot-state"
+              hidden
+              role="alert"
+            >
+              <h3>Copilot is in fallback mode</h3>
+              <p id="copilotErrorMessage">
+                Backend AI is unavailable. Showing demo guidance for MVP preview.
               </p>
             </div>
-            <button class="primary" type="submit" id="copilotSubmit">
-              <span class="button-label">Ask Copilot</span>
-              <span class="button-spinner" aria-hidden="true"></span>
-            </button>
-          </form>
+
+            <section
+              id="copilotResponse"
+              class="activity-grid"
+              aria-live="polite"
+              aria-busy="false"
+            >
+              <article class="activity-card">
+                <h4>Ask a trade question</h4>
+                <p>
+                  Your Copilot response will appear here with suggested next
+                  actions and a short market-readiness checklist.
+                </p>
+              </article>
+            </section>
+          </article>
         </section>
-        <section
-          id="copilotResponse"
-          class="activity-grid"
-          aria-live="polite"
-          aria-busy="false"
-        ></section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <span class="section-kicker">History</span>
+            <h2>Response history</h2>
+            <p>Recent prompts from this page session appear here.</p>
+          </div>
+          <div id="copilotHistory" class="activity-grid">
+            <article class="activity-card">
+              <h4>No Copilot history yet</h4>
+              <p>Ask your first question to build a short review trail.</p>
+            </article>
+          </div>
+        </section>
       </div>
     </main>
     <script src="../js/storage.js" defer onerror="console.error('Failed to load storage.js')"></script>

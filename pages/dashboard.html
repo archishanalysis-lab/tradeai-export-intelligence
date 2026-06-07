@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    
+        <meta name="robots" content="noindex, nofollow" />
+    <title>TradeAI Dashboard</title>
+    <meta
+      name="description"
+      content="Unified TradeAI dashboard for buyer discovery, market analysis, HS codes, AI reports, saved searches and settings."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body class="dashboard-page" data-buyer-management>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="../index.html">Home</a>
+          <a href="dashboard.html#overview" class="active">Dashboard</a>
+          <a href="companies.html">Marketplace</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <div class="nav-actions">
+          <button id="themeToggle" class="theme-btn" type="button" aria-label="Toggle theme">
+            <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          </button>
+          <a href="notification.html" class="notification-btn" aria-label="Open notifications">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+          </a>
+          <a href="company-profile.html" class="login-btn auth-user-link">
+            <i class="fa-solid fa-user" aria-hidden="true"></i>
+            <span class="user-name">TradeAI User</span>
+          </a>
+          <button type="button" class="secondary logout-btn">Logout</button>
+        </div>
+        <button
+          class="menu-toggle"
+          id="menuToggle"
+          type="button"
+          aria-label="Open mobile menu"
+          aria-expanded="false"
+          aria-controls="mobileMenu"
+        >
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+      <a href="../index.html">Home</a>
+      <a href="dashboard.html#overview">Overview</a>
+      <a href="dashboard.html#buyers">Buyer Discovery</a>
+      <a href="dashboard.html#markets">Market Analysis</a>
+      <a href="dashboard.html#hs-codes">HS Codes</a>
+      <a href="dashboard.html#reports">AI Reports</a>
+      <a href="dashboard.html#saved">Saved Searches</a>
+      <a href="dashboard.html#settings">Settings</a>
+    </div>
+
+    <aside class="dashboard-sidebar">
+      <nav class="sidebar-menu" aria-label="Dashboard sections">
+        <a href="#overview" data-dashboard-tab="overview" class="active">
+          <i class="fa-solid fa-chart-line" aria-hidden="true"></i> Overview
+        </a>
+        <a href="#buyers" data-dashboard-tab="buyers">
+          <i class="fa-solid fa-users" aria-hidden="true"></i> Buyer Discovery
+        </a>
+        <a href="#markets" data-dashboard-tab="markets">
+          <i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Market Analysis
+        </a>
+        <a href="#hs-codes" data-dashboard-tab="hs-codes">
+          <i class="fa-solid fa-barcode" aria-hidden="true"></i> HS Codes
+        </a>
+        <a href="#reports" data-dashboard-tab="reports">
+          <i class="fa-solid fa-file-lines" aria-hidden="true"></i> AI Reports
+        </a>
+        <a href="#saved" data-dashboard-tab="saved">
+          <i class="fa-solid fa-bookmark" aria-hidden="true"></i> Saved Searches
+        </a>
+        <a href="#settings" data-dashboard-tab="settings">
+          <i class="fa-solid fa-gear" aria-hidden="true"></i> Settings
+        </a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <div class="container">
+        <section class="dashboard-hero">
+          <div>
+            <span class="section-kicker">Unified workspace</span>
+            <h1>TradeAI Dashboard</h1>
+            <p>
+              Review buyer discovery, corridor intelligence, HS-code analytics,
+              AI reports and saved searches from one protected workspace.
+            </p>
+          </div>
+          <div class="dashboard-meta">
+            <div class="meta-card">
+              <span>Live Time</span>
+              <h3 id="dashboardClock">00:00</h3>
+            </div>
+            <div class="meta-card">
+              <span>Today's Date</span>
+              <h3 id="dashboardDate">Loading...</h3>
+            </div>
+          </div>
+        </section>
+
+        <section id="overview" class="dashboard-tab-panel" data-dashboard-panel="overview">
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>Overview</h2>
+              <p>Sample dashboard signals are shown until live backend data is connected.</p>
+            </div>
+            <form id="dashboardSearchForm" class="dashboard-search">
+              <input id="dashboardSearch" type="search" placeholder="Search buyers, products, HS codes..." />
+              <button class="primary" type="submit">Search</button>
+            </form>
+            <div id="analyticsContainer" class="analytics-grid"></div>
+          </section>
+
+          <section class="quick-actions">
+            <a class="quick-action" href="#reports">
+              <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Generate report
+            </a>
+            <a class="quick-action" href="#buyers">
+              <i class="fa-solid fa-users" aria-hidden="true"></i> Explore buyer leads
+            </a>
+            <a class="quick-action" href="#hs-codes">
+              <i class="fa-solid fa-barcode" aria-hidden="true"></i> Check HS code
+            </a>
+            <a class="quick-action" href="contact.html?interest=walkthrough&source=dashboard">
+              <i class="fa-solid fa-message" aria-hidden="true"></i> Request walkthrough
+            </a>
+          </section>
+
+          <section class="dashboard-section">
+            <div class="section-heading"><h2>Notifications</h2></div>
+            <div id="notificationContainer" class="notification-grid"></div>
+          </section>
+
+          <section class="dashboard-section">
+            <div class="section-heading"><h2>Recent Activity</h2></div>
+            <div id="activityContainer" class="activity-grid"></div>
+          </section>
+        </section>
+
+        <section id="buyers" class="dashboard-tab-panel" data-dashboard-panel="buyers" hidden>
+          <section class="buyer-finder-shell">
+            <div class="finder-status-strip">
+              <span><i class="fa-solid fa-shield-halved"></i> MVP Preview Data</span>
+              <span><i class="fa-solid fa-bolt"></i> Backend-aware fallback</span>
+            </div>
+            <div class="finder-hero">
+              <span class="section-kicker">Buyer discovery</span>
+              <h2>Buyer Discovery Workspace</h2>
+              <p>Search sample buyer signals and manage backend-connected buyer records.</p>
+              <form id="buyerFinderForm" class="finder-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="buyerFinderSearch" type="search" placeholder="e.g. Spices, Rice, Pharmaceuticals..." />
+                <button id="buyerFinderButton" type="submit">Find Buyers</button>
+              </form>
+            </div>
+            <div id="buyerFinderResults" class="finder-results" hidden>
+              <section class="target-importers">
+                <div class="target-importers-header">
+                  <div>
+                    <span class="section-kicker">DEMO DATA</span>
+                    <h2>Top Target Importers</h2>
+                    <p class="table-subtext">Sample buyer profiles for MVP preview.</p>
+                  </div>
+                  <span id="buyerFinderCount">5 MATCHES</span>
+                </div>
+                <div id="buyerFinderList" class="target-importer-list"></div>
+              </section>
+            </div>
+          </section>
+
+          <section class="stats-grid compact-stats buyer-crm-summary">
+            <article class="stat-card"><h3 id="buyerTotalStat">0</h3><p>Total buyers</p></article>
+            <article class="stat-card"><h3 id="buyerVerifiedStat">0</h3><p>Verified</p></article>
+            <article class="stat-card"><h3 id="buyerCountriesStat">0</h3><p>Countries</p></article>
+            <article class="stat-card"><h3 id="buyerMatchStat">0%</h3><p>Avg AI match</p></article>
+          </section>
+
+          <section class="management-grid buyer-crm-tools">
+            <article class="dashboard-panel">
+              <div class="panel-heading">
+                <div><span class="section-kicker">Form</span><h2 id="buyerFormTitle">Add buyer</h2></div>
+              </div>
+              <form id="buyerForm" class="settings-form" novalidate>
+                <div class="input-group"><label for="companyName">Company name</label><input id="companyName" name="companyName" required placeholder="Global Retail Group" /></div>
+                <div class="form-row">
+                  <div class="input-group"><label for="country">Country</label><input id="country" name="country" required placeholder="Germany" /></div>
+                  <div class="input-group"><label for="industry">Industry</label><input id="industry" name="industry" required placeholder="FMCG" /></div>
+                </div>
+                <div class="input-group"><label for="products">Products</label><input id="products" name="products" placeholder="Coffee, spices, textiles" /></div>
+                <div class="form-row">
+                  <div class="input-group"><label for="website">Website</label><input id="website" name="website" type="url" placeholder="https://example.com" /></div>
+                  <div class="input-group"><label for="contactEmail">Email</label><input id="contactEmail" name="contactEmail" type="email" placeholder="buyer@example.com" /></div>
+                </div>
+                <div class="input-group"><label for="phone">Phone</label><input id="phone" name="phone" placeholder="+49 30 123456" /></div>
+                <label class="checkbox-row"><input id="verified" name="verified" type="checkbox" /><span>Mark as verified buyer</span></label>
+                <div class="form-actions">
+                  <button id="buyerSubmitButton" type="submit" class="primary">Save buyer</button>
+                  <button id="buyerCancelButton" type="button" class="secondary" hidden>Cancel edit</button>
+                </div>
+              </form>
+            </article>
+
+            <section class="dashboard-panel buyer-table-panel">
+              <div class="panel-heading">
+                <div><span class="section-kicker">Directory</span><h2>Buyer listing</h2></div>
+                <div class="toolbar-search"><i class="fa-solid fa-magnifying-glass"></i><input id="buyerSearch" type="search" placeholder="Search buyers..." /></div>
+              </div>
+              <div id="buyerLoadingState" class="skeleton-list" hidden><span></span><span></span><span></span></div>
+              <div id="buyerEmptyState" class="empty-state" hidden><h3>No buyers found</h3><p>Add your first buyer or change the search term.</p></div>
+              <div id="buyerTableWrap" class="dashboard-table-wrapper">
+                <table class="dashboard-table buyer-table">
+                  <thead><tr><th>Company</th><th>Country</th><th>Industry</th><th>Products</th><th>AI score</th><th>Status</th><th>Actions</th></tr></thead>
+                  <tbody id="buyerTableBody"></tbody>
+                </table>
+              </div>
+              <div id="buyerPagination" class="pagination"></div>
+            </section>
+          </section>
+        </section>
+
+        <section id="markets" class="dashboard-tab-panel" data-dashboard-panel="markets" hidden>
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <span class="section-kicker">Sample intelligence</span>
+              <h2>Corridor Intelligence</h2>
+              <p class="table-subtext">Demo data for MVP review. These cards are not live real-time market feeds.</p>
+            </div>
+            <div class="insights-grid">
+              <article class="insight-card">
+                <span class="status-badge status-pending">Demo data</span>
+                <h3>India to UAE</h3>
+                <p><strong>Sector:</strong> Spices and packaged food</p>
+                <p><strong>HS code:</strong> 0910</p>
+                <p><strong>Source label:</strong> Sample corridor intelligence</p>
+                <p class="table-subtext">Last updated: June 2026</p>
+                <a class="secondary" href="copilot.html">Ask Copilot</a>
+              </article>
+              <article class="insight-card">
+                <span class="status-badge status-pending">Sample intelligence</span>
+                <h3>India to Kenya</h3>
+                <p><strong>Sector:</strong> Food products and FMCG distribution</p>
+                <p><strong>HS code:</strong> Example range 0904-0910</p>
+                <p><strong>Source label:</strong> MVP sample market note</p>
+                <p class="table-subtext">Last updated: June 2026</p>
+                <a class="secondary" href="export-opportunity-report.html">Download sample report</a>
+              </article>
+              <article class="insight-card">
+                <span class="status-badge status-pending">Demo data</span>
+                <h3>India to Saudi Arabia</h3>
+                <p><strong>Sector:</strong> Premium food imports</p>
+                <p><strong>HS code:</strong> 2106 if applicable by product</p>
+                <p><strong>Source label:</strong> Sample GCC corridor brief</p>
+                <p class="table-subtext">Last updated: June 2026</p>
+                <a class="secondary" href="register.html?source=dashboard&intent=sample-report">Register for sample report</a>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section id="hs-codes" class="dashboard-tab-panel" data-dashboard-panel="hs-codes" hidden>
+          <section class="dashboard-panel" aria-labelledby="analyticsFormHeading">
+            <div class="panel-heading">
+              <div>
+                <span class="section-kicker">Trade data</span>
+                <h2 id="analyticsFormHeading">Search HS code demand</h2>
+                <p>Enter an HS code to fetch trade records, top countries and opportunity signals.</p>
+              </div>
+              <button id="exportAnalyticsBtn" class="secondary" type="button" disabled>Export CSV</button>
+            </div>
+            <form class="settings-form" id="analyticsForm">
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="analyticsHsCode">HS code</label>
+                  <input type="text" id="analyticsHsCode" name="hsCode" value="0901" pattern="[0-9]{4,10}" maxlength="10" inputmode="numeric" required />
+                </div>
+                <div class="input-group">
+                  <label for="analyticsReporter">Reporter country code</label>
+                  <input type="text" id="analyticsReporter" name="reporterCode" placeholder="e.g. 356 for India" pattern="[0-9]{1,3}" maxlength="3" inputmode="numeric" />
+                </div>
+              </div>
+              <button class="primary" type="submit" id="analyticsSubmitBtn"><i class="fa-solid fa-magnifying-glass"></i><span class="button-label">Search HS Code</span></button>
+            </form>
+          </section>
+          <section class="dashboard-section">
+            <div class="section-heading"><h2>Analytics Summary</h2></div>
+            <div id="tradeAnalytics" class="analytics-grid" aria-live="polite">
+              <article class="analytics-card"><h3>Run analytics above</h3><p>Enter an HS code and click Search HS Code.</p></article>
+            </div>
+          </section>
+          <section class="dashboard-section">
+            <div class="section-heading"><h2>AI Trade Insights</h2></div>
+            <div id="tradeInsights" class="activity-grid" aria-live="polite">
+              <article class="activity-card"><h4>No insights yet</h4><p>Run analytics to generate country and opportunity insights.</p></article>
+            </div>
+          </section>
+        </section>
+
+        <section id="reports" class="dashboard-tab-panel" data-dashboard-panel="reports" hidden>
+          <section class="dashboard-section two-column-layout">
+            <article class="dashboard-panel">
+              <h2>Generate report</h2>
+              <form class="settings-form" id="reportForm">
+                <div class="input-group"><label for="reportTitle">Title</label><input id="reportTitle" placeholder="UAE spice opportunity report" /></div>
+                <div class="form-row">
+                  <div class="input-group"><label for="reportType">Report type</label><select id="reportType"><option value="buyer_opportunity">Buyer Opportunity</option><option value="market_forecast">Market Forecast</option><option value="hs_code_demand">HS Code Demand</option><option value="pricing">Pricing Recommendation</option><option value="custom">Custom</option></select></div>
+                  <div class="input-group"><label for="reportProduct">Product</label><input id="reportProduct" placeholder="Turmeric powder" /></div>
+                </div>
+                <div class="form-row">
+                  <div class="input-group"><label for="reportHsCode">HS code</label><input id="reportHsCode" placeholder="0910" /></div>
+                  <div class="input-group"><label for="reportCountry">Target country</label><input id="reportCountry" placeholder="UAE" /></div>
+                </div>
+                <div class="input-group"><label for="reportPrompt">Additional prompt</label><textarea id="reportPrompt" rows="5" placeholder="Find top buyer segments and risks."></textarea></div>
+                <button class="primary" type="submit">Generate Report</button>
+              </form>
+            </article>
+            <article class="dashboard-panel">
+              <h2>Report output</h2>
+              <div id="reportOutput" class="activity-card"><h4>No report selected</h4><p>Generated intelligence will appear here.</p></div>
+            </article>
+          </section>
+          <section class="dashboard-section">
+            <article class="dashboard-panel">
+              <h2>Recent reports</h2>
+              <div id="reportList" class="activity-list"></div>
+            </article>
+          </section>
+        </section>
+
+        <section id="saved" class="dashboard-tab-panel" data-dashboard-panel="saved" hidden>
+          <section class="analytics-grid compact-stats">
+            <article class="analytics-card"><h3>Saved profiles</h3><div class="summary-card"><h2 id="savedTotal">0</h2></div></article>
+            <article class="analytics-card"><h3>Next action</h3><div class="summary-card"><h2>Contact</h2></div></article>
+            <article class="analytics-card"><h3>Unlock status</h3><div class="summary-card"><h2>Pricing</h2></div></article>
+          </section>
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>Saved company profiles</h2>
+              <p>Save buyers, companies and products to build your target account list.</p>
+            </div>
+            <div id="savedItemsList" class="activity-grid"></div>
+          </section>
+        </section>
+
+        <section id="settings" class="dashboard-tab-panel" data-dashboard-panel="settings" hidden>
+          <section class="dashboard-section">
+            <div class="settings-grid">
+              <article class="settings-card">
+                <div class="settings-header"><h2>Profile Settings</h2><i class="fa-solid fa-user"></i></div>
+                <form class="settings-form">
+                  <div class="input-group"><label>Full Name</label><input type="text" placeholder="Enter full name" value="TradeAI User" /></div>
+                  <div class="input-group"><label>Email Address</label><input type="email" placeholder="Enter email" value="user@tradeai.com" /></div>
+                  <div class="input-group"><label>Company Name</label><input type="text" placeholder="Company" value="TradeAI Global" /></div>
+                  <button type="submit" class="primary">Save Changes</button>
+                </form>
+              </article>
+              <article class="settings-card">
+                <div class="settings-header"><h2>Security</h2><i class="fa-solid fa-shield-halved"></i></div>
+                <form class="settings-form">
+                  <div class="input-group"><label>Current Password</label><input type="password" placeholder="Current password" /></div>
+                  <div class="input-group"><label>New Password</label><input type="password" placeholder="New password" /></div>
+                  <div class="input-group"><label>Confirm Password</label><input type="password" placeholder="Confirm password" /></div>
+                  <button type="submit" class="primary">Update Password</button>
+                </form>
+              </article>
+              <article class="settings-card">
+                <div class="settings-header"><h2>Notifications</h2><i class="fa-solid fa-bell"></i></div>
+                <div class="settings-options">
+                  <label class="settings-toggle"><span>Email Notifications</span><input type="checkbox" checked /></label>
+                  <label class="settings-toggle"><span>AI Market Alerts</span><input type="checkbox" checked /></label>
+                  <label class="settings-toggle"><span>Buyer Updates</span><input type="checkbox" /></label>
+                </div>
+              </article>
+              <article class="settings-card">
+                <div class="settings-header"><h2>Subscription</h2><i class="fa-solid fa-credit-card"></i></div>
+                <div class="subscription-card">
+                  <h3>Pro Plan</h3>
+                  <p>Active Subscription</p>
+                  <span class="subscription-price">Rs. 4,999/month</span>
+                  <div class="card-actions"><a href="pricing.html" class="primary">Manage Plan</a></div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/state/appState.js" defer></script>
+    <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/api/billingApi.js" defer></script>
+    <script src="../js/access-control.js" defer></script>
+    <script src="../js/api/savedItemApi.js" defer></script>
+    <script src="../js/api/reportApi.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/dashboard-tabs.js" defer></script>
+    <script src="../js/dashboard.js" defer></script>
+    <script src="../js/buyers.js" defer></script>
+    <script src="../js/trade-analytics.js" defer></script>
+    <script src="../js/ai-reports.js" defer></script>
+    <script src="../js/saved-items.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

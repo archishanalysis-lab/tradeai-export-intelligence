@@ -60,6 +60,10 @@ const productSchema = new mongoose.Schema(
             enum: ["pending", "approved", "rejected"],
             default: "pending",
         },
+        isDemo: {
+            type: Boolean,
+            default: false,
+        },
         targetCountries: {
             type: [String],
             default: [],
@@ -99,6 +103,7 @@ productSchema.index({ organizationId: 1, category: 1, availability: 1 });
 productSchema.index({ approvalStatus: 1 });
 productSchema.index({ organizationId: 1, createdAt: -1 });
 productSchema.index({ hsCode: 1, exportCountry: 1 });
+productSchema.index({ isDemo: 1 });
 
 const Product = mongoose.model("Product", productSchema);
 

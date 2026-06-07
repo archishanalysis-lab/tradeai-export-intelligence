@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
             enum: ["active", "suspended"],
             default: "active",
         },
+        isDemo: {
+            type: Boolean,
+            default: false,
+        },
         password: {
             type: String,
             required: true,
@@ -52,6 +56,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.index({ organizationId: 1, role: 1 });
 userSchema.index({ status: 1 });
+userSchema.index({ isDemo: 1 });
 
 userSchema.pre("save", async function hashPassword() {
     if (!this.isModified("password")) {

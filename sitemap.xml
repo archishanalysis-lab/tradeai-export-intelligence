@@ -1,102 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://tradeai.com/</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/countries.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/countries.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/corridors.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/corridors.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/export-opportunity-report.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/export-opportunity-report.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/pricing.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/pricing.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/register.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/contact.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/login.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://tradeai.com/pages/contact.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://tradeai.com/pages/india-kenya.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/india-kenya.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/india-tanzania.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/india-tanzania.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/india-uganda.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/india-uganda.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/india-rwanda.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/india-rwanda.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/india-uae.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/india-uae.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/india-saudi-arabia.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/india-saudi-arabia.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/india-oman.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/india-oman.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/india-qatar.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/india-qatar.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/india-china.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/india-china.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/about.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/about.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/privacy-policy.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/privacy-policy.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://tradeai.com/pages/terms-and-conditions.html</loc>
+    <loc>https://tradeai-export-intelligence.vercel.app/pages/terms-and-conditions.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trade Corridor Intelligence | TradeAI</title>
+    <meta
+      name="description"
+      content="Explore sample TradeAI corridor intelligence for export-import opportunity review."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tradeai-export-intelligence.vercel.app/pages/corridor.html" />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      .corridor-shell {
+        padding-top: 110px;
+      }
+
+      .corridor-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+      }
+
+      .corridor-nav a.active {
+        border-color: rgba(52, 211, 153, 0.45);
+        color: var(--color-accent);
+      }
+
+      .corridor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+      }
+
+      .corridor-card {
+        padding: 24px;
+        border-radius: 24px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+      }
+
+      .corridor-card span {
+        display: inline-flex;
+        width: 34px;
+        height: 34px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        border-radius: 999px;
+        background: rgba(52, 211, 153, 0.12);
+        color: var(--color-accent);
+        font-weight: 800;
+      }
+
+      .corridor-list {
+        display: grid;
+        gap: 12px;
+        margin: 0;
+        padding-left: 20px;
+        color: var(--text-secondary);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="../index.html">Home</a>
+          <a href="countries.html">Countries</a>
+          <a href="corridors.html" class="active">Corridors</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <button id="themeToggle" class="theme-btn" type="button" aria-label="Toggle theme">
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+        </button>
+        <button class="menu-toggle" type="button" aria-label="Open menu">Menu</button>
+      </div>
+    </header>
+
+    <main class="corridor-shell">
+      <div class="container">
+        <section class="dashboard-hero">
+          <div>
+            <span class="section-kicker" id="corridorRegion">Corridor</span>
+            <h1 id="corridorTitle">Trade Corridor Intelligence</h1>
+            <p id="corridorSummary"></p>
+            <div class="form-actions">
+              <a class="primary" href="copilot.html">Ask Copilot</a>
+              <a class="secondary" href="register.html?source=corridor&intent=sample-report">Register for sample report</a>
+              <a class="secondary" href="export-opportunity-report.html">Open export report</a>
+            </div>
+          </div>
+        </section>
+
+        <nav class="corridor-nav" aria-label="Country corridor options">
+          <a class="secondary" href="corridor.html?country=kenya" data-country-link="kenya">Kenya</a>
+          <a class="secondary" href="corridor.html?country=tanzania" data-country-link="tanzania">Tanzania</a>
+          <a class="secondary" href="corridor.html?country=uganda" data-country-link="uganda">Uganda</a>
+          <a class="secondary" href="corridor.html?country=rwanda" data-country-link="rwanda">Rwanda</a>
+          <a class="secondary" href="corridor.html?country=uae" data-country-link="uae">UAE</a>
+          <a class="secondary" href="corridor.html?country=saudi-arabia" data-country-link="saudi-arabia">Saudi Arabia</a>
+          <a class="secondary" href="corridor.html?country=oman" data-country-link="oman">Oman</a>
+          <a class="secondary" href="corridor.html?country=qatar" data-country-link="qatar">Qatar</a>
+          <a class="secondary" href="corridor.html?country=china" data-country-link="china">China</a>
+        </nav>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <span class="section-kicker">Sample intelligence</span>
+            <h2>Opportunity summary</h2>
+            <p>
+              <strong id="corridorName"></strong> · <span id="sourceLabel"></span> ·
+              <span id="updatedLabel">Last updated: June 2026</span>
+            </p>
+          </div>
+          <article class="corridor-card">
+            <p id="corridorSummaryCard">
+              This page renders country-specific corridor data for MVP review.
+              It does not claim live real-time trade intelligence.
+            </p>
+          </article>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>Key product categories</h2>
+          </div>
+          <article class="corridor-card">
+            <ul id="productList" class="corridor-list"></ul>
+          </article>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>HS code highlights</h2>
+          </div>
+          <div id="hsGrid" class="corridor-grid"></div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>Trade challenges</h2>
+          </div>
+          <article class="corridor-card">
+            <ul id="challengeList" class="corridor-list"></ul>
+          </article>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>Workflow</h2>
+          </div>
+          <div id="workflowList" class="corridor-grid"></div>
+        </section>
+
+        <section class="dashboard-section">
+          <article class="dashboard-panel">
+            <span class="section-kicker">Next step</span>
+            <h2>Turn corridor interest into an MVP report</h2>
+            <p>
+              Use Copilot for a quick question, register to save intent, or open
+              the export opportunity report flow for a structured sample output.
+            </p>
+            <div class="form-actions">
+              <a class="primary" href="copilot.html">Ask Copilot</a>
+              <a class="secondary" href="register.html?source=corridor&intent=sample-report">Register for sample report</a>
+              <a class="secondary" href="export-opportunity-report.html">Open export report</a>
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/corridorData.js" defer></script>
+    <script src="../js/corridor.js" defer></script>
+  </body>
+</html>

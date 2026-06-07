@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tradeai.com/sitemap.xml
+Sitemap: https://tradeai-export-intelligence.vercel.app/sitemap.xml

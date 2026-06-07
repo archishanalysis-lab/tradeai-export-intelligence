@@ -61,6 +61,10 @@ const buyerSchema = new mongoose.Schema(
             enum: ["manual", "trade_data", "imported"],
             default: "manual",
         },
+        isDemo: {
+            type: Boolean,
+            default: false,
+        },
         organizationId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Organization",
@@ -84,6 +88,7 @@ buyerSchema.index({
 });
 buyerSchema.index({ organizationId: 1, country: 1, industry: 1 });
 buyerSchema.index({ tradeVolume: -1 });
+buyerSchema.index({ isDemo: 1 });
 
 const Buyer = mongoose.model("Buyer", buyerSchema);
 

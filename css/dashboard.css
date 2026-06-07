@@ -1574,6 +1574,78 @@ html.light-theme .unlock-network-card {
 }
 
 /* =========================================================
+   COPILOT
+========================================================= */
+
+.copilot-workspace {
+  align-items: stretch;
+}
+
+.copilot-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.copilot-chip {
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+.copilot-response-panel {
+  min-height: 100%;
+}
+
+.copilot-state {
+  margin-bottom: 18px;
+  padding: 28px;
+}
+
+.copilot-answer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.copilot-list-block {
+  margin-top: 18px;
+}
+
+.copilot-list-block h5 {
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.copilot-list-block ul {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+  color: var(--text-secondary);
+}
+
+/* =========================================================
+   UNIFIED DASHBOARD
+========================================================= */
+
+.dashboard-tab-panel {
+  display: grid;
+  gap: 28px;
+}
+
+.dashboard-tab-panel[hidden] {
+  display: none;
+}
+
+.sidebar-menu a[aria-current="page"] {
+  color: var(--color-accent);
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.22);
+}
+
+/* =========================================================
    HELP CARD
 ========================================================= */
 

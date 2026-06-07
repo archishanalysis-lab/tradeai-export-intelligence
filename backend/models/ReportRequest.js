@@ -80,6 +80,10 @@ const reportRequestSchema = new mongoose.Schema(
             trim: true,
             default: "",
         },
+        isDemo: {
+            type: Boolean,
+            default: false,
+        },
         reviewedBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
@@ -96,6 +100,7 @@ const reportRequestSchema = new mongoose.Schema(
 reportRequestSchema.index({ status: 1, createdAt: -1 });
 reportRequestSchema.index({ email: 1, createdAt: -1 });
 reportRequestSchema.index({ productName: 1, targetCountry: 1 });
+reportRequestSchema.index({ isDemo: 1 });
 
 const ReportRequest = mongoose.model("ReportRequest", reportRequestSchema);
 
