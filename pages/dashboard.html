@@ -124,10 +124,32 @@
         </section>
 
         <section id="overview" class="dashboard-tab-panel" data-dashboard-panel="overview">
+          <section class="dashboard-section" id="dashboardAccountSummary">
+            <div class="section-heading">
+              <span class="section-kicker">Your TradeAI workspace</span>
+              <h2 id="dashboardWelcomeTitle">Welcome back</h2>
+              <p id="dashboardPlanSummary">Loading your plan and saved report activity...</p>
+            </div>
+            <div class="quick-actions">
+              <a class="quick-action" href="#reports">
+                <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Create export report
+              </a>
+              <a class="quick-action" href="export-opportunity-report.html">
+                <i class="fa-solid fa-chart-line" aria-hidden="true"></i> Open public report flow
+              </a>
+              <a class="quick-action" href="#buyers">
+                <i class="fa-solid fa-users" aria-hidden="true"></i> Review buyer samples
+              </a>
+            </div>
+            <div id="dashboardRecentReports" class="activity-grid">
+              <article class="activity-card"><h4>Loading recent reports...</h4><p>Your saved export reports will appear here.</p></article>
+            </div>
+          </section>
+
           <section class="dashboard-section">
             <div class="section-heading">
               <h2>Overview</h2>
-              <p>Sample dashboard signals are shown until live backend data is connected.</p>
+              <p>MVP sample signals are shown alongside your real saved reports and account status.</p>
             </div>
             <form id="dashboardSearchForm" class="dashboard-search">
               <input id="dashboardSearch" type="search" placeholder="Search buyers, products, HS codes..." />
@@ -323,19 +345,25 @@
         <section id="reports" class="dashboard-tab-panel" data-dashboard-panel="reports" hidden>
           <section class="dashboard-section two-column-layout">
             <article class="dashboard-panel">
-              <h2>Generate report</h2>
+              <h2>Create export opportunity report</h2>
               <form class="settings-form" id="reportForm">
-                <div class="input-group"><label for="reportTitle">Title</label><input id="reportTitle" placeholder="UAE spice opportunity report" /></div>
                 <div class="form-row">
-                  <div class="input-group"><label for="reportType">Report type</label><select id="reportType"><option value="buyer_opportunity">Buyer Opportunity</option><option value="market_forecast">Market Forecast</option><option value="hs_code_demand">HS Code Demand</option><option value="pricing">Pricing Recommendation</option><option value="custom">Custom</option></select></div>
-                  <div class="input-group"><label for="reportProduct">Product</label><input id="reportProduct" placeholder="Turmeric powder" /></div>
+                  <div class="input-group"><label for="reportProduct">Product name</label><input id="reportProduct" required placeholder="Turmeric powder" /></div>
+                  <div class="input-group"><label for="reportHsCode">HS code optional</label><input id="reportHsCode" placeholder="0910" /></div>
                 </div>
                 <div class="form-row">
-                  <div class="input-group"><label for="reportHsCode">HS code</label><input id="reportHsCode" placeholder="0910" /></div>
-                  <div class="input-group"><label for="reportCountry">Target country</label><input id="reportCountry" placeholder="UAE" /></div>
+                  <div class="input-group"><label for="reportOriginCountry">Origin country</label><input id="reportOriginCountry" value="India" readonly /></div>
+                  <div class="input-group"><label for="reportCountry">Target country</label><select id="reportCountry" required><option value="Kenya">Kenya</option><option value="Tanzania">Tanzania</option><option value="Uganda">Uganda</option><option value="Rwanda">Rwanda</option><option value="UAE">UAE</option><option value="Saudi Arabia">Saudi Arabia</option><option value="Oman">Oman</option><option value="Qatar">Qatar</option><option value="China">China</option></select></div>
                 </div>
-                <div class="input-group"><label for="reportPrompt">Additional prompt</label><textarea id="reportPrompt" rows="5" placeholder="Find top buyer segments and risks."></textarea></div>
-                <button class="primary" type="submit">Generate Report</button>
+                <div class="form-row">
+                  <div class="input-group"><label for="reportBusinessType">Business type</label><select id="reportBusinessType"><option value="SME exporter">SME exporter</option><option value="Manufacturer exporter">Manufacturer exporter</option><option value="Merchant exporter">Merchant exporter</option><option value="Consultant">Consultant</option><option value="Importer">Importer</option></select></div>
+                  <div class="input-group"><label for="reportMonthlyCapacity">Monthly capacity</label><input id="reportMonthlyCapacity" placeholder="Example: 2 tons/month" /></div>
+                </div>
+                <div class="form-row">
+                  <div class="input-group"><label for="reportPriceRange">Price range</label><input id="reportPriceRange" placeholder="Example: USD 2.1-2.5/kg FOB" /></div>
+                  <div class="input-group"><label for="reportCertifications">Certifications</label><input id="reportCertifications" placeholder="FSSAI, organic, ISO, halal" /></div>
+                </div>
+                <button class="primary" type="submit">Generate and Save Report</button>
               </form>
             </article>
             <article class="dashboard-panel">

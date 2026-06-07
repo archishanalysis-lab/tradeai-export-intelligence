@@ -897,6 +897,97 @@ function renderTradeChart() {
 }
 
 /* =========================================================
+   REAL ACCOUNT SUMMARY
+========================================================= */
+
+function escapeDashboardHtml(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+async function renderAccountSummary() {
+
+  const welcomeTitle =
+    document.getElementById("dashboardWelcomeTitle");
+  const planSummary =
+    document.getElementById("dashboardPlanSummary");
+  const recentReports =
+    document.getElementById("dashboardRecentReports");
+
+  if (!welcomeTitle && !planSummary && !recentReports)
+    return;
+
+  const user =
+    window.TradeAI?.auth?.getUser?.() || {};
+
+  if (welcomeTitle) {
+    welcomeTitle.textContent =
+      `Welcome back${user.name ? `, ${user.name}` : ""}`;
+  }
+
+  try {
+    const [billing, reports] =
+      await Promise.all([
+        window.TradeAI?.api?.billing?.status?.().catch(() => null),
+        window.TradeAI?.api?.reports?.list?.().catch(() => ({ reports: [] })),
+      ]);
+
+    if (planSummary) {
+      const planName =
+        billing?.planDetails?.name || billing?.plan || "Free";
+      const credits =
+        billing?.planDetails?.aiCredits;
+
+      planSummary.textContent =
+        `${planName} plan${Number.isFinite(credits) ? ` - ${credits} report credits available in this plan` : ""}.`;
+    }
+
+    if (recentReports) {
+      const items =
+        reports?.reports || [];
+
+      if (!items.length) {
+        recentReports.innerHTML = `
+          <article class="activity-card">
+            <h4>No saved reports yet</h4>
+            <p>Create one export opportunity report to get a real saved result in this dashboard.</p>
+            <div class="table-actions">
+              <a class="secondary" href="#reports">Create report</a>
+              <a class="secondary" href="export-opportunity-report.html">Use guided report page</a>
+            </div>
+          </article>
+        `;
+        return;
+      }
+
+      recentReports.innerHTML =
+        items.slice(0, 3)
+          .map((report) => `
+            <article class="activity-card">
+              <h4>${escapeDashboardHtml(report.title)}</h4>
+              <p>${escapeDashboardHtml((report.reportType || "report").replace(/_/g, " "))}</p>
+              <p class="table-subtext">${new Date(report.createdAt).toLocaleDateString()}</p>
+              <a class="secondary" href="#reports">Open reports</a>
+            </article>
+          `)
+          .join("");
+    }
+  } catch (error) {
+    if (planSummary) {
+      planSummary.textContent =
+        "Dashboard is connected to backend APIs. Account summary could not load right now.";
+    }
+  }
+
+}
+
+/* =========================================================
    DASHBOARD INIT
 ========================================================= */
 
@@ -905,6 +996,8 @@ function initializeDashboard() {
   renderDashboardPersonalization();
 
   renderMvpDashboardPreview();
+
+  renderAccountSummary();
 
   renderAnalytics();
 

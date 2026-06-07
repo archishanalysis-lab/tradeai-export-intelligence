@@ -9,6 +9,12 @@
         body: JSON.stringify(payload),
       });
     },
+    createOpportunity(payload) {
+      return TradeAI.request("/reports/opportunity", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+    },
     get(id) {
       return TradeAI.request(`/reports/${id}`);
     },

@@ -19,7 +19,7 @@ const aiReportSchema = new mongoose.Schema(
         },
         reportType: {
             type: String,
-            enum: ["buyer_opportunity", "market_forecast", "hs_code_demand", "pricing", "custom"],
+            enum: ["buyer_opportunity", "market_forecast", "hs_code_demand", "pricing", "export_opportunity", "custom"],
             default: "custom",
         },
         prompt: {
@@ -41,6 +41,40 @@ const aiReportSchema = new mongoose.Schema(
             type: String,
             trim: true,
             default: "",
+        },
+        originCountry: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        businessType: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        monthlyCapacity: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        priceRange: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        certifications: {
+            type: [String],
+            default: [],
+        },
+        structuredReport: {
+            marketPotential: { type: String, trim: true, default: "" },
+            opportunityScore: { type: Number, min: 0, max: 100, default: 0 },
+            demandReason: { type: String, trim: true, default: "" },
+            buyerType: { type: String, trim: true, default: "" },
+            riskLevel: { type: String, trim: true, default: "" },
+            complianceNotes: { type: [String], default: [] },
+            suggestedNextActions: { type: [String], default: [] },
+            dataSourceLabel: { type: String, trim: true, default: "" },
         },
         answer: {
             type: String,
@@ -77,6 +111,7 @@ const aiReportSchema = new mongoose.Schema(
 
 aiReportSchema.index({ organizationId: 1, createdAt: -1 });
 aiReportSchema.index({ reportType: 1, hsCode: 1, targetCountry: 1 });
+aiReportSchema.index({ createdBy: 1, reportType: 1, createdAt: -1 });
 aiReportSchema.index({ isDemo: 1 });
 
 const AiReport = mongoose.model("AiReport", aiReportSchema);

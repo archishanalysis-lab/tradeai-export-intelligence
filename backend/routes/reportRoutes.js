@@ -2,6 +2,7 @@ import express from "express";
 
 import {
     createAiReport,
+    createOpportunityReport,
     exportAiReport,
     getAiReportById,
     getAiReports,
@@ -13,6 +14,7 @@ const router = express.Router();
 router.use(protect);
 
 router.route("/").get(getAiReports).post(createAiReport);
+router.post("/opportunity", createOpportunityReport);
 router.get("/:id", getAiReportById);
 router.get("/:id/export", exportAiReport);
 

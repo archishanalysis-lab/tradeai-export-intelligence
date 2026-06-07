@@ -635,7 +635,7 @@
               <label for="reportProduct">Product name</label>
               <input
                 id="reportProduct"
-                name="product"
+                name="productName"
                 type="text"
                 placeholder="Example: turmeric powder"
                 required
@@ -654,10 +654,8 @@
 
             <div class="field">
               <label for="reportOrigin">Origin country</label>
-              <select id="reportOrigin" name="origin" required>
+              <select id="reportOrigin" name="originCountry" required>
                 <option value="India">India</option>
-                <option value="China">China</option>
-                <option value="UAE">UAE</option>
               </select>
             </div>
 
@@ -670,6 +668,10 @@
                 <option value="tanzania">India to Tanzania</option>
                 <option value="east-africa">East Africa comparison</option>
                 <option value="gulf">Gulf market comparison</option>
+                <option value="rwanda">India to Rwanda</option>
+                <option value="oman">India to Oman</option>
+                <option value="qatar">India to Qatar</option>
+                <option value="china">India-China sourcing</option>
               </select>
             </div>
 
@@ -682,6 +684,36 @@
                 <option value="SME">SME</option>
                 <option value="Other">Other</option>
               </select>
+            </div>
+
+            <div class="field">
+              <label for="monthlyCapacity">Monthly capacity</label>
+              <input
+                id="monthlyCapacity"
+                name="monthlyCapacity"
+                type="text"
+                placeholder="Example: 2 tons/month"
+              />
+            </div>
+
+            <div class="field">
+              <label for="priceRange">Price range</label>
+              <input
+                id="priceRange"
+                name="priceRange"
+                type="text"
+                placeholder="Example: USD 2.1-2.5/kg FOB"
+              />
+            </div>
+
+            <div class="field">
+              <label for="certifications">Certifications</label>
+              <input
+                id="certifications"
+                name="certifications"
+                type="text"
+                placeholder="FSSAI, organic, ISO, halal"
+              />
             </div>
 
             <div class="field">
@@ -998,6 +1030,7 @@
 
     <script src="../js/storage.js" defer></script>
     <script src="../js/api.js" defer></script>
+    <script src="../js/api/reportApi.js" defer></script>
     <script src="../js/theme.js" defer></script>
     <script src="../js/i18n.js" defer></script>
     <script>
@@ -1085,6 +1118,24 @@
           return element?.options[element.selectedIndex]?.text || getValue(id);
         }
 
+        function getTargetCountryName(value, label) {
+          var countryMap = {
+            uae: "UAE",
+            kenya: "Kenya",
+            "saudi-arabia": "Saudi Arabia",
+            tanzania: "Tanzania",
+            uganda: "Uganda",
+            rwanda: "Rwanda",
+            oman: "Oman",
+            qatar: "Qatar",
+            china: "China",
+            "east-africa": "Kenya",
+            gulf: "UAE",
+          };
+
+          return countryMap[value] || label || value;
+        }
+
         function getHsNote(product, hsCode) {
           if (hsCode) {
             return "Sample note: validate HS " + hsCode + " against product composition, packaging and target-country requirements.";
@@ -1130,6 +1181,19 @@
           };
         }
 
+        function buildSavedReportPayload(product, hsCode, origin, targetCountry) {
+          return {
+            productName: product,
+            hsCode: hsCode,
+            originCountry: origin || "India",
+            targetCountry: targetCountry,
+            businessType: getSelectedLabel("businessType"),
+            monthlyCapacity: getValue("monthlyCapacity"),
+            priceRange: getValue("priceRange"),
+            certifications: getValue("certifications"),
+          };
+        }
+
         async function saveReportRequest(payload) {
           if (!window.TradeAI?.api?.createReportRequest) {
             return;
@@ -1155,6 +1219,26 @@
           }
         }
 
+        async function saveStructuredReport(payload) {
+          if (!window.TradeAI?.auth?.getToken?.() || !window.TradeAI?.api?.reports?.createOpportunity) {
+            return false;
+          }
+
+          try {
+            await window.TradeAI.api.reports.createOpportunity(payload);
+
+            if (requestStatus) {
+              requestStatus.innerHTML =
+                'Saved to your TradeAI dashboard. <a href="dashboard.html#reports">Open saved reports</a>.';
+            }
+
+            window.TradeAI?.toast?.("Export opportunity report saved to dashboard.", "success");
+            return true;
+          } catch (error) {
+            return false;
+          }
+        }
+
         form.addEventListener("submit", function (event) {
           event.preventDefault();
 
@@ -1163,6 +1247,7 @@
           var origin = getSelectedLabel("reportOrigin");
           var country = getValue("reportCountry");
           var target = getSelectedLabel("reportCountry");
+          var targetCountryName = getTargetCountryName(country, target);
           var businessType = getSelectedLabel("businessType");
           var objective = getSelectedLabel("reportObjective");
           var profile = corridorProfiles[country] || corridorProfiles.uae;
@@ -1189,9 +1274,16 @@
           output.hidden = false;
           output.scrollIntoView({ behavior: "smooth", block: "start" });
 
-          saveReportRequest(
-            buildReportRequestPayload(product, hsCode, origin, target, businessType, objective),
-          );
+          saveStructuredReport(buildSavedReportPayload(product, hsCode, origin, targetCountryName))
+            .then(function (saved) {
+              if (saved) {
+                return;
+              }
+
+              saveReportRequest(
+                buildReportRequestPayload(product, hsCode, origin, target, businessType, objective),
+              );
+            });
         });
       });
     </script>
