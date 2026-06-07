@@ -2421,3 +2421,9 @@ html.light-theme .landing-page {
 
 
 
+.language-toolbar,
+.language-wrapper,
+.language-select,
+.mobile-language-select {
+  display: none !important;
+}

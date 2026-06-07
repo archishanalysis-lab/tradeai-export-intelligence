@@ -79,6 +79,8 @@
         data?.message ||
         "Copilot returned a response, but no answer text was provided.",
       provider: data?.provider || data?.source || "TradeAI Copilot",
+      assistantLabel: data?.assistantLabel || "",
+      isLiveAI: Boolean(data?.isLiveAI),
       suggestedActions: Array.isArray(data?.suggestedActions)
         ? data.suggestedActions
         : Array.isArray(data?.actions)
@@ -147,25 +149,27 @@
 
   function renderAnswer(question, data) {
     const answer = normalizeAnswer(data);
-    const fallbackBadge = answer.isFallback
+    const responseBadge = answer.isFallback
       ? `<span class="status-badge status-pending">FALLBACK DEMO</span>`
-      : `<span class="status-badge status-active">LIVE RESPONSE</span>`;
+      : answer.isLiveAI
+        ? `<span class="status-badge status-active">LIVE AI RESPONSE</span>`
+        : `<span class="status-badge status-pending">LOCAL RULE-BASED ASSISTANT</span>`;
 
     response.innerHTML = `
       <article class="activity-card copilot-answer-card">
         <div class="copilot-answer-header">
           <h4>Copilot response</h4>
-          ${fallbackBadge}
+          ${responseBadge}
         </div>
         <p class="table-subtext"><strong>Prompt:</strong> ${escapeHtml(question)}</p>
         <p>${escapeHtml(answer.answer)}</p>
         ${renderList("Suggested next actions", answer.suggestedActions)}
         ${renderList("Readiness checklist", answer.checklist)}
-        <p class="table-subtext">Provider: ${escapeHtml(answer.provider)}</p>
+        <p class="table-subtext">Provider: ${escapeHtml(answer.assistantLabel || answer.provider)}</p>
       </article>
     `;
 
-    setStatus(answer.isFallback ? "Fallback demo" : "Answered", answer.isFallback ? "status-pending" : "status-active");
+    setStatus(answer.isFallback ? "Fallback demo" : answer.isLiveAI ? "Live AI" : "Rule-based", answer.isLiveAI ? "status-active" : "status-pending");
     addHistory(question, answer);
   }
 

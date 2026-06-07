@@ -103,6 +103,59 @@ const normalizeRecord = (record = {}) => ({
     source: "UN Comtrade",
 });
 
+const fallbackPartners = [
+    ["404", "Kenya", 920000],
+    ["834", "Tanzania", 760000],
+    ["800", "Uganda", 610000],
+    ["646", "Rwanda", 430000],
+    ["784", "United Arab Emirates", 1450000],
+    ["682", "Saudi Arabia", 1320000],
+    ["512", "Oman", 580000],
+    ["634", "Qatar", 690000],
+    ["156", "China", 1180000],
+];
+
+const buildFallbackRecords = ({
+    hsCode,
+    reporterCode = "356",
+    partnerCode = "0",
+    flowCode = "X",
+    period,
+    limit = 100,
+} = {}) => {
+    const resolvedPeriod = period || String(new Date().getFullYear() - 1);
+    const productLabel = hsCode
+        ? `Sample HS ${hsCode} opportunity category`
+        : "Sample export opportunity category";
+    const partners =
+        partnerCode && partnerCode !== "0"
+            ? fallbackPartners.filter(([code]) => code === String(partnerCode))
+            : fallbackPartners;
+
+    return partners.slice(0, Math.min(Number(limit) || 100, partners.length)).map(([code, country, value], index) => ({
+        year: resolvedPeriod,
+        reporterCode,
+        reporter: getCountryName(reporterCode, "India"),
+        partnerCode: code,
+        partner: country,
+        hsCode: hsCode || "0910",
+        product: productLabel,
+        tradeFlow: flowCode,
+        tradeValue: value + index * 37500,
+        quantity: 0,
+        source: "MVP sample trade-data fallback",
+    }));
+};
+
+const buildFallbackResult = (query = {}, reason = "Live UN Comtrade data is unavailable") => ({
+    source: "mvp_sample_fallback",
+    sourceLabel: `${reason}. Showing MVP sample data, not live verified trade data.`,
+    period: query.period || String(new Date().getFullYear() - 1),
+    flowCode: query.flowCode || "X",
+    isDemo: true,
+    records: buildFallbackRecords(query),
+});
+
 const getCandidatePeriods = (period) => {
     if (period) return [String(period)];
 
@@ -227,9 +280,10 @@ const fetchComtradeRecords = async ({
     limit = 100,
 } = {}) => {
     if (!process.env.COMTRADE_API_KEY) {
-        const error = new Error("Live UN Comtrade data is not configured. Add COMTRADE_API_KEY.");
-        error.status = 503;
-        throw error;
+        return buildFallbackResult(
+            { hsCode, reporterCode, partnerCode, flowCode, period, limit },
+            "COMTRADE_API_KEY is not configured",
+        );
     }
 
     if (!hsCode) {
@@ -262,7 +316,8 @@ const fetchComtradeRecords = async ({
                 rawRecords.push(...records);
             } catch (error) {
                 if (error.status === 429) {
-                    throw error;
+                    lastError = error;
+                    break;
                 }
 
                 lastError = error;
@@ -275,7 +330,12 @@ const fetchComtradeRecords = async ({
     }
 
     if (!rawRecords.length && lastError) {
-        throw lastError;
+        return buildFallbackResult(
+            { hsCode, reporterCode, partnerCode, flowCode, period, limit },
+            lastError.status === 429
+                ? "UN Comtrade rate limit reached"
+                : "UN Comtrade did not return usable records",
+        );
     }
 
     return {

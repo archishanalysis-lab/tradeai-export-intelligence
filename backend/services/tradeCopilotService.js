@@ -55,6 +55,8 @@ const answerTradeQuestion = async ({ prompt, context = {} }) => {
                 ],
                 contextUsed: Object.keys(context),
                 provider: "openai",
+                assistantLabel: "Live AI assistant",
+                isLiveAI: true,
             };
         } catch (error) {
             return {
@@ -66,6 +68,8 @@ const answerTradeQuestion = async ({ prompt, context = {} }) => {
                 ],
                 contextUsed: Object.keys(context),
                 provider: "openai-fallback",
+                assistantLabel: "OpenAI fallback response",
+                isLiveAI: false,
             };
         }
     }
@@ -79,6 +83,8 @@ const answerTradeQuestion = async ({ prompt, context = {} }) => {
         ],
         contextUsed: Object.keys(context),
         provider: "local-rule-engine",
+        assistantLabel: "Local rule-based assistant",
+        isLiveAI: false,
     };
 };
 

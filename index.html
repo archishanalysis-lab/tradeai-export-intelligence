@@ -508,15 +508,6 @@
           </a>
           <a href="pages/pricing.html" data-nav="desktop" data-i18n="pricing">Pricing</a>
           <a
-            href="pages/explorer-dashboard.html"
-            data-i18n="navDashboard"
-            data-nav="desktop"
-            data-requires-auth
-            data-auth-message="Login to open your TradeAI dashboard with saved activity, alerts and next actions."
-          >
-            Dashboard
-          </a>
-          <a
             href="pages/contact.html"
             data-nav="desktop"
             data-i18n="navContact"
@@ -550,40 +541,6 @@
               <option value="ar">Arabic</option>
               <option value="zh">Chinese</option>
             </select>
-          </div>
-
-          <div class="notification-wrapper">
-            <button
-              id="notificationToggle"
-              class="notification-btn"
-              type="button"
-              aria-label="Open notifications"
-              data-i18n-aria="notificationToggleAria"
-              aria-expanded="false"
-              aria-controls="notificationPanel"
-            >
-              <i class="fa-solid fa-bell" aria-hidden="true"></i>
-              <span id="notificationCount" class="notification-count">0</span>
-            </button>
-
-            <div
-              id="notificationPanel"
-              class="notification-panel"
-              role="region"
-              aria-label="Trade notifications"
-              data-i18n-aria="notificationPanelAria"
-              hidden
-            >
-              <div class="notification-panel-header">
-                <div>
-                  <strong>Notifications</strong>
-                  <span>Trade alerts and account reminders</span>
-                </div>
-                <a href="pages/notification.html">View all</a>
-              </div>
-
-              <div id="notificationList" class="notification-list"></div>
-            </div>
           </div>
 
           <button
@@ -665,18 +622,6 @@
         <option value="ar">Arabic</option>
         <option value="zh">Chinese</option>
       </select>
-
-      <a href="pages/notification.html" data-nav="mobile">Notifications</a>
-
-      <a
-        href="pages/explorer-dashboard.html"
-        data-i18n="navDashboard"
-        data-nav="mobile"
-        data-requires-auth
-        data-auth-message="Login to open your TradeAI dashboard with saved activity, alerts and next actions."
-      >
-        Dashboard
-      </a>
 
       <a href="pages/contact.html" data-nav="mobile" data-i18n="navContact">
         Contact
@@ -1235,12 +1180,10 @@
                 manage inquiries.
               </p>
               <a
-                href="pages/export-dash.html"
+                href="pages/register.html?role=exporter&source=homepage-role-card&intent=exporter-workflow"
                 class="role-action-link"
-                data-requires-auth
-                data-auth-message="Login or register as an exporter to open the Exporter Control Center."
               >
-                Open Exporter Dashboard
+                Start exporter workflow
                 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
               </a>
             </article>
@@ -1253,12 +1196,10 @@
                 import opportunities.
               </p>
               <a
-                href="pages/importer-dashboard.html"
+                href="pages/register.html?role=importer&source=homepage-role-card&intent=importer-workflow"
                 class="role-action-link"
-                data-requires-auth
-                data-auth-message="Login or register as an importer to open the Importer Sourcing Hub."
               >
-                Open Importer Dashboard
+                Start importer workflow
                 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
               </a>
             </article>
@@ -1271,12 +1212,10 @@
                 strategy.
               </p>
               <a
-                href="pages/analytics-dashboard.html"
+                href="pages/register.html?role=consultant&source=homepage-role-card&intent=consultant-workflow"
                 class="role-action-link"
-                data-requires-auth
-                data-auth-message="Login or register as a consultant to open the Market Intelligence Dashboard."
               >
-                Open Analytics Dashboard
+                Start consultant workflow
                 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
               </a>
             </article>
@@ -1289,12 +1228,10 @@
                 dashboards.
               </p>
               <a
-                href="pages/explorer-dashboard.html"
+                href="pages/register.html?role=explorer&source=homepage-role-card&intent=explorer-workflow"
                 class="role-action-link"
-                data-requires-auth
-                data-auth-message="Login or register to open the Trade Intelligence Overview workspace."
               >
-                Open Explorer Dashboard
+                Start explorer workflow
                 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
               </a>
             </article>
@@ -1674,8 +1611,6 @@
           <h3>Resources</h3>
           <a href="pages/export-opportunity-report.html">Export Reports</a>
           <a href="pages/help-centre.html">Help Centre</a>
-          <a href="pages/saved-search.html">Saved Searches</a>
-          <a href="pages/notification.html">Notifications</a>
           <a href="pages/status.html">System Status</a>
           <a href="pages/changelog.html">Changelog</a>
         </div>
@@ -1686,12 +1621,6 @@
           <a href="pages/terms-and-conditions.html">Terms & Conditions</a>
         </div>
 
-        <div>
-          <h3>Dashboards</h3>
-          <a href="pages/explorer-dashboard.html">Explorer Dashboard</a>
-          <a href="pages/export-dash.html">Exporter Dashboard</a>
-          <a href="pages/importer-dashboard.html">Importer Dashboard</a>
-        </div>
       </div>
 
       <div class="copyright">© 2026 TradeAI. All rights reserved.</div>

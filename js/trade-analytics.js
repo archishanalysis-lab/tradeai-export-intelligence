@@ -54,7 +54,7 @@
       </article>
       <article class="analytics-card">
         <h3>Data source</h3>
-        <div class="summary-card"><h2>${escapeHtml(data.source || "Live API")}</h2></div>
+        <div class="summary-card"><h2>${escapeHtml(data.sourceLabel || data.source || "Backend/sample data")}</h2></div>
         <p class="table-subtext">Period ${escapeHtml(data.period || "-")}</p>
       </article>
     `;

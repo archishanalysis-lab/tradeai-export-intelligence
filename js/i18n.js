@@ -50,8 +50,8 @@
       category: "Category",
       chartKicker: "Import Demand Snapshot",
       chartNote:
-        "Live trade data loads after search. Product keywords are mapped to HS codes when possible.",
-      chartPill: "Live Data Preview",
+        "Backend or clearly labeled sample trade data loads after search. Product keywords are mapped to HS codes when possible.",
+      chartPill: "MVP Data Preview",
       chartTitleDefault: "Search To View Import Demand",
       chartTitleProduct: "Top Importing Countries For {product}",
       changelog: "Changelog",
