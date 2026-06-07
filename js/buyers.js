@@ -46,7 +46,7 @@
   const demoBuyers = [
     {
       _id: "demo-buyer-1",
-      companyName: "Gulf Retail Sourcing Hub",
+      companyName: "Sample Gulf Retail Sourcing Hub",
       country: "UAE",
       industry: "Food imports",
       products: ["Spices", "Packaged foods", "Organic staples"],
@@ -56,7 +56,7 @@
     },
     {
       _id: "demo-buyer-2",
-      companyName: "East Africa Distribution Co.",
+      companyName: "Sample East Africa Distribution Co.",
       country: "Kenya",
       industry: "Wholesale distribution",
       products: ["Rice", "Tea", "FMCG"],
@@ -66,7 +66,7 @@
     },
     {
       _id: "demo-buyer-3",
-      companyName: "Riyadh Premium Foods",
+      companyName: "Sample Riyadh Premium Foods Desk",
       country: "Saudi Arabia",
       industry: "Premium food retail",
       products: ["Coffee", "Processed foods", "Spices"],
@@ -76,7 +76,7 @@
     },
     {
       _id: "demo-buyer-4",
-      companyName: "Dar es Salaam Trade Partners",
+      companyName: "Sample Dar es Salaam Trade Partners",
       country: "Tanzania",
       industry: "Importer network",
       products: ["Pharma", "Packaging", "Consumer goods"],
@@ -86,7 +86,7 @@
     },
     {
       _id: "demo-buyer-5",
-      companyName: "Doha Construction Supply Desk",
+      companyName: "Sample Doha Construction Supply Desk",
       country: "Qatar",
       industry: "Construction materials",
       products: ["Tools", "Hardware", "Industrial supplies"],
@@ -96,7 +96,7 @@
     },
     {
       _id: "demo-buyer-6",
-      companyName: "Kampala FMCG Import Desk",
+      companyName: "Sample Kampala FMCG Import Desk",
       country: "Uganda",
       industry: "FMCG imports",
       products: ["Packaged foods", "Personal care", "Textiles"],
@@ -106,7 +106,7 @@
     },
     {
       _id: "demo-buyer-7",
-      companyName: "Muscat Hospitality Procurement",
+      companyName: "Sample Muscat Hospitality Procurement",
       country: "Oman",
       industry: "Hospitality supply",
       products: ["Food service", "Linens", "Specialty ingredients"],
@@ -116,7 +116,7 @@
     },
     {
       _id: "demo-buyer-8",
-      companyName: "Kigali SME Trade Collective",
+      companyName: "Sample Kigali SME Trade Collective",
       country: "Rwanda",
       industry: "SME trade network",
       products: ["Packaging", "Food products", "Light machinery"],
@@ -128,37 +128,37 @@
 
   const demoImporters = [
     {
-      companyName: "Bidco Africa",
+      companyName: "Sample Gulf Retail Buyer",
       industry: "FMCG / Food",
-      shipments: "15 shipments/year",
+      shipments: "MVP preview profile",
       rating: "HIGH",
       score: 94,
     },
     {
-      companyName: "Tropical Heat",
+      companyName: "Sample Spice Import Desk",
       industry: "Spices",
-      shipments: "10 shipments/year",
+      shipments: "MVP preview profile",
       rating: "HIGH",
       score: 91,
     },
     {
-      companyName: "Kenafric Industries",
+      companyName: "Sample East Africa Distributor",
       industry: "Food Products",
-      shipments: "8 shipments/year",
+      shipments: "MVP preview profile",
       rating: "MED",
       score: 78,
     },
     {
-      companyName: "Kenpoly Manufacturers",
+      companyName: "Sample Packaging Buyer",
       industry: "Packaging",
-      shipments: "6 shipments/year",
+      shipments: "MVP preview profile",
       rating: "MED",
       score: 72,
     },
     {
-      companyName: "Highlands Mineral Water",
+      companyName: "Sample Beverage Procurement Team",
       industry: "Beverages",
-      shipments: "4 shipments/year",
+      shipments: "MVP preview profile",
       rating: "LOW",
       score: 61,
     },
