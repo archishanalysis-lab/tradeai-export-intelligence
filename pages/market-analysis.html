@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Market Analysis - TradeAI</title>
+
+    <meta
+      name="description"
+      content="Analyze global trade markets, AI demand forecasts, tariff intelligence and export opportunities."
+    />
+
+    <!-- CSS -->
+
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+
+    <!-- FONT -->
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FONT AWESOME -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+
+  <body class="dashboard-page">
+    <!-- HEADER -->
+
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo"> TradeAI </a>
+
+        <nav class="nav">
+          <a href="../index.html"> Home </a>
+
+          <a href="../index.html#features"> Features </a>
+
+          <a href="pricing.html"> Pricing </a>
+
+          <a href="contact.html"> Contact </a>
+        </nav>
+
+        <div class="nav-actions">
+          <button id="themeToggle" class="theme-btn">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="notification.html" class="icon-btn" aria-label="Open notifications">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+          </a>
+
+          <a href="login.html" class="login-btn">Login</a>
+
+          <a href="register.html" class="cta">Register</a>
+        </div>
+
+        <button class="menu-toggle">☰</button>
+      </div>
+    </header>
+
+    <!-- MOBILE MENU -->
+
+    <div class="mobile-menu">
+      <a href="../index.html"> Home </a>
+
+      <a href="../index.html#features"> Features </a>
+
+      <a href="search-result.html"> Search </a>
+
+      <a href="explorer-dashboard.html"> Dashboard </a>
+
+      <a href="pricing.html"> Pricing </a>
+
+      <a href="contact.html"> Contact </a>
+    </div>
+
+    <!-- SIDEBAR -->
+
+    <aside class="dashboard-sidebar">
+
+      <nav class="sidebar-menu">
+        <a href="explorer-dashboard.html"> Dashboard </a>
+
+        <a href="market-analysis.html" class="active"> Market Analysis </a>
+
+        <a href="buyer-detail.html"> Buyer Finder </a>
+
+        <a href="saved-search.html"> Saved Markets </a>
+
+        <a href="notification.html"> Notifications </a>
+
+        <a href="setting.html"> Settings </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="dashboard-main">
+      <div class="container">
+        <!-- HERO -->
+
+        <section class="dashboard-hero">
+          <div>
+            <h1>Market Intelligence Dashboard</h1>
+
+            <p>
+              Track demand trends, HS-code insights, country signals, export
+              opportunities and AI recommendations from one workspace.
+            </p>
+          </div>
+
+          <div class="dashboard-meta">
+            <div class="meta-card">
+              <span> Time </span>
+
+              <h3 id="dashboardClock"></h3>
+            </div>
+
+            <div class="meta-card">
+              <span> Date </span>
+
+              <h3 id="dashboardDate"></h3>
+            </div>
+          </div>
+        </section>
+
+        <!-- SEARCH -->
+
+        <section class="dashboard-search">
+          <input
+            type="text"
+            id="dashboardSearch"
+            placeholder="Search markets, products, HS codes..."
+          />
+        </section>
+
+        <!-- ANALYTICS -->
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>AI Analytics</h2>
+          </div>
+
+          <div id="analyticsContainer" class="analytics-grid"></div>
+        </section>
+
+        <!-- INSIGHTS -->
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <span class="section-kicker">DEMO DATA</span>
+            <h2>AI Insights</h2>
+            <p class="table-subtext">Last updated: June 2026</p>
+          </div>
+
+          <div class="insights-grid">
+            <article class="insight-card">
+              <h3>UAE Coffee Imports</h3>
+
+              <p>Demand increased by 18%.</p>
+            </article>
+
+            <article class="insight-card">
+              <h3>Germany Tariff Update</h3>
+
+              <p>New agricultural tariff changes.</p>
+            </article>
+
+            <article class="insight-card">
+              <h3>Saudi Arabia Demand</h3>
+
+              <p>Premium food imports rising.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ACTIVITIES -->
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>Recent Activities</h2>
+          </div>
+
+          <div id="activityContainer" class="activity-grid"></div>
+        </section>
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+          <div class="footer-grid">
+            <div>
+              <h4>Company</h4>
+
+              <a href="about.html"> About </a>
+
+              <a href="contact.html"> Contact </a>
+            </div>
+
+            <div>
+              <h4>Legal</h4>
+
+              <a href="privacy-policy.html"> Privacy </a>
+
+              <a href="terms-and-conditions.html"> Terms </a>
+            </div>
+          </div>
+
+          <p>© 2026 TradeAI. All rights reserved.</p>
+        </footer>
+      </div>
+    </main>
+
+    <!-- JS -->
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/dashboard.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
+
+

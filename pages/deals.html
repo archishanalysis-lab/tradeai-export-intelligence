@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deal Pipeline - TradeAI</title>
+    <meta
+      name="description"
+      content="Track TradeAI buyer opportunities from lead generation to completed export deals."
+    />
+    <script>
+      document.documentElement.classList.toggle(
+        "light-theme",
+        localStorage.getItem("tradeai_theme") === "light",
+      );
+    </script>
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+
+  <body class="dashboard-page">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="export-dash.html">Exporter</a>
+          <a href="buyer-detail.html">Buyers</a>
+          <a href="inquiry-dashboard.html">Inquiries</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <div class="nav-actions">
+          <button id="themeToggle" class="theme-btn" type="button" aria-label="Toggle theme">
+            <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          </button>
+          <a href="notification.html" class="icon-btn" aria-label="Open notifications">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+          </a>
+        </div>
+        <button
+          class="menu-toggle"
+          id="menuToggle"
+          type="button"
+          aria-label="Open mobile menu"
+          aria-expanded="false"
+          aria-controls="mobileMenu"
+        >
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+      <a href="export-dash.html">Exporter</a>
+      <a href="buyer-detail.html">Buyers</a>
+      <a href="inquiry-dashboard.html">Inquiries</a>
+      <a href="pricing.html">Pricing</a>
+    </div>
+
+    <aside class="dashboard-sidebar">
+      <nav class="sidebar-menu" aria-label="Exporter workspace">
+        <a href="export-dash.html">Export Dashboard</a>
+        <a href="product-upload.html">Product Upload</a>
+        <a href="buyer-detail.html">Buyer Finder</a>
+        <a href="inquiry-dashboard.html">Inquiries</a>
+        <a href="deals.html" class="active">Deal Pipeline</a>
+        <a href="company-profile.html">Company Profile</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <div class="container">
+        <section class="dashboard-hero">
+          <div>
+            <h1>Deal Pipeline</h1>
+            <p>
+              Track buyer opportunities from lead generation, outreach and
+              quotation through negotiation, won deals and completed shipments.
+            </p>
+          </div>
+        </section>
+
+        <section id="dealSummary" class="analytics-grid" aria-live="polite"></section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <span class="section-kicker">Pipeline control</span>
+            <h2>Add or update deal</h2>
+          </div>
+          <article class="dashboard-panel">
+            <form id="dealForm" class="settings-form">
+              <input type="hidden" id="dealId" name="dealId" />
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="dealTitle">Deal title</label>
+                  <input id="dealTitle" name="title" placeholder="Rice buyer quotation - UAE" required />
+                </div>
+                <div class="input-group">
+                  <label for="dealCompany">Buyer company</label>
+                  <input id="dealCompany" name="companyName" autocomplete="organization" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="dealContact">Contact person</label>
+                  <input id="dealContact" name="contactName" autocomplete="name" />
+                </div>
+                <div class="input-group">
+                  <label for="dealEmail">Contact email</label>
+                  <input id="dealEmail" name="contactEmail" type="email" autocomplete="email" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="dealCountry">Country</label>
+                  <input id="dealCountry" name="country" autocomplete="country-name" />
+                </div>
+                <div class="input-group">
+                  <label for="dealStage">Stage</label>
+                  <select id="dealStage" name="stage">
+                    <option value="lead_generated">Lead Generated</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="quotation_sent">Quotation Sent</option>
+                    <option value="negotiation">Negotiation</option>
+                    <option value="won">Won</option>
+                    <option value="completed">Completed</option>
+                    <option value="lost">Lost</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="dealValue">Expected value</label>
+                  <input id="dealValue" name="value" type="number" min="0" step="0.01" />
+                </div>
+                <div class="input-group">
+                  <label for="dealCurrency">Currency</label>
+                  <input id="dealCurrency" name="currency" maxlength="3" value="USD" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="dealProbability">Probability %</label>
+                  <input id="dealProbability" name="probability" type="number" min="0" max="100" value="20" />
+                </div>
+                <div class="input-group">
+                  <label for="dealCloseDate">Expected close date</label>
+                  <input id="dealCloseDate" name="expectedCloseDate" type="date" />
+                </div>
+              </div>
+              <div class="input-group">
+                <label for="dealNextAction">Next action</label>
+                <input id="dealNextAction" name="nextAction" placeholder="Send quotation, call buyer, upload certificate..." />
+              </div>
+              <div class="input-group">
+                <label for="dealNotes">Notes</label>
+                <textarea id="dealNotes" name="notes" rows="4" maxlength="2500"></textarea>
+              </div>
+              <button id="dealSubmitBtn" class="primary" type="submit">Save deal</button>
+            </form>
+          </article>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <span class="section-kicker">Deals</span>
+            <h2>Buyer opportunity tracker</h2>
+          </div>
+          <form id="dealSearchForm" class="dashboard-search">
+            <label class="sr-only" for="dealSearch">Search deals</label>
+            <input id="dealSearch" name="search" type="search" placeholder="Search deal, company or country..." />
+            <label class="sr-only" for="dealStageFilter">Filter by stage</label>
+            <select id="dealStageFilter" name="stage">
+              <option value="">All stages</option>
+              <option value="lead_generated">Lead Generated</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="quotation_sent">Quotation Sent</option>
+              <option value="negotiation">Negotiation</option>
+              <option value="won">Won</option>
+              <option value="completed">Completed</option>
+              <option value="lost">Lost</option>
+            </select>
+            <button class="primary" type="submit">Search</button>
+          </form>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <caption class="sr-only">Deal pipeline with stage, value and next action</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Deal</th>
+                  <th scope="col">Stage</th>
+                  <th scope="col">Probability</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">Next action</th>
+                  <th scope="col">Close date</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dealTableBody">
+                <tr><td colspan="7">Loading deals...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/state/appState.js" defer></script>
+    <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/api/dealApi.js" defer></script>
+    <script src="../js/deals.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

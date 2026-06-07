@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Upload - TradeAI</title>
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+
+  <body class="dashboard-page">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="export-dash.html">Exporter Dashboard</a>
+          <a href="buyer-detail.html">Buyers</a>
+          <a href="deals.html">Deals</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <div class="nav-actions">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+        </div>
+        <button class="menu-toggle">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="export-dash.html">Exporter Dashboard</a>
+      <a href="buyer-detail.html">Buyers</a>
+      <a href="deals.html">Deals</a>
+      <a href="pricing.html">Pricing</a>
+    </div>
+
+    <aside class="dashboard-sidebar">
+      <nav class="sidebar-menu">
+        <a href="export-dash.html">Export Dashboard</a>
+        <a href="product-upload.html" class="active">Product Upload</a>
+        <a href="buyer-detail.html">Buyer Finder</a>
+        <a href="deals.html">Deal Pipeline</a>
+        <a href="market-analysis.html">Market Analysis</a>
+        <a href="notification.html">Notifications</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <div class="container">
+        <section class="dashboard-hero">
+          <div>
+            <h1>Product Upload</h1>
+            <p>Create export products, manage catalog details and generate AI buyer matches.</p>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="management-grid">
+            <article class="dashboard-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="section-kicker">Exporter catalog</span>
+                  <h2>Add or edit product</h2>
+                </div>
+              </div>
+
+              <form class="settings-form" id="productForm">
+                <input type="hidden" id="productId" />
+                <div class="input-group">
+                  <label for="exportProductName">Product name</label>
+                  <input id="exportProductName" placeholder="Cotton T-Shirts" />
+                </div>
+                <div class="form-row">
+                  <div class="input-group">
+                    <label for="exportCategory">Category</label>
+                    <input id="exportCategory" placeholder="Textiles" />
+                  </div>
+                  <div class="input-group">
+                    <label for="exportHsCode">HS code</label>
+                    <input id="exportHsCode" placeholder="6109" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="input-group">
+                    <label for="exportMoq">MOQ</label>
+                    <input id="exportMoq" type="number" min="0" placeholder="1000" />
+                  </div>
+                  <div class="input-group">
+                    <label for="exportPrice">Price</label>
+                    <input id="exportPrice" type="number" min="0" step="0.01" placeholder="3.25" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="input-group">
+                    <label for="exportCountry">Export country</label>
+                    <input id="exportCountry" placeholder="India" />
+                  </div>
+                  <div class="input-group">
+                    <label for="exportAvailability">Availability</label>
+                    <select id="exportAvailability">
+                      <option value="available">Available</option>
+                      <option value="limited">Limited</option>
+                      <option value="on_request">On request</option>
+                      <option value="out_of_stock">Out of stock</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label for="exportTargets">Target countries</label>
+                  <input id="exportTargets" placeholder="USA, UAE, Germany" />
+                </div>
+                <div class="input-group">
+                  <label for="exportImageUrl">Product image URL</label>
+                  <input id="exportImageUrl" placeholder="https://example.com/product.jpg" />
+                </div>
+                <div class="input-group">
+                  <label for="exportImageFile">Upload product image</label>
+                  <input id="exportImageFile" type="file" accept="image/png,image/jpeg,image/webp" />
+                </div>
+                <div class="input-group">
+                  <label for="exportTags">Product tags</label>
+                  <input id="exportTags" placeholder="cotton, apparel, clothing" />
+                </div>
+                <button type="submit" class="primary" id="productSubmitBtn">Save product</button>
+              </form>
+            </article>
+
+            <div>
+              <div id="productAnalytics" class="analytics-grid"></div>
+              <div id="matchCards" class="tool-grid"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <span class="section-kicker">Catalog table</span>
+            <h2>Products</h2>
+          </div>
+          <div class="dashboard-search">
+            <input id="productSearch" placeholder="Search products..." />
+          </div>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>HS code</th>
+                  <th>MOQ</th>
+                  <th>Price</th>
+                  <th>Availability</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody">
+                <tr>
+                  <td colspan="6">Loading products...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <span class="section-kicker">Inquiry inbox</span>
+            <h2>Buyer inquiries</h2>
+          </div>
+          <div id="inquiryInbox" class="activity-grid"></div>
+        </section>
+      </div>
+    </main>
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/state/appState.js" defer></script>
+    <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/api/productApi.js" defer></script>
+    <script src="../js/api/inquiryApi.js" defer></script>
+    <script src="../js/api/uploadApi.js" defer></script>
+    <script src="../js/exporter.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
+
+

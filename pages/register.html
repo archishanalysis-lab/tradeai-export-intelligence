@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Register - TradeAI</title>
+
+    <meta
+      name="description"
+      content="Create your TradeAI account and access AI-powered export import intelligence."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+
+    <!-- GOOGLE FONT -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FONT AWESOME -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      .selected-plan-note {
+        margin: 0 0 16px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        background: #f4f7fb;
+        color: #1f2937;
+        font-size: 14px;
+        line-height: 1.5;
+        border: 1px solid rgba(7, 26, 51, 0.08);
+      }
+
+      .selected-plan-note strong {
+        color: #071a33;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+
+  <body class="auth-page">
+    <!-- =====================================================
+       HEADER
+    ====================================================== -->
+
+    <header class="header">
+      <div class="container nav-container">
+        <!-- LOGO -->
+
+        <a href="../index.html" class="public-brand" aria-label="TradeAI Home">
+          <span class="public-brand-mark" aria-hidden="true">T</span>
+          <span>TradeAI</span>
+        </a>
+
+        <!-- NAV -->
+
+        <nav class="nav" aria-label="Main Navigation">
+          <a href="../index.html" data-i18n="home">Home</a>
+          <a href="../index.html#features" data-i18n="features">Features</a>
+          <a href="countries.html" data-i18n="countries">Countries</a>
+          <a href="corridors.html" data-i18n="corridors">Corridors</a>
+          <a href="export-opportunity-report.html" data-i18n="reports">Reports</a>
+          <a href="pricing.html" data-i18n="pricing">Pricing</a>
+          <a href="contact.html" data-i18n="contact">Contact</a>
+        </nav>
+        <!-- ACTIONS -->
+
+        <div class="auth-buttons">
+          <button
+            id="themeToggle"
+            class="theme-btn"
+            type="button"
+            aria-label="Toggle dark mode"
+          >
+            <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          </button>
+
+          <a href="login.html" class="login-btn" data-i18n="login">Login</a>
+        </div>
+
+        <!-- MOBILE TOGGLE -->
+
+        <button
+          class="menu-toggle"
+          id="menuToggle"
+          type="button"
+          aria-label="Open mobile menu"
+          aria-expanded="false"
+          aria-controls="mobileMenu"
+        >
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- =====================================================
+       MOBILE MENU
+    ====================================================== -->
+
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+      <a href="../index.html" data-i18n="home">Home</a>
+      <a href="../index.html#features" data-i18n="features">Features</a>
+      <a href="countries.html" data-i18n="countries">Countries</a>
+      <a href="corridors.html" data-i18n="corridors">Corridors</a>
+      <a href="export-opportunity-report.html" data-i18n="reports">Reports</a>
+      <a href="pricing.html" data-i18n="pricing">Pricing</a>
+      <a href="contact.html" data-i18n="contact">Contact</a>
+      <a href="login.html" data-i18n="login">Login</a>
+    </div>
+
+    <!-- =====================================================
+       REGISTER PAGE
+    ====================================================== -->
+
+    <main class="auth-page-main">
+      <section class="auth-container">
+        <div class="auth-card">
+          <h2 data-i18n="register">Register</h2>
+
+          <p class="auth-subtitle" data-i18n="registerSubtitle">Start your global trade journey</p>
+
+          <!-- FORM -->
+
+          <form
+            id="registerForm"
+            class="auth-form"
+            method="post"
+            autocomplete="on"
+          >
+            <!-- SELECTED PLAN FROM PRICING PAGE -->
+
+            <p class="selected-plan-note" id="selectedPlanNote">
+              <span data-i18n="selected">Selected:</span>
+              <strong id="selectedPlanLabel"
+                >Free plan • monthly billing</strong
+              >
+            </p>
+
+            <input
+              type="hidden"
+              id="selectedPlan"
+              name="selectedPlan"
+              value="Free"
+            />
+            <input
+              type="hidden"
+              id="selectedBilling"
+              name="selectedBilling"
+              value="monthly"
+            />
+            <input
+              type="hidden"
+              id="signupSource"
+              name="signupSource"
+              value="direct"
+            />
+            <input type="hidden" id="signupIntent" name="signupIntent" />
+            <input type="hidden" id="selectedCountry" name="selectedCountry" />
+            <input type="hidden" id="selectedProduct" name="selectedProduct" />
+            <input type="hidden" id="selectedReportType" name="reportType" />
+
+            <!-- FULL NAME -->
+
+            <div class="input-group">
+              <label for="registerName" data-i18n="fullName">Full Name</label>
+
+              <input
+                type="text"
+                id="registerName"
+                name="name"
+                autocomplete="name"
+                placeholder="Enter full name"
+                data-i18n-placeholder="fullNamePlaceholder"
+                required
+              />
+            </div>
+
+            <!-- EMAIL -->
+
+            <div class="input-group">
+              <label for="registerEmail" data-i18n="emailAddress">Email Address</label>
+
+              <input
+                type="email"
+                id="registerEmail"
+                name="email"
+                autocomplete="email"
+                inputmode="email"
+                placeholder="Enter email address"
+                data-i18n-placeholder="emailAddressPlaceholder"
+                required
+              />
+            </div>
+
+            <!-- COMPANY -->
+
+            <div class="input-group">
+              <label for="registerCompany" data-i18n="companyName">Company Name</label>
+
+              <input
+                type="text"
+                id="registerCompany"
+                name="organization"
+                autocomplete="organization"
+                placeholder="Enter company name"
+                data-i18n-placeholder="companyNamePlaceholder"
+              />
+            </div>
+
+            <!-- ACCOUNT TYPE -->
+
+            <div class="input-group">
+              <label for="registerRole" data-i18n="accountType">Account Type</label>
+
+              <select id="registerRole" name="role" autocomplete="off" required>
+                <option value="" data-i18n="chooseAccountType">Choose your account type</option>
+                <option value="explorer" data-i18n="explorer">Explorer</option>
+                <option value="exporter" data-i18n="exporter">Exporter</option>
+                <option value="importer" data-i18n="importer">Importer</option>
+                <option value="consultant" data-i18n="tradeConsultant">Trade Consultant</option>
+                <option value="sme" data-i18n="smeBusinessOwner">SME / Business Owner</option>
+              </select>
+            </div>
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+              <label for="registerPassword" data-i18n="password">Password</label>
+
+              <input
+                type="password"
+                id="registerPassword"
+                name="new-password"
+                autocomplete="new-password"
+                minlength="8"
+                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}"
+                title="Use at least 8 characters with uppercase, lowercase, number and special character."
+                placeholder="Create password"
+                data-i18n-placeholder="createPasswordPlaceholder"
+                required
+              />
+
+              <button
+                type="button"
+                class="toggle-password"
+                aria-label="Show password"
+                data-i18n-aria="showPassword"
+                aria-controls="registerPassword"
+              >
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="input-group">
+              <label for="confirmPassword" data-i18n="confirmPassword">Confirm Password</label>
+
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirm-password"
+                autocomplete="new-password"
+                minlength="8"
+                title="Confirm password must match the password field."
+                placeholder="Confirm password"
+                data-i18n-placeholder="confirmPasswordPlaceholder"
+                oninput="
+                  this.setCustomValidity(
+                    this.value !==
+                      document.getElementById('registerPassword').value
+                      ? 'Passwords do not match.'
+                      : '',
+                  )
+                "
+                required
+              />
+            </div>
+
+            <!-- TERMS -->
+
+            <div class="auth-options">
+              <label class="remember-me">
+                <input
+                  id="termsAgreement"
+                  name="termsAgreement"
+                  type="checkbox"
+                  required
+                />
+
+                <span>
+                  <span data-i18n="agreeToThe">I agree to the</span>
+                  <a href="terms-and-conditions.html" data-i18n="terms">Terms</a>
+                  &
+                  <a href="privacy-policy.html" data-i18n="privacyPolicy">Privacy Policy</a>
+                </span>
+              </label>
+            </div>
+
+            <!-- BUTTON -->
+
+            <button type="submit" class="primary-btn auth-btn" data-i18n="createAccount">
+              Create Account
+            </button>
+          </form>
+
+          <!-- DIVIDER -->
+
+          <div class="auth-divider">
+            <span data-i18n="or">OR</span>
+          </div>
+
+          <!-- SOCIAL -->
+
+          <div class="social-login">
+            <button class="social-btn" type="button">
+              <i class="fa-brands fa-google" aria-hidden="true"></i>
+              <span data-i18n="continueWithGoogle">Continue With Google</span>
+            </button>
+
+            <button class="social-btn" type="button">
+              <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
+              <span data-i18n="continueWithLinkedIn">Continue With LinkedIn</span>
+            </button>
+          </div>
+
+          <!-- FOOTER -->
+
+          <div class="auth-footer">
+            <p>
+              <span data-i18n="alreadyHaveAccount">Already have an account?</span>
+              <a href="login.html" data-i18n="login">Login</a>
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =====================================================
+       FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <h3>Company</h3>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+          </div>
+
+          <div>
+            <h3>Product</h3>
+            <a href="pricing.html">Pricing</a>
+            <a href="../index.html#features">Features</a>
+          </div>
+        </div>
+
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!-- =====================================================
+       JAVASCRIPT
+    ====================================================== -->
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const hasUrlProduct = params.has("product");
+        const isUrlDrivenFlow =
+          params.has("plan") ||
+          params.has("billing") ||
+          params.has("source") ||
+          params.has("intent") ||
+          params.has("country") ||
+          params.has("reportType");
+
+        const selectedPlan =
+          params.get("plan") ||
+          localStorage.getItem("tradeai_selected_plan") ||
+          "Free";
+
+        const selectedBilling =
+          params.get("billing") ||
+          localStorage.getItem("tradeai_selected_billing") ||
+          "monthly";
+
+        const source =
+          params.get("source") ||
+          localStorage.getItem("tradeai_signup_source") ||
+          "direct";
+
+        const intent =
+          params.get("intent") ||
+          localStorage.getItem("tradeai_signup_intent") ||
+          "";
+
+        const country =
+          params.get("country") ||
+          localStorage.getItem("tradeai_selected_country") ||
+          "";
+
+        const product = hasUrlProduct
+          ? params.get("product") || ""
+          : isUrlDrivenFlow
+            ? ""
+            : localStorage.getItem("tradeai_selected_product") || "";
+
+        const reportType =
+          params.get("reportType") ||
+          localStorage.getItem("tradeai_selected_report_type") ||
+          "";
+
+        localStorage.setItem("tradeai_selected_plan", selectedPlan);
+        localStorage.setItem("tradeai_selected_billing", selectedBilling);
+        localStorage.setItem("tradeai_signup_source", source);
+
+        if (intent) localStorage.setItem("tradeai_signup_intent", intent);
+        if (country) localStorage.setItem("tradeai_selected_country", country);
+        if (hasUrlProduct && product) {
+          localStorage.setItem("tradeai_selected_product", product);
+        } else if (isUrlDrivenFlow && !hasUrlProduct) {
+          localStorage.removeItem("tradeai_selected_product");
+        }
+        if (reportType)
+          localStorage.setItem("tradeai_selected_report_type", reportType);
+
+        const planInput = document.getElementById("selectedPlan");
+        const billingInput = document.getElementById("selectedBilling");
+        const sourceInput = document.getElementById("signupSource");
+        const intentInput = document.getElementById("signupIntent");
+        const countryInput = document.getElementById("selectedCountry");
+        const productInput = document.getElementById("selectedProduct");
+        const reportTypeInput = document.getElementById("selectedReportType");
+        const planLabel = document.getElementById("selectedPlanLabel");
+        const planNote = document.getElementById("selectedPlanNote");
+
+        if (planInput) planInput.value = selectedPlan;
+        if (billingInput) billingInput.value = selectedBilling;
+        if (sourceInput) sourceInput.value = source;
+        if (intentInput) intentInput.value = intent;
+        if (countryInput) countryInput.value = country;
+        if (productInput) productInput.value = product;
+        if (reportTypeInput) reportTypeInput.value = reportType;
+
+        if (planLabel) {
+          const countryText = country ? ` • ${formatLabel(country)}` : "";
+          const productText = product ? ` • ${product}` : "";
+          planLabel.textContent = `${selectedPlan} plan • ${selectedBilling} billing${countryText}${productText}`;
+        }
+
+        if (planNote) {
+          planNote.setAttribute("data-source", source);
+
+          if (intent) {
+            planNote.setAttribute("data-intent", intent);
+          }
+
+          if (country) {
+            planNote.setAttribute("data-country", country);
+          }
+        }
+
+        function formatLabel(value) {
+          return value
+            .split("-")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+        }
+      });
+    </script>
+  </body>
+</html>

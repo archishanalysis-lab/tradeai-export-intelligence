@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buyer Management - TradeAI</title>
+    <meta
+      name="description"
+      content="Manage verified international buyers with TradeAI buyer discovery, AI match scoring and export-ready CRM tools."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+
+  <body class="dashboard-page" data-buyer-management>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="explorer-dashboard.html">Dashboard</a>
+          <a href="buyer-detail.html" class="active">Buyers</a>
+          <a href="market-analysis.html">Analytics</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <div class="nav-actions">
+          <button id="themeToggle" class="theme-btn" title="Toggle theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="notification.html" class="notification-btn" title="Notifications">
+            <i class="fa-solid fa-bell"></i>
+          </a>
+        </div>
+        <button class="menu-toggle" aria-label="Open menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="explorer-dashboard.html">Dashboard</a>
+      <a href="buyer-detail.html">Buyers</a>
+      <a href="market-analysis.html">Analytics</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </div>
+
+    <aside class="dashboard-sidebar">
+      <nav class="sidebar-menu">
+        <a href="explorer-dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="buyer-detail.html" class="active"><i class="fa-solid fa-users"></i> Buyer Management</a>
+        <a href="export-dash.html"><i class="fa-solid fa-boxes-stacked"></i> Exporter System</a>
+        <a href="importer-dashboard.html"><i class="fa-solid fa-compass"></i> Importer Tools</a>
+        <a href="market-analysis.html"><i class="fa-solid fa-chart-pie"></i> Analytics</a>
+        <a href="notification.html"><i class="fa-solid fa-bell"></i> Notifications</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <div class="container">
+        <section class="buyer-finder-shell">
+          <div class="finder-status-strip">
+            <span><i class="fa-solid fa-shield-halved"></i> Verified Data</span>
+            <span><i class="fa-solid fa-bolt"></i> Live Updates</span>
+          </div>
+
+          <div class="finder-hero">
+            <span class="section-kicker">Exporter buyer finder</span>
+            <h1>Buyer Discovery Workspace</h1>
+            <p>
+              Track verified buyers, match scores, saved prospects, inquiries
+              and AI recommendations from one workspace.
+            </p>
+
+            <form id="buyerFinderForm" class="finder-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                id="buyerFinderSearch"
+                type="search"
+                placeholder="e.g. Spices, Rice, Pharmaceuticals..."
+                autocomplete="off"
+              />
+              <button id="buyerFinderButton" type="submit">Find Buyers</button>
+            </form>
+          </div>
+
+          <div id="buyerFinderResults" class="finder-results" hidden>
+            <div class="finder-insights">
+              <article>
+                <span class="insight-icon green"><i class="fa-solid fa-chart-simple"></i></span>
+                <p>Market Demand</p>
+                <strong>Rising</strong>
+              </article>
+              <article>
+                <span class="insight-icon blue"><i class="fa-solid fa-ship"></i></span>
+                <p>Import Dependency</p>
+                <strong>High</strong>
+              </article>
+              <article>
+                <span class="insight-icon amber"><i class="fa-solid fa-box-open"></i></span>
+                <p>Local Competition</p>
+                <strong>Medium</strong>
+              </article>
+            </div>
+
+            <section class="target-importers">
+              <div class="target-importers-header">
+                <h2>Top Target Importers</h2>
+                <span id="buyerFinderCount">5 MATCHES</span>
+              </div>
+              <div id="buyerFinderList" class="target-importer-list"></div>
+            </section>
+
+            <section class="unlock-network-card">
+              <h3>Access the Full Buyer Network</h3>
+              <p>
+                Stop guessing who to contact. Unlock verified importer profiles,
+                procurement contacts and shipment histories from TradeAI pricing.
+              </p>
+              <a href="pricing.html" class="unlock-price-btn">Activate Now</a>
+            </section>
+          </div>
+        </section>
+
+        <section class="stats-grid compact-stats buyer-crm-summary">
+          <article class="stat-card">
+            <h3 id="buyerTotalStat">0</h3>
+            <p>Total buyers</p>
+          </article>
+          <article class="stat-card">
+            <h3 id="buyerVerifiedStat">0</h3>
+            <p>Verified</p>
+          </article>
+          <article class="stat-card">
+            <h3 id="buyerCountriesStat">0</h3>
+            <p>Countries</p>
+          </article>
+          <article class="stat-card">
+            <h3 id="buyerMatchStat">0%</h3>
+            <p>Avg AI match</p>
+          </article>
+        </section>
+
+        <section class="management-grid buyer-crm-tools">
+          <article class="dashboard-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="section-kicker">Form</span>
+                <h2 id="buyerFormTitle">Add buyer</h2>
+              </div>
+            </div>
+
+            <form id="buyerForm" class="settings-form" novalidate>
+              <div class="input-group">
+                <label for="companyName">Company name</label>
+                <input id="companyName" name="companyName" required placeholder="Global Retail Group" />
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="country">Country</label>
+                  <input id="country" name="country" required placeholder="Germany" />
+                </div>
+                <div class="input-group">
+                  <label for="industry">Industry</label>
+                  <input id="industry" name="industry" required placeholder="FMCG" />
+                </div>
+              </div>
+              <div class="input-group">
+                <label for="products">Products</label>
+                <input id="products" name="products" placeholder="Coffee, spices, textiles" />
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="website">Website</label>
+                  <input id="website" name="website" type="url" placeholder="https://example.com" />
+                </div>
+                <div class="input-group">
+                  <label for="contactEmail">Email</label>
+                  <input id="contactEmail" name="contactEmail" type="email" placeholder="buyer@example.com" />
+                </div>
+              </div>
+              <div class="input-group">
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" placeholder="+49 30 123456" />
+              </div>
+              <label class="checkbox-row">
+                <input id="verified" name="verified" type="checkbox" />
+                <span>Mark as verified buyer</span>
+              </label>
+              <div class="form-actions">
+                <button id="buyerSubmitButton" type="submit" class="primary">Save buyer</button>
+                <button id="buyerCancelButton" type="button" class="secondary" hidden>Cancel edit</button>
+              </div>
+            </form>
+          </article>
+
+          <section class="dashboard-panel buyer-table-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="section-kicker">Directory</span>
+                <h2>Buyer listing</h2>
+              </div>
+              <div class="toolbar-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="buyerSearch" type="search" placeholder="Search buyers..." />
+              </div>
+            </div>
+
+            <div id="buyerLoadingState" class="skeleton-list" hidden>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+            <div id="buyerEmptyState" class="empty-state" hidden>
+              <h3>No buyers found</h3>
+              <p>Add your first buyer or change the search term.</p>
+            </div>
+
+            <div id="buyerTableWrap" class="dashboard-table-wrapper">
+              <table class="dashboard-table buyer-table">
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Country</th>
+                    <th>Industry</th>
+                    <th>Products</th>
+                    <th>AI score</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="buyerTableBody"></tbody>
+              </table>
+            </div>
+
+            <div id="buyerPagination" class="pagination"></div>
+          </section>
+        </section>
+
+        <section class="dashboard-section buyer-ai-section">
+          <div class="section-heading">
+            <span class="section-kicker">AI features</span>
+            <h2>Recommendation Engine</h2>
+            <p>Match score combines verification, product depth, contact quality and web presence.</p>
+          </div>
+          <div class="match-grid">
+            <article class="match-card">
+              <h3>Country match</h3>
+              <p>Prioritizes buyers in export target countries.</p>
+              <div class="match-score large-score" style="--score: 82%"><span></span></div>
+            </article>
+            <article class="match-card">
+              <h3>Industry fit</h3>
+              <p>Ranks buyers by sector alignment and product keywords.</p>
+              <div class="match-score large-score" style="--score: 76%"><span></span></div>
+            </article>
+            <article class="match-card">
+              <h3>Readiness</h3>
+              <p>Surfaces buyers with verified profiles and reachable contacts.</p>
+              <div class="match-score large-score" style="--score: 88%"><span></span></div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/state/appState.js" defer></script>
+    <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/api/billingApi.js" defer></script>
+    <script src="../js/access-control.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/api/savedItemApi.js" defer></script>
+    <script src="../js/dashboard.js" defer></script>
+    <script src="../js/buyers.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
+
+

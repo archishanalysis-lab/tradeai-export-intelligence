@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Settings - TradeAI</title>
+
+    <meta
+      name="description"
+      content="Manage account settings, security preferences and TradeAI platform configurations."
+    />
+
+    <!-- CSS -->
+
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+
+    <!-- GOOGLE FONT -->
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FONT AWESOME -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+
+  <body class="dashboard-page">
+    <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+    <header class="header">
+      <div class="container nav-container">
+        <!-- LOGO -->
+
+        <a href="../index.html" class="logo"> TradeAI </a>
+
+        <!-- NAVIGATION -->
+
+        <nav class="nav">
+          <a href="../index.html"> Home </a>
+
+          <a href="explorer-dashboard.html"> Dashboard </a>
+
+          <a href="market-analysis.html"> Analytics </a>
+
+          <a href="pricing.html"> Pricing </a>
+
+          <a href="contact.html"> Contact </a>
+        </nav>
+
+        <!-- ACTIONS -->
+
+        <div class="nav-actions">
+          <button id="themeToggle" class="theme-btn">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="notification.html" class="icon-btn" aria-label="Open notifications">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- MOBILE BUTTON -->
+
+        <button class="menu-toggle">☰</button>
+      </div>
+    </header>
+
+    <!-- =====================================================
+       MOBILE MENU
+  ====================================================== -->
+
+    <div class="mobile-menu">
+      <a href="../index.html"> Home </a>
+
+      <a href="explorer-dashboard.html"> Dashboard </a>
+
+      <a href="market-analysis.html"> Analytics </a>
+
+      <a href="pricing.html"> Pricing </a>
+
+      <a href="contact.html"> Contact </a>
+    </div>
+
+    <!-- =====================================================
+       DASHBOARD LAYOUT
+  ====================================================== -->
+
+    <div class="dashboard-layout">
+      <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+      <aside class="dashboard-sidebar">
+        <nav class="sidebar-menu">
+          <a href="explorer-dashboard.html"> Dashboard </a>
+
+          <a href="buyer-detail.html"> Buyer Finder </a>
+
+          <a href="market-analysis.html"> Market Analysis </a>
+
+          <a href="hs-code-detail.html"> HS Code Intelligence </a>
+
+          <a href="saved-search.html"> Saved Searches </a>
+
+          <a href="notification.html"> Notifications </a>
+
+          <a href="setting.html" class="active"> Settings </a>
+        </nav>
+      </aside>
+
+      <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+      <main class="dashboard-main">
+        <div class="container">
+          <!-- TOPBAR -->
+
+          <header class="dashboard-topbar">
+            <div>
+              <h1>Account Settings</h1>
+
+              <p>Manage account preferences, notifications and security.</p>
+            </div>
+
+            <div class="dashboard-meta">
+              <div class="meta-card">
+                <span> Live Time </span>
+
+                <h3 id="dashboardClock">00:00</h3>
+              </div>
+
+              <div class="meta-card">
+                <span> Today's Date </span>
+
+                <h3 id="dashboardDate">Loading...</h3>
+              </div>
+            </div>
+          </header>
+
+          <!-- SETTINGS GRID -->
+
+          <section class="dashboard-section">
+            <div class="settings-grid">
+              <!-- PROFILE -->
+
+              <article class="settings-card">
+                <div class="settings-header">
+                  <h2>Profile Settings</h2>
+
+                  <i class="fa-solid fa-user"></i>
+                </div>
+
+                <form class="settings-form">
+                  <div class="input-group">
+                    <label> Full Name </label>
+
+                    <input
+                      type="text"
+                      placeholder="Enter full name"
+                      value="TradeAI User"
+                    />
+                  </div>
+
+                  <div class="input-group">
+                    <label> Email Address </label>
+
+                    <input
+                      type="email"
+                      placeholder="Enter email"
+                      value="user@tradeai.com"
+                    />
+                  </div>
+
+                  <div class="input-group">
+                    <label> Company Name </label>
+
+                    <input
+                      type="text"
+                      placeholder="Company"
+                      value="TradeAI Global"
+                    />
+                  </div>
+
+                  <button type="submit" class="feature-btn">
+                    Save Changes
+                  </button>
+                </form>
+              </article>
+
+              <!-- SECURITY -->
+
+              <article class="settings-card">
+                <div class="settings-header">
+                  <h2>Security</h2>
+
+                  <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <form class="settings-form">
+                  <div class="input-group">
+                    <label> Current Password </label>
+
+                    <input type="password" placeholder="Current password" />
+                  </div>
+
+                  <div class="input-group">
+                    <label> New Password </label>
+
+                    <input type="password" placeholder="New password" />
+                  </div>
+
+                  <div class="input-group">
+                    <label> Confirm Password </label>
+
+                    <input type="password" placeholder="Confirm password" />
+                  </div>
+
+                  <button type="submit" class="feature-btn">
+                    Update Password
+                  </button>
+                </form>
+              </article>
+
+              <!-- NOTIFICATIONS -->
+
+              <article class="settings-card">
+                <div class="settings-header">
+                  <h2>Notifications</h2>
+
+                  <i class="fa-solid fa-bell"></i>
+                </div>
+
+                <div class="settings-options">
+                  <label class="settings-toggle">
+                    <span> Email Notifications </span>
+
+                    <input type="checkbox" checked />
+                  </label>
+
+                  <label class="settings-toggle">
+                    <span> AI Market Alerts </span>
+
+                    <input type="checkbox" checked />
+                  </label>
+
+                  <label class="settings-toggle">
+                    <span> Buyer Updates </span>
+
+                    <input type="checkbox" />
+                  </label>
+                </div>
+              </article>
+
+              <!-- BILLING -->
+
+              <article class="settings-card">
+                <div class="settings-header">
+                  <h2>Subscription</h2>
+
+                  <i class="fa-solid fa-credit-card"></i>
+                </div>
+
+                <div class="subscription-card">
+                  <h3>Pro Plan</h3>
+
+                  <p>Active Subscription</p>
+
+                  <span class="subscription-price"> ₹4,999/month </span>
+
+                  <div class="card-actions">
+                    <a href="pricing.html" class="feature-btn"> Manage Plan </a>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- ANALYTICS -->
+
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>Account Analytics</h2>
+            </div>
+
+            <div id="analyticsContainer" class="analytics-grid"></div>
+          </section>
+
+          <!-- ACTIVITIES -->
+
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>Recent Activities</h2>
+            </div>
+
+            <div id="activityContainer" class="activity-grid"></div>
+          </section>
+
+          <!-- NOTIFICATIONS -->
+
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>Notifications</h2>
+            </div>
+
+            <div id="notificationContainer" class="notification-grid"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+
+    <footer class="dashboard-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <h3>Company</h3>
+
+            <a href="about.html"> About </a>
+
+            <a href="contact.html"> Contact </a>
+          </div>
+
+          <div>
+            <h3>Product</h3>
+
+            <a href="pricing.html"> Pricing </a>
+
+            <a href="market-analysis.html"> Analytics </a>
+          </div>
+
+          <div>
+            <h3>Resources</h3>
+
+            <a href="help-centre.html"> Help Centre </a>
+
+            <a href="privacy-policy.html"> Privacy Policy </a>
+          </div>
+        </div>
+
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/dashboard.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
+
+

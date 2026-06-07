@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Reports - TradeAI</title>
+    <meta name="description" content="Generate AI trade intelligence reports for buyers, markets, HS codes and export opportunities." />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body class="dashboard-page">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="export-dash.html">Dashboard</a>
+          <a href="analytics-dashboard.html">Analytics</a>
+          <a href="copilot.html">Copilot</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+        <button class="menu-toggle">Menu</button>
+      </div>
+    </header>
+
+    <main class="dashboard-main no-sidebar">
+      <div class="container">
+        <section class="dashboard-hero">
+          <div>
+            <span class="section-kicker">Premium intelligence</span>
+            <h1>AI Trade Reports</h1>
+            <p>Generate buyer opportunity, market forecast and HS-code demand reports using your AI credits.</p>
+          </div>
+        </section>
+
+        <section class="dashboard-section two-column-layout">
+          <article class="dashboard-panel">
+            <h2>Generate report</h2>
+            <form class="settings-form" id="reportForm">
+              <div class="input-group"><label for="reportTitle">Title</label><input id="reportTitle" placeholder="UAE spice opportunity report" /></div>
+              <div class="form-row">
+                <div class="input-group"><label for="reportType">Report type</label><select id="reportType"><option value="buyer_opportunity">Buyer Opportunity</option><option value="market_forecast">Market Forecast</option><option value="hs_code_demand">HS Code Demand</option><option value="pricing">Pricing Recommendation</option><option value="custom">Custom</option></select></div>
+                <div class="input-group"><label for="reportProduct">Product</label><input id="reportProduct" placeholder="Turmeric powder" /></div>
+              </div>
+              <div class="form-row">
+                <div class="input-group"><label for="reportHsCode">HS code</label><input id="reportHsCode" placeholder="0910" /></div>
+                <div class="input-group"><label for="reportCountry">Target country</label><input id="reportCountry" placeholder="UAE" /></div>
+              </div>
+              <div class="input-group"><label for="reportPrompt">Additional prompt</label><textarea id="reportPrompt" rows="5" placeholder="Find top buyer segments and risks."></textarea></div>
+              <button class="primary" type="submit">Generate Report</button>
+            </form>
+          </article>
+
+          <article class="dashboard-panel">
+            <h2>Report output</h2>
+            <div id="reportOutput" class="activity-card"><h4>No report selected</h4><p>Generated intelligence will appear here.</p></div>
+          </article>
+        </section>
+
+        <section class="dashboard-section">
+          <article class="dashboard-panel">
+            <h2>Recent reports</h2>
+            <div id="reportList" class="activity-list"></div>
+          </article>
+        </section>
+      </div>
+    </main>
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/api/reportApi.js" defer></script>
+    <script src="../js/ai-reports.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

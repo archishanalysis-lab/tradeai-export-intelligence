@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Dashboard - TradeAI</title>
+    <meta
+      name="description"
+      content="Manage export products, HS codes, MOQ, pricing, availability and AI buyer matches in TradeAI."
+    />
+    <script>
+      try {
+        document.documentElement.classList.toggle(
+          "light-theme",
+          localStorage.getItem("tradeai_theme") === "light",
+        );
+      } catch (error) {
+        document.documentElement.classList.remove("light-theme");
+      }
+    </script>
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body class="dashboard-page">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="buyer-dashboard.html">Buyers</a>
+          <a href="product-dashboard.html" class="active">Products</a>
+          <a href="inquiry-dashboard.html">Inquiries</a>
+          <a href="deals.html">Deals</a>
+          <a href="analytics-dashboard.html">Analytics</a>
+          <a href="copilot.html">Copilot</a>
+        </nav>
+        <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+        </button>
+        <button
+          class="menu-toggle"
+          id="menuToggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobileMenu"
+        >
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+      <nav>
+        <a href="buyer-dashboard.html">Buyers</a>
+        <a href="product-dashboard.html">Products</a>
+        <a href="inquiry-dashboard.html">Inquiries</a>
+        <a href="deals.html">Deals</a>
+        <a href="analytics-dashboard.html">Analytics</a>
+        <a href="copilot.html">Copilot</a>
+      </nav>
+    </div>
+
+    <main class="dashboard-main no-sidebar">
+      <div class="container">
+        <section class="dashboard-hero">
+          <div>
+            <h1>Product Dashboard</h1>
+            <p>Upload, edit, search and analyze export products.</p>
+          </div>
+          <a class="cta-btn" href="product-upload.html">Add Product</a>
+        </section>
+
+        <section class="dashboard-search" aria-labelledby="productSearchHeading">
+          <h2 id="productSearchHeading" class="sr-only">Search products</h2>
+          <form role="search" id="productSearchForm" class="dashboard-search-form">
+            <label for="productSearch" class="sr-only">Search products</label>
+            <input
+              type="search"
+              id="productSearch"
+              name="q"
+              placeholder="Search products..."
+              autocomplete="off"
+            />
+            <button type="submit" class="search-submit-btn">Search</button>
+          </form>
+        </section>
+
+        <section id="productAnalytics" class="analytics-grid" aria-live="polite">
+          <article class="analytics-card skeleton-card">
+            <h3>Loading analytics...</h3>
+            <p>Preparing product performance summary.</p>
+          </article>
+        </section>
+
+        <section class="dashboard-table-wrapper">
+          <table class="dashboard-table">
+            <caption class="sr-only">Product listing with HS codes, pricing and availability</caption>
+            <thead>
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col">HS code</th>
+                <th scope="col">MOQ</th>
+                <th scope="col">Price</th>
+                <th scope="col">Availability</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="productTableBody">
+              <tr>
+                <td colspan="6">Loading products...</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>AI buyer matches</h2>
+          </div>
+          <div id="matchCards" class="tool-grid" aria-live="polite">
+            <article class="tool-card skeleton-card">
+              <h3>Loading AI matches...</h3>
+              <p>Checking buyer fit for your product catalog.</p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/state/appState.js" defer></script>
+    <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/api/productApi.js" defer></script>
+    <script src="../js/api/inquiryApi.js" defer></script>
+    <script src="../js/exporter.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

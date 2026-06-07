@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Export Opportunity Reports | TradeAI</title>
+    <meta
+      name="description"
+      content="Request a free TradeAI export opportunity report preview for India-linked trade corridors across East Africa, Gulf/GCC and China sourcing."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      :root {
+        --ta-navy: #071a33;
+        --ta-navy-2: #10294b;
+        --ta-gold: #d8a441;
+        --ta-light: #f7f9fc;
+        --ta-white: #ffffff;
+        --ta-text: #1f2937;
+        --ta-muted: #6b7280;
+        --ta-border: #dfe5ee;
+        --ta-green: #0f766e;
+        --ta-shadow: 0 18px 45px rgba(7, 26, 51, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding-top: 0;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: var(--ta-light);
+        color: var(--ta-text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .reports-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(7, 26, 51, 0.96);
+        color: var(--ta-white);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .reports-nav {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--ta-gold), #fff0b8);
+        color: var(--ta-navy);
+        font-weight: 900;
+      }
+
+      .nav-links,
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .nav-links {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--ta-gold);
+      }
+
+      .btn {
+        min-height: 44px;
+        border-radius: 999px;
+        padding: 11px 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 0;
+        font-weight: 850;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: var(--ta-gold);
+        color: var(--ta-navy);
+      }
+
+      .btn-outline {
+        color: var(--ta-white);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--ta-white);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+      }
+
+      .hero-actions,
+      .form-actions,
+      .cta-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .hero {
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(216, 164, 65, 0.24),
+            transparent 34%
+          ),
+          linear-gradient(135deg, var(--ta-navy), var(--ta-navy-2));
+        color: var(--ta-white);
+        padding: 86px 20px 96px;
+      }
+
+      .hero-inner,
+      .section {
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+
+      .hero-inner {
+        display: grid;
+        grid-template-columns: 1fr 0.9fr;
+        gap: 34px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        width: fit-content;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(216, 164, 65, 0.13);
+        border: 1px solid rgba(216, 164, 65, 0.36);
+        color: #ffe6a7;
+        font-size: 13px;
+        font-weight: 900;
+        margin-bottom: 18px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        max-width: 760px;
+        font-size: clamp(36px, 5vw, 62px);
+        line-height: 1.05;
+      }
+
+      .hero p {
+        max-width: 720px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 18px;
+        line-height: 1.7;
+        margin: 20px 0 0;
+      }
+
+      .report-form-card {
+        background: var(--ta-white);
+        color: var(--ta-text);
+        border-radius: 28px;
+        padding: 26px;
+        box-shadow: var(--ta-shadow);
+      }
+
+      .report-form-card h2 {
+        margin: 0 0 8px;
+        color: var(--ta-navy);
+      }
+
+      .report-form-card p {
+        color: var(--ta-muted);
+        margin: 0 0 18px;
+      }
+
+      .field {
+        margin-bottom: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--ta-navy);
+        font-size: 13px;
+        font-weight: 850;
+      }
+
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid var(--ta-border);
+        border-radius: 14px;
+        padding: 0 14px;
+        color: var(--ta-text);
+        background: var(--ta-white);
+      }
+
+      .field textarea {
+        min-height: 92px;
+        padding: 14px;
+        resize: vertical;
+      }
+
+      .section {
+        padding: 66px 20px;
+      }
+
+      .section-head {
+        max-width: 760px;
+        margin: 0 auto 32px;
+        text-align: center;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        color: var(--ta-navy);
+        font-size: clamp(28px, 4vw, 42px);
+      }
+
+      .section-head p {
+        color: var(--ta-muted);
+        line-height: 1.7;
+      }
+
+      .report-grid,
+      .include-grid,
+      .pricing-grid,
+      .score-grid,
+      .risk-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .report-card,
+      .include-card,
+      .pricing-card,
+      .score-card,
+      .risk-card,
+      .report-output,
+      .comparison-card,
+      .disclaimer-box,
+      .cta-box {
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 24px;
+        box-shadow: 0 10px 28px rgba(7, 26, 51, 0.06);
+      }
+
+      .report-card,
+      .include-card,
+      .pricing-card,
+      .score-card,
+      .risk-card,
+      .comparison-card,
+      .report-output {
+        padding: 24px;
+      }
+
+      .report-card h3,
+      .include-card h3,
+      .pricing-card h3,
+      .score-card h3,
+      .risk-card h3,
+      .comparison-card h3,
+      .report-output h3 {
+        margin: 0 0 10px;
+        color: var(--ta-navy);
+      }
+
+      .report-card p,
+      .include-card p,
+      .pricing-card p,
+      .score-card p,
+      .risk-card p,
+      .comparison-card p,
+      .report-output p {
+        margin: 0;
+        color: var(--ta-muted);
+        line-height: 1.65;
+      }
+
+      .include-card i {
+        color: var(--ta-gold);
+        font-size: 24px;
+        margin-bottom: 12px;
+      }
+
+      .report-output {
+        margin-top: 24px;
+        scroll-margin-top: 110px;
+      }
+
+      .report-output[hidden] {
+        display: none;
+      }
+
+      .output-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 20px;
+      }
+
+      .preview-pill,
+      .score-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        padding: 7px 12px;
+        background: rgba(216, 164, 65, 0.14);
+        color: #8a5f0a;
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .score-pill {
+        background: #e8f7f3;
+        color: var(--ta-green);
+      }
+
+      .next-actions {
+        margin: 18px 0 0;
+        padding-left: 20px;
+        color: var(--ta-text);
+        line-height: 1.8;
+      }
+
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .comparison-card dl {
+        margin: 16px 0 0;
+        display: grid;
+        gap: 10px;
+      }
+
+      .comparison-card div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--ta-muted);
+      }
+
+      .comparison-card dt {
+        font-weight: 800;
+        color: var(--ta-navy);
+      }
+
+      .comparison-card dd {
+        margin: 0;
+        text-align: right;
+      }
+
+      .disclaimer-box {
+        display: flex;
+        gap: 14px;
+        padding: 22px;
+        color: #6b4b12;
+        background: #fff7e6;
+      }
+
+      .disclaimer-box i {
+        color: var(--ta-gold);
+        margin-top: 4px;
+      }
+
+      .cta-box {
+        padding: 48px 28px;
+        text-align: center;
+        background: linear-gradient(135deg, var(--ta-navy), var(--ta-navy-2));
+        color: var(--ta-white);
+      }
+
+      .cta-box h2 {
+        margin: 0 0 14px;
+      }
+
+      .cta-box p {
+        max-width: 680px;
+        margin: 0 auto 22px;
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .footer {
+        background: var(--ta-navy);
+        color: rgba(255, 255, 255, 0.72);
+        padding: 34px 20px;
+      }
+
+      .footer-inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .footer a {
+        margin-right: 16px;
+      }
+
+      html:not(.light-theme) body {
+        background: #08111f;
+        color: #f8fafc;
+      }
+
+      html:not(.light-theme) .report-form-card,
+      html:not(.light-theme) .cta-box,
+      html:not(.light-theme) .disclaimer-box,
+      html:not(.light-theme) .report-card,
+      html:not(.light-theme) .include-card,
+      html:not(.light-theme) .pricing-card,
+      html:not(.light-theme) .score-card,
+      html:not(.light-theme) .risk-card,
+      html:not(.light-theme) .comparison-card,
+      html:not(.light-theme) .report-output {
+        background: rgba(15, 23, 42, 0.92);
+        border-color: rgba(148, 163, 184, 0.18);
+        color: #f8fafc;
+        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22);
+      }
+
+      html:not(.light-theme) .report-form-card p,
+      html:not(.light-theme) .report-card p,
+      html:not(.light-theme) .include-card p,
+      html:not(.light-theme) .pricing-card p,
+      html:not(.light-theme) .score-card p,
+      html:not(.light-theme) .risk-card p,
+      html:not(.light-theme) .comparison-card p,
+      html:not(.light-theme) .report-output p,
+      html:not(.light-theme) .section-head p,
+      html:not(.light-theme) .disclaimer-box {
+        color: #cbd5e1;
+      }
+
+      html:not(.light-theme) .report-form-card h2,
+      html:not(.light-theme) .report-card h3,
+      html:not(.light-theme) .include-card h3,
+      html:not(.light-theme) .pricing-card h3,
+      html:not(.light-theme) .score-card h3,
+      html:not(.light-theme) .risk-card h3,
+      html:not(.light-theme) .comparison-card h3,
+      html:not(.light-theme) .report-output h3,
+      html:not(.light-theme) .section-head h2,
+      html:not(.light-theme) .field label,
+      html:not(.light-theme) .comparison-card dt,
+      html:not(.light-theme) .next-actions {
+        color: #f8fafc;
+      }
+
+      html:not(.light-theme) input,
+      html:not(.light-theme) select,
+      html:not(.light-theme) textarea {
+        background: rgba(8, 17, 31, 0.95);
+        border-color: rgba(148, 163, 184, 0.22);
+        color: #f8fafc;
+      }
+
+      @media (max-width: 900px) {
+        .hero-inner,
+        .report-grid,
+        .include-grid,
+        .pricing-grid,
+        .score-grid,
+        .risk-grid,
+        .comparison-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .reports-nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .nav-links,
+        .nav-actions {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="reports-header">
+      <nav class="reports-nav" aria-label="Main navigation">
+        <a href="../index.html" class="brand" aria-label="TradeAI Home">
+          <span class="brand-mark">T</span>
+          <span>TradeAI</span>
+        </a>
+
+        <div class="nav-links">
+          <a href="../index.html" data-i18n="home">Home</a>
+          <a href="countries.html" data-i18n="countries">Countries</a>
+          <a href="corridors.html" data-i18n="corridors">Corridors</a>
+          <a href="export-opportunity-report.html" class="active" data-i18n="reports">Reports</a>
+          <a href="pricing.html" data-i18n="pricing">Pricing</a>
+          <a href="contact.html" data-i18n="contact">Contact</a>
+        </div>
+
+        <div class="nav-actions">
+          <a href="login.html" class="btn btn-outline" data-i18n="login">Login</a>
+          <a
+            href="register.html?plan=Free&source=reports-header"
+            class="btn btn-primary"
+            data-i18n="startFree"
+          >
+            Start Free
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-inner">
+          <div>
+            <span class="eyebrow">MVP Preview</span>
+            <h1>Export Opportunity Report</h1>
+            <p>
+              AI-assisted report preview for identifying promising export
+              markets, trade corridors, buyer signals, compliance risks and
+              practical next actions.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#report-demo-form">Generate Sample Report</a>
+              <a class="btn btn-secondary" href="contact.html?interest=walkthrough&source=export-opportunity-report">Request MVP Walkthrough</a>
+              <a class="btn btn-outline" href="contact.html?interest=feedback&source=export-opportunity-report">Share Feedback</a>
+            </div>
+          </div>
+
+          <form class="report-form-card" id="reportRequestForm">
+            <h2 id="report-demo-form">Generate sample report</h2>
+            <p>
+              This MVP demo creates a labeled sample output for stakeholder
+              review. If the backend is available, TradeAI also stores your
+              report request for founder follow-up.
+            </p>
+
+            <div class="field">
+              <label for="requesterName">Name</label>
+              <input
+                id="requesterName"
+                name="name"
+                type="text"
+                placeholder="Your name"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="requesterEmail">Email</label>
+              <input
+                id="requesterEmail"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="requesterCompany">Company</label>
+              <input
+                id="requesterCompany"
+                name="company"
+                type="text"
+                placeholder="Company or organization"
+              />
+            </div>
+
+            <div class="field">
+              <label for="reportProduct">Product name</label>
+              <input
+                id="reportProduct"
+                name="product"
+                type="text"
+                placeholder="Example: turmeric powder"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="reportHsCode">HS code</label>
+              <input
+                id="reportHsCode"
+                name="hsCode"
+                type="text"
+                placeholder="Example: 0910"
+              />
+            </div>
+
+            <div class="field">
+              <label for="reportOrigin">Origin country</label>
+              <select id="reportOrigin" name="origin" required>
+                <option value="India">India</option>
+                <option value="China">China</option>
+                <option value="UAE">UAE</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="reportCountry">Target country / corridor</label>
+              <select id="reportCountry" name="country" required>
+                <option value="uae">India to UAE</option>
+                <option value="kenya">India to Kenya</option>
+                <option value="saudi-arabia">India to Saudi Arabia</option>
+                <option value="tanzania">India to Tanzania</option>
+                <option value="east-africa">East Africa comparison</option>
+                <option value="gulf">Gulf market comparison</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="businessType">Business type</label>
+              <select id="businessType" name="businessType" required>
+                <option value="Exporter">Exporter</option>
+                <option value="Importer">Importer</option>
+                <option value="Consultant">Consultant</option>
+                <option value="SME">SME</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="reportObjective">Report objective</label>
+              <select id="reportObjective" name="objective" required>
+                <option value="market-discovery">Market discovery</option>
+                <option value="buyer-discovery">Buyer discovery</option>
+                <option value="compliance-check">Compliance check</option>
+                <option value="pricing-insight">Pricing insight</option>
+                <option value="launch-planning">Launch planning</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Generate Sample Report</button>
+              <a class="btn btn-outline" href="contact.html?interest=feedback&source=report-form">Share Feedback</a>
+            </div>
+            <p id="reportRequestStatus" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="section" id="sample-report-section">
+        <div class="section-head">
+          <span class="preview-pill">Sample MVP Output</span>
+          <span class="preview-pill">DEMO DATA</span>
+          <h2>What TradeAI gives after report generation</h2>
+          <p>
+            The sample output below is static demo guidance for MVP review. It
+            is not live verified trade, legal, customs or pricing advice.
+          </p>
+          <p>Last updated: June 2026</p>
+        </div>
+
+        <article class="report-output" id="sampleReportOutput" hidden aria-live="polite">
+          <div class="output-header">
+            <div>
+              <span class="preview-pill">Sample MVP Output</span>
+              <span class="preview-pill">DEMO DATA</span>
+              <h3 id="sampleReportTitle">Export opportunity preview</h3>
+              <p id="sampleReportSummary"></p>
+              <p>Last updated: June 2026</p>
+            </div>
+            <span class="score-pill" id="sampleReportScore">78/100</span>
+          </div>
+
+          <div class="score-grid">
+            <article class="score-card">
+              <h3>Demand Signal</h3>
+              <p id="sampleDemand">Medium-high</p>
+            </article>
+            <article class="score-card">
+              <h3>Competition Level</h3>
+              <p id="sampleCompetition">Medium</p>
+            </article>
+            <article class="score-card">
+              <h3>Compliance Risk</h3>
+              <p id="sampleRisk">Moderate</p>
+            </article>
+            <article class="score-card">
+              <h3>Suggested Corridor</h3>
+              <p id="sampleCorridor">India to UAE</p>
+            </article>
+            <article class="score-card">
+              <h3>Buyer/Supplier Insight</h3>
+              <p id="sampleBuyerInsight">
+                Importer discovery recommended before pricing finalization.
+              </p>
+            </article>
+            <article class="score-card">
+              <h3>HS-code / Category Note</h3>
+              <p id="sampleHsNote">
+                Validate HS classification and product category before outreach.
+              </p>
+            </article>
+          </div>
+
+          <h3>Recommended Next Actions</h3>
+          <ol class="next-actions">
+            <li>Validate HS code with product specifications.</li>
+            <li>Compare 2-3 target markets before selecting one corridor.</li>
+            <li>Check documentation and compliance requirements.</li>
+            <li>Shortlist potential buyers or suppliers.</li>
+            <li>Prepare an export-ready product profile.</li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2>How the report helps stakeholders</h2>
+          <p>
+            TradeAI turns early product-country interest into a practical
+            decision path for exporters, importers, SMEs and consultants.
+          </p>
+        </div>
+
+        <div class="report-grid">
+          <article class="report-card">
+            <h3>India-Kenya Opportunity Report</h3>
+            <p>Validate product-market fit for Kenya and East Africa access.</p>
+          </article>
+
+          <article class="report-card">
+            <h3>India-UAE Trade Intelligence Report</h3>
+            <p>Review UAE demand, re-export signals and distributor paths.</p>
+          </article>
+
+          <article class="report-card">
+            <h3>India-Saudi Market Report</h3>
+            <p>Explore Saudi demand signals, categories and buyer direction.</p>
+          </article>
+
+          <article class="report-card">
+            <h3>East Africa Comparison Report</h3>
+            <p>Compare Kenya, Tanzania, Uganda and Rwanda for your product.</p>
+          </article>
+
+          <article class="report-card">
+            <h3>Gulf Market Comparison Report</h3>
+            <p>Compare UAE, Saudi Arabia, Oman and Qatar opportunity signals.</p>
+          </article>
+
+          <article class="report-card">
+            <h3>China Sourcing Report</h3>
+            <p>Assess supplier direction, import dependency and price signals.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2>What each report explains</h2>
+          <p>
+            Every preview is designed to help users move from broad interest to
+            a practical next action.
+          </p>
+        </div>
+
+        <div class="include-grid">
+          <article class="include-card">
+            <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+            <h3>Opportunity score</h3>
+            <p>Understand product-country potential and readiness signals.</p>
+          </article>
+
+          <article class="include-card">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
+            <h3>Buyer/supplier direction</h3>
+            <p>See whether the next step should be buyer or supplier discovery.</p>
+          </article>
+
+          <article class="include-card">
+            <i class="fa-solid fa-barcode" aria-hidden="true"></i>
+            <h3>HS code guidance</h3>
+            <p>Get AI-assisted direction for classification and risk review.</p>
+          </article>
+
+          <article class="include-card">
+            <i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>
+            <h3>Next actions</h3>
+            <p>Prioritize HS validation, market comparison and buyer outreach.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <span class="preview-pill">Demo corridor comparison</span>
+          <h2>Demo corridor comparison</h2>
+          <p>
+            A compact comparison helps reviewers see how TradeAI can rank
+            corridors before a user spends time on buyer discovery.
+          </p>
+        </div>
+
+        <div class="comparison-grid">
+          <article class="comparison-card">
+            <h3>India to UAE</h3>
+            <dl>
+              <div><dt>Demand potential</dt><dd>High</dd></div>
+              <div><dt>Compliance complexity</dt><dd>Medium</dd></div>
+              <div><dt>Buyer discovery</dt><dd>High</dd></div>
+              <div><dt>Suggested priority</dt><dd>1</dd></div>
+            </dl>
+          </article>
+
+          <article class="comparison-card">
+            <h3>India to Kenya</h3>
+            <dl>
+              <div><dt>Demand potential</dt><dd>Medium-high</dd></div>
+              <div><dt>Compliance complexity</dt><dd>Moderate</dd></div>
+              <div><dt>Buyer discovery</dt><dd>Medium-high</dd></div>
+              <div><dt>Suggested priority</dt><dd>2</dd></div>
+            </dl>
+          </article>
+
+          <article class="comparison-card">
+            <h3>India to Saudi Arabia</h3>
+            <dl>
+              <div><dt>Demand potential</dt><dd>High</dd></div>
+              <div><dt>Compliance complexity</dt><dd>Higher</dd></div>
+              <div><dt>Buyer discovery</dt><dd>Medium</dd></div>
+              <div><dt>Suggested priority</dt><dd>3</dd></div>
+            </dl>
+          </article>
+
+          <article class="comparison-card">
+            <h3>India to Tanzania</h3>
+            <dl>
+              <div><dt>Demand potential</dt><dd>Medium</dd></div>
+              <div><dt>Compliance complexity</dt><dd>Moderate</dd></div>
+              <div><dt>Buyer discovery</dt><dd>Medium</dd></div>
+              <div><dt>Suggested priority</dt><dd>4</dd></div>
+            </dl>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <span class="preview-pill">Preliminary MVP guidance</span>
+          <h2>Risk and compliance preview</h2>
+          <p>
+            This section shows how TradeAI can flag early review areas. It
+            requires expert and human verification before export decisions.
+          </p>
+        </div>
+
+        <div class="risk-grid">
+          <article class="risk-card">
+            <h3>Documentation readiness</h3>
+            <p>Check invoice, packing list, certificate needs and buyer-specific documentation.</p>
+          </article>
+          <article class="risk-card">
+            <h3>HS-code validation</h3>
+            <p>Confirm classification against product composition and destination rules.</p>
+          </article>
+          <article class="risk-card">
+            <h3>Country-specific compliance</h3>
+            <p>Review labeling, food/product standards and restricted category requirements.</p>
+          </article>
+          <article class="risk-card">
+            <h3>Payment/logistics risk</h3>
+            <p>Compare payment terms, freight lane readiness and delivery lead-time risk.</p>
+          </article>
+          <article class="risk-card">
+            <h3>Human review required</h3>
+            <p>Use this as early intelligence, not final legal, customs or compliance advice.</p>
+          </article>
+          <article class="risk-card">
+            <h3>Stakeholder decision</h3>
+            <p>Use feedback to decide whether full reports should include buyer lists or deeper compliance checks.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="disclaimer-box">
+          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+          <p>
+            TradeAI provides AI-assisted trade intelligence and document
+            checklist guidance. Final legal, customs, tariff and compliance
+            decisions remain the responsibility of the exporter/importer and
+            should be verified with official authorities or qualified
+            professionals.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="cta-box">
+          <h2>Ready to review the full report journey?</h2>
+          <p>
+            Use these actions to request a full report, send stakeholder
+            feedback or contact the founder for a walkthrough.
+          </p>
+          <div class="cta-actions">
+            <a
+              href="register.html?plan=Free&source=reports-final-cta&intent=full-report-request"
+              class="btn btn-primary"
+            >
+              Request full report
+            </a>
+            <a
+              href="contact.html?interest=feedback&feedbackType=Market%20opportunity&source=export-opportunity-report"
+              class="btn btn-secondary"
+            >
+              Send stakeholder feedback
+            </a>
+            <a
+              href="contact.html?interest=walkthrough&source=export-opportunity-report"
+              class="btn btn-outline"
+            >
+              Contact founder
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>TradeAI © 2026. All rights reserved.</div>
+        <div>
+          <a href="../index.html">Home</a>
+          <a href="countries.html">Countries</a>
+          <a href="corridors.html">Corridors</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var form = document.getElementById("reportRequestForm");
+        var output = document.getElementById("sampleReportOutput");
+        var title = document.getElementById("sampleReportTitle");
+        var summary = document.getElementById("sampleReportSummary");
+        var score = document.getElementById("sampleReportScore");
+        var demand = document.getElementById("sampleDemand");
+        var competition = document.getElementById("sampleCompetition");
+        var risk = document.getElementById("sampleRisk");
+        var corridor = document.getElementById("sampleCorridor");
+        var buyerInsight = document.getElementById("sampleBuyerInsight");
+        var hsNote = document.getElementById("sampleHsNote");
+        var requestStatus = document.getElementById("reportRequestStatus");
+
+        if (!form) {
+          return;
+        }
+
+        var corridorProfiles = {
+          uae: {
+            label: "India to UAE",
+            score: "78/100",
+            demand: "Medium-high",
+            competition: "Medium",
+            risk: "Moderate",
+            buyerInsight:
+              "Importer and distributor discovery is recommended before pricing finalization.",
+          },
+          kenya: {
+            label: "India to Kenya",
+            score: "74/100",
+            demand: "Medium-high",
+            competition: "Medium-low",
+            risk: "Moderate",
+            buyerInsight:
+              "Shortlist importers and regional distributors before expanding across East Africa.",
+          },
+          "saudi-arabia": {
+            label: "India to Saudi Arabia",
+            score: "72/100",
+            demand: "High",
+            competition: "High",
+            risk: "Higher",
+            buyerInsight:
+              "Buyer discovery should be paired with documentation and country-specific compliance review.",
+          },
+          tanzania: {
+            label: "India to Tanzania",
+            score: "69/100",
+            demand: "Medium",
+            competition: "Medium-low",
+            risk: "Moderate",
+            buyerInsight:
+              "Distributor discovery and landed-cost comparison should happen before launch planning.",
+          },
+          "east-africa": {
+            label: "East Africa comparison",
+            score: "76/100",
+            demand: "Medium-high",
+            competition: "Varies by country",
+            risk: "Moderate",
+            buyerInsight:
+              "Compare Kenya, Tanzania, Uganda and Rwanda before choosing a launch market.",
+          },
+          gulf: {
+            label: "Gulf market comparison",
+            score: "80/100",
+            demand: "High",
+            competition: "High",
+            risk: "Moderate to higher",
+            buyerInsight:
+              "Importer discovery should be prioritized with re-export and premium-market positioning checks.",
+          },
+        };
+
+        function getValue(id) {
+          return document.getElementById(id)?.value.trim() || "";
+        }
+
+        function getSelectedLabel(id) {
+          var element = document.getElementById(id);
+          return element?.options[element.selectedIndex]?.text || getValue(id);
+        }
+
+        function getHsNote(product, hsCode) {
+          if (hsCode) {
+            return "Sample note: validate HS " + hsCode + " against product composition, packaging and target-country requirements.";
+          }
+
+          return "Sample note: HS classification should be confirmed before buyer outreach for " + product + ".";
+        }
+
+        function normalizeRoleType(businessType) {
+          var role = String(businessType || "").toLowerCase();
+
+          if (["exporter", "importer", "consultant"].includes(role)) {
+            return role;
+          }
+
+          return role ? "other" : "";
+        }
+
+        function buildReportRequestPayload(product, hsCode, origin, target, businessType, objective) {
+          return {
+            name: getValue("requesterName"),
+            email: getValue("requesterEmail"),
+            company: getValue("requesterCompany"),
+            roleType: normalizeRoleType(businessType),
+            productName: product,
+            hsCode: hsCode,
+            originCountry: origin,
+            targetCountry: target,
+            businessType: businessType,
+            reportObjective: objective,
+            message:
+              "MVP export opportunity report request for " +
+              product +
+              " from " +
+              origin +
+              " to " +
+              target +
+              ". Objective: " +
+              objective +
+              ".",
+            source: "export-opportunity-report",
+            priority: "Medium priority",
+          };
+        }
+
+        async function saveReportRequest(payload) {
+          if (!window.TradeAI?.api?.createReportRequest) {
+            return;
+          }
+
+          try {
+            await window.TradeAI.api.createReportRequest(payload);
+
+            if (requestStatus) {
+              requestStatus.textContent = "Report request saved for MVP follow-up.";
+            }
+
+            window.TradeAI?.toast?.("Report request saved for MVP follow-up.", "success");
+          } catch (error) {
+            var message =
+              "Report request is running in MVP preview mode. Your sample report is still available; please share full-report interest directly with the founder or try again after backend deployment.";
+
+            if (requestStatus) {
+              requestStatus.textContent = message;
+            }
+
+            window.TradeAI?.toast?.(message, "error");
+          }
+        }
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          var product = getValue("reportProduct") || "selected product";
+          var hsCode = getValue("reportHsCode");
+          var origin = getSelectedLabel("reportOrigin");
+          var country = getValue("reportCountry");
+          var target = getSelectedLabel("reportCountry");
+          var businessType = getSelectedLabel("businessType");
+          var objective = getSelectedLabel("reportObjective");
+          var profile = corridorProfiles[country] || corridorProfiles.uae;
+
+          title.textContent = product + " opportunity report preview";
+          summary.textContent =
+            "Sample MVP output for " +
+            businessType.toLowerCase() +
+            " review: " +
+            origin +
+            " to " +
+            target +
+            " focused on " +
+            objective.toLowerCase() +
+            ". This is demo/sample guidance for stakeholder review.";
+          score.textContent = profile.score;
+          demand.textContent = profile.demand;
+          competition.textContent = profile.competition;
+          risk.textContent = profile.risk;
+          corridor.textContent = profile.label;
+          buyerInsight.textContent = profile.buyerInsight;
+          hsNote.textContent = getHsNote(product, hsCode);
+
+          output.hidden = false;
+          output.scrollIntoView({ behavior: "smooth", block: "start" });
+
+          saveReportRequest(
+            buildReportRequestPayload(product, hsCode, origin, target, businessType, objective),
+          );
+        });
+      });
+    </script>
+  </body>
+</html>

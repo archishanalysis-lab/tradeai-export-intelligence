@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Search Results - TradeAI</title>
+
+    <meta
+      name="description"
+      content="Explore AI-powered buyer discovery, supplier intelligence and trade analytics search results."
+    />
+
+    <!-- CSS -->
+
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+
+    <!-- GOOGLE FONT -->
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FONT AWESOME -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+
+  <body class="dashboard-page">
+    <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+    <header class="header">
+      <div class="container nav-container">
+        <!-- LOGO -->
+
+        <a href="../index.html" class="logo"> TradeAI </a>
+
+        <!-- NAVIGATION -->
+
+        <nav class="nav">
+          <a href="../index.html"> Home </a>
+
+          <a href="search-result.html" class="active"> Search </a>
+
+          <a href="market-analysis.html"> Analytics </a>
+
+          <a href="pricing.html"> Pricing </a>
+
+          <a href="contact.html"> Contact </a>
+        </nav>
+
+        <!-- ACTIONS -->
+
+        <div class="nav-actions">
+          <button id="themeToggle" class="theme-btn">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="notification.html" class="icon-btn" aria-label="Open notifications">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- MOBILE TOGGLE -->
+
+        <button class="menu-toggle">☰</button>
+      </div>
+    </header>
+
+    <!-- =====================================================
+       MOBILE MENU
+  ====================================================== -->
+
+    <div class="mobile-menu">
+      <a href="../index.html"> Home </a>
+
+      <a href="search-result.html"> Search </a>
+
+      <a href="market-analysis.html"> Analytics </a>
+
+      <a href="pricing.html"> Pricing </a>
+
+      <a href="contact.html"> Contact </a>
+    </div>
+
+    <!-- =====================================================
+       DASHBOARD LAYOUT
+  ====================================================== -->
+
+    <div class="dashboard-layout">
+      <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+      <aside class="dashboard-sidebar">
+        <nav class="sidebar-menu">
+          <a href="explorer-dashboard.html"> Dashboard </a>
+
+          <a href="buyer-detail.html"> Buyer Finder </a>
+
+          <a href="market-analysis.html"> Market Analysis </a>
+
+          <a href="hs-code-detail.html"> HS Code Intelligence </a>
+
+          <a href="search-result.html" class="active"> Search Results </a>
+
+          <a href="saved-search.html"> Saved Searches </a>
+
+          <a href="notification.html"> Notifications </a>
+
+          <a href="setting.html"> Settings </a>
+        </nav>
+      </aside>
+
+      <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+      <main class="dashboard-main">
+        <div class="container">
+          <!-- TOPBAR -->
+
+          <header class="dashboard-topbar">
+            <div>
+              <h1>Search Results</h1>
+
+              <p>Explore AI-powered global trade opportunities.</p>
+            </div>
+
+            <div class="dashboard-meta">
+              <div class="meta-card">
+                <span> Live Time </span>
+
+                <h3 id="dashboardClock">00:00</h3>
+              </div>
+
+              <div class="meta-card">
+                <span> Today's Date </span>
+
+                <h3 id="dashboardDate">Loading...</h3>
+              </div>
+            </div>
+          </header>
+
+          <!-- SEARCH -->
+
+          <section class="dashboard-search">
+            <input
+              type="text"
+              id="dashboardSearch"
+              placeholder="Search buyers, suppliers, products, HS codes..."
+            />
+          </section>
+
+          <!-- STATS -->
+
+          <section class="stats-grid">
+            <div class="stat-card">
+              <h3 class="stat-number" data-target="2400">0</h3>
+
+              <p>Search Results</p>
+            </div>
+
+            <div class="stat-card">
+              <h3 class="stat-number" data-target="95">0</h3>
+
+              <p>AI Insights</p>
+            </div>
+
+            <div class="stat-card">
+              <h3 class="stat-number" data-target="180">0</h3>
+
+              <p>Countries</p>
+            </div>
+
+            <div class="stat-card">
+              <h3 class="stat-number" data-target="780">0</h3>
+
+              <p>Verified Buyers</p>
+            </div>
+          </section>
+
+          <!-- RESULTS -->
+
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>Buyer Search Results</h2>
+            </div>
+
+            <div class="feature-grid">
+              <!-- CARD -->
+
+              <article class="feature-card buyer-card">
+                <div class="feature-icon">🌍</div>
+
+                <h3>Germany Automotive Buyers</h3>
+
+                <p>
+                  Verified automotive buyers and distributors across Germany.
+                </p>
+
+                <ul class="buyer-meta">
+                  <li>Country: Germany</li>
+
+                  <li>Category: Automotive</li>
+
+                  <li>Shipments: 2,450</li>
+                </ul>
+
+                <div class="card-actions">
+                  <a href="buyer-detail.html" class="feature-btn">
+                    View Buyer
+                  </a>
+                </div>
+              </article>
+
+              <!-- CARD -->
+
+              <article class="feature-card buyer-card">
+                <div class="feature-icon">📦</div>
+
+                <h3>UAE FMCG Importers</h3>
+
+                <p>
+                  AI-powered buyer intelligence for UAE food and FMCG sector.
+                </p>
+
+                <ul class="buyer-meta">
+                  <li>Country: UAE</li>
+
+                  <li>Category: FMCG</li>
+
+                  <li>Shipments: 1,820</li>
+                </ul>
+
+                <div class="card-actions">
+                  <a href="buyer-detail.html" class="feature-btn">
+                    View Buyer
+                  </a>
+                </div>
+              </article>
+
+              <!-- CARD -->
+
+              <article class="feature-card buyer-card">
+                <div class="feature-icon">🏭</div>
+
+                <h3>USA Textile Buyers</h3>
+
+                <p>
+                  Textile importers and sourcing companies in the USA market.
+                </p>
+
+                <ul class="buyer-meta">
+                  <li>Country: USA</li>
+
+                  <li>Category: Textile</li>
+
+                  <li>Shipments: 3,920</li>
+                </ul>
+
+                <div class="card-actions">
+                  <a href="buyer-detail.html" class="feature-btn">
+                    View Buyer
+                  </a>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- ANALYTICS -->
+
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>Search Analytics</h2>
+            </div>
+
+            <div id="analyticsContainer" class="analytics-grid"></div>
+          </section>
+
+          <!-- ACTIVITIES -->
+
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>Recent Activities</h2>
+            </div>
+
+            <div id="activityContainer" class="activity-grid"></div>
+          </section>
+
+          <!-- NOTIFICATIONS -->
+
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>Notifications</h2>
+            </div>
+
+            <div id="notificationContainer" class="notification-grid"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+
+    <footer class="dashboard-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <h3>Company</h3>
+
+            <a href="about.html"> About </a>
+
+            <a href="contact.html"> Contact </a>
+          </div>
+
+          <div>
+            <h3>Product</h3>
+
+            <a href="pricing.html"> Pricing </a>
+
+            <a href="market-analysis.html"> Analytics </a>
+          </div>
+
+          <div>
+            <h3>Resources</h3>
+
+            <a href="help-centre.html"> Help Centre </a>
+
+            <a href="privacy-policy.html"> Privacy Policy </a>
+          </div>
+        </div>
+
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/dashboard.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
+
+

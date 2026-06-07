@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - TradeAI</title>
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body class="dashboard-page">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="admin-panel.html" class="active">Admin</a>
+          <a href="product-dashboard.html">Products</a>
+          <a href="inquiry-dashboard.html">Inquiries</a>
+          <a href="analytics-dashboard.html">Analytics</a>
+        </nav>
+        <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+        <button class="menu-toggle">Menu</button>
+      </div>
+    </header>
+
+    <main class="dashboard-main no-sidebar">
+      <div class="container">
+        <section class="dashboard-hero">
+          <div>
+            <span class="section-kicker">Platform operations</span>
+            <h1>Admin Panel</h1>
+            <p>Verify users, approve buyers and products, monitor inquiries, and review platform health.</p>
+            <p class="section-subtitle">Dashboard is running in MVP preview mode when backend/admin data is unavailable. Sample data is shown for stakeholder review only.</p>
+            <div class="quick-actions">
+              <a class="quick-action" href="analytics-dashboard.html"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Review analytics</a>
+              <a class="quick-action" href="product-dashboard.html"><i class="fa-solid fa-box" aria-hidden="true"></i> Product approvals</a>
+              <a class="quick-action" href="inquiry-dashboard.html"><i class="fa-solid fa-inbox" aria-hidden="true"></i> Inquiry monitor</a>
+              <a class="quick-action" href="contact.html?interest=walkthrough&source=admin-panel"><i class="fa-solid fa-message" aria-hidden="true"></i> Request MVP walkthrough</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div id="adminOverview" class="analytics-grid"></div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>Users</h2>
+          </div>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr><th>User</th><th>Company</th><th>Role</th><th>Status</th><th>Action</th></tr>
+              </thead>
+              <tbody id="adminUsersBody"><tr><td colspan="5">Loading users...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>Buyers</h2>
+          </div>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr><th>Buyer</th><th>Industry</th><th>Status</th><th>Action</th></tr>
+              </thead>
+              <tbody id="adminBuyersBody"><tr><td colspan="4">Loading buyers...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>Products</h2>
+          </div>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr><th>Product</th><th>Category</th><th>HS code</th><th>Approval</th><th>Action</th></tr>
+              </thead>
+              <tbody id="adminProductsBody"><tr><td colspan="5">Loading products...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>Inquiries</h2>
+          </div>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr><th>Buyer</th><th>Product</th><th>Status</th><th>Updated</th></tr>
+              </thead>
+              <tbody id="adminInquiriesBody"><tr><td colspan="4">Loading inquiries...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <div>
+              <h2>Stakeholder Feedback Queue</h2>
+              <p class="section-subtitle">Review MVP comments from exporters, importers, consultants, investors, mentors and technical reviewers.</p>
+            </div>
+          </div>
+          <div class="dashboard-filters" aria-label="Stakeholder feedback filters">
+            <select id="feedbackStatusFilter" aria-label="Filter stakeholder feedback by status">
+              <option value="">All statuses</option>
+              <option value="new">New</option>
+              <option value="reviewed">Reviewed</option>
+              <option value="action_required">Action required</option>
+              <option value="closed">Closed</option>
+            </select>
+            <select id="feedbackPriorityFilter" aria-label="Filter stakeholder feedback by priority">
+              <option value="">All priorities</option>
+              <option value="High priority">High priority</option>
+              <option value="Medium priority">Medium priority</option>
+              <option value="Low priority">Low priority</option>
+              <option value="Very useful">Very useful</option>
+              <option value="Needs work">Needs work</option>
+            </select>
+            <select id="feedbackTypeFilter" aria-label="Filter stakeholder feedback by type">
+              <option value="">All feedback types</option>
+              <option value="UI">UI</option>
+              <option value="Business model">Business model</option>
+              <option value="MVP features">MVP features</option>
+              <option value="Technical review">Technical review</option>
+              <option value="Pricing">Pricing</option>
+              <option value="Market opportunity">Market opportunity</option>
+              <option value="Partnership">Partnership</option>
+            </select>
+          </div>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr><th>Reviewer</th><th>Type</th><th>Priority</th><th>Status</th><th>Created</th><th>Message</th><th>Admin action</th></tr>
+              </thead>
+              <tbody id="adminFeedbackBody"><tr><td colspan="7">Loading stakeholder feedback...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <div>
+              <h2>Export Report Requests Queue</h2>
+              <p class="section-subtitle">Track requested export opportunity reports without changing the protected AI reports system.</p>
+            </div>
+          </div>
+          <div class="dashboard-filters" aria-label="Export report request filters">
+            <select id="reportStatusFilter" aria-label="Filter report requests by status">
+              <option value="">All statuses</option>
+              <option value="new">New</option>
+              <option value="reviewed">Reviewed</option>
+              <option value="action_required">Action required</option>
+              <option value="closed">Closed</option>
+            </select>
+            <select id="reportPriorityFilter" aria-label="Filter report requests by priority">
+              <option value="">All priorities</option>
+              <option value="High priority">High priority</option>
+              <option value="Medium priority">Medium priority</option>
+              <option value="Low priority">Low priority</option>
+            </select>
+          </div>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr><th>Requester</th><th>Report focus</th><th>Priority</th><th>Status</th><th>Created</th><th>Message</th><th>Admin action</th></tr>
+              </thead>
+              <tbody id="adminReportRequestsBody"><tr><td colspan="7">Loading export report requests...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <div>
+              <h2>Marketplace Intro Requests</h2>
+              <p class="section-subtitle">Review buyer, supplier, product and company intro requests from marketplace preview pages.</p>
+            </div>
+          </div>
+          <div class="dashboard-filters" aria-label="Marketplace intro request filters">
+            <select id="introStatusFilter" aria-label="Filter marketplace intro requests by status">
+              <option value="">All statuses</option>
+              <option value="new">New</option>
+              <option value="reviewed">Reviewed</option>
+              <option value="action_required">Action required</option>
+              <option value="contacted">Contacted</option>
+              <option value="closed">Closed</option>
+            </select>
+            <select id="introPriorityFilter" aria-label="Filter marketplace intro requests by priority">
+              <option value="">All priorities</option>
+              <option value="High priority">High priority</option>
+              <option value="Medium priority">Medium priority</option>
+              <option value="Low priority">Low priority</option>
+            </select>
+            <select id="introRequestTypeFilter" aria-label="Filter marketplace intro requests by request type">
+              <option value="">All request types</option>
+              <option value="supplier_intro">Supplier intro</option>
+              <option value="buyer_intro">Buyer intro</option>
+              <option value="importer_intro">Importer intro</option>
+              <option value="product_inquiry">Product inquiry</option>
+              <option value="company_profile_intro">Company profile intro</option>
+              <option value="partnership">Partnership</option>
+              <option value="other">Other</option>
+            </select>
+            <select id="introTargetTypeFilter" aria-label="Filter marketplace intro requests by target type">
+              <option value="">All target types</option>
+              <option value="company">Company</option>
+              <option value="supplier">Supplier</option>
+              <option value="importer">Importer</option>
+              <option value="product">Product</option>
+              <option value="buyer">Buyer</option>
+              <option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr><th>Requester</th><th>Intro target</th><th>Context</th><th>Priority</th><th>Status</th><th>Created</th><th>Message</th><th>Admin action</th></tr>
+              </thead>
+              <tbody id="adminIntroRequestsBody"><tr><td colspan="8">Loading marketplace intro requests...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/state/appState.js" defer></script>
+    <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/api/adminApi.js" defer></script>
+    <script src="../js/admin.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
+
+

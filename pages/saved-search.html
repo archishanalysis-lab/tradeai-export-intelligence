@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Profiles - TradeAI</title>
+    <meta name="description" content="Manage saved buyers, suppliers and market opportunities with TradeAI." />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body class="dashboard-page">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="export-dash.html">Dashboard</a>
+          <a href="buyer-dashboard.html">Buyers</a>
+          <a href="company-profile.html">Profile</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+        <button class="menu-toggle">Menu</button>
+      </div>
+    </header>
+
+    <main class="dashboard-main no-sidebar">
+      <div class="container">
+        <section class="dashboard-hero">
+          <div>
+            <span class="section-kicker">Saved network</span>
+            <h1>Saved Buyers & Suppliers</h1>
+            <p>Your IndiaMART/Alibaba-style shortlist of companies, buyer profiles and target accounts.</p>
+          </div>
+        </section>
+
+        <section class="analytics-grid compact-stats">
+          <article class="analytics-card">
+            <h3>Saved profiles</h3>
+            <div class="summary-card"><h2 id="savedTotal">0</h2></div>
+          </article>
+          <article class="analytics-card">
+            <h3>Next action</h3>
+            <div class="summary-card"><h2>Contact</h2></div>
+          </article>
+          <article class="analytics-card">
+            <h3>Unlock status</h3>
+            <div class="summary-card"><h2>Pricing</h2></div>
+          </article>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <h2>Saved company profiles</h2>
+            <p>Save buyers from the buyer dashboard and return here for follow-up.</p>
+          </div>
+          <div id="savedItemsList" class="activity-grid"></div>
+        </section>
+      </div>
+    </main>
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/state/appState.js" defer></script>
+    <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/api/savedItemApi.js" defer></script>
+    <script src="../js/saved-items.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
+
+

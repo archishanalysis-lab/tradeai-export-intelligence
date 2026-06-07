@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>HS Code Intelligence - TradeAI</title>
+
+    <meta
+      name="description"
+      content="Analyze HS codes, tariffs, global trade flows and AI-powered export insights."
+    />
+
+    <!-- CSS -->
+
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+
+    <!-- GOOGLE FONT -->
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FONT AWESOME -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+
+  <body class="dashboard-page">
+    <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+    <header class="header">
+      <div class="container nav-container">
+        <!-- LOGO -->
+
+        <a href="../index.html" class="logo"> TradeAI </a>
+
+        <!-- NAV -->
+
+        <nav class="nav">
+          <a href="../index.html"> Home </a>
+
+          <a href="explorer-dashboard.html"> Dashboard </a>
+
+          <a href="hs-code-detail.html" class="active"> HS Codes </a>
+
+          <a href="market-analysis.html"> Analytics </a>
+
+          <a href="pricing.html"> Pricing </a>
+        </nav>
+
+        <!-- ACTIONS -->
+
+        <div class="nav-actions">
+          <button id="themeToggle" class="theme-btn">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="notification.html" class="icon-btn" aria-label="Open notifications">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- MOBILE BUTTON -->
+
+        <button class="menu-toggle">☰</button>
+      </div>
+    </header>
+
+    <!-- =====================================================
+       MOBILE MENU
+  ====================================================== -->
+
+    <div class="mobile-menu">
+      <a href="../index.html"> Home </a>
+
+      <a href="explorer-dashboard.html"> Dashboard </a>
+
+      <a href="market-analysis.html"> Analytics </a>
+
+      <a href="hs-code-detail.html"> HS Codes </a>
+
+      <a href="pricing.html"> Pricing </a>
+
+      <a href="contact.html"> Contact </a>
+    </div>
+
+    <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
+
+    <aside class="dashboard-sidebar">
+
+      <nav class="sidebar-menu">
+        <a href="explorer-dashboard.html"> Dashboard </a>
+
+        <a href="buyer-detail.html"> Buyer Finder </a>
+
+        <a href="market-analysis.html"> Market Analysis </a>
+
+        <a href="hs-code-detail.html" class="active"> HS Code Intelligence </a>
+
+        <a href="saved-search.html"> Saved Markets </a>
+
+        <a href="notification.html"> Notifications </a>
+
+        <a href="setting.html"> Settings </a>
+      </nav>
+    </aside>
+
+    <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
+    <main class="dashboard-main">
+      <div class="container">
+        <!-- HERO -->
+
+        <section class="dashboard-hero">
+          <div>
+            <h1>HS Code Intelligence</h1>
+
+            <p>
+              Analyze tariffs, product classifications and global trade trends
+              using AI-powered market intelligence.
+            </p>
+          </div>
+
+          <div class="dashboard-meta">
+            <div class="meta-card">
+              <span> Live Time </span>
+
+              <h3 id="dashboardClock">00:00</h3>
+            </div>
+
+            <div class="meta-card">
+              <span> Today's Date </span>
+
+              <h3 id="dashboardDate">Loading...</h3>
+            </div>
+          </div>
+        </section>
+
+        <!-- HS CODE LOOKUP -->
+
+        <section class="dashboard-panel" aria-labelledby="analyticsFormHeading">
+          <div class="panel-heading">
+            <div>
+              <span class="section-kicker" aria-hidden="true">Live trade data</span>
+              <h2 id="analyticsFormHeading">Search HS code demand</h2>
+              <p>
+                Enter an HS code to fetch official trade records, top countries
+                and AI opportunity signals.
+              </p>
+            </div>
+
+            <button id="exportAnalyticsBtn" class="secondary" type="button" disabled>
+              Export CSV
+            </button>
+          </div>
+
+          <form class="settings-form" id="analyticsForm">
+            <div class="form-row">
+              <div class="input-group">
+                <label for="analyticsHsCode">HS code</label>
+                <input
+                  type="text"
+                  id="analyticsHsCode"
+                  name="hsCode"
+                  value="0901"
+                  pattern="[0-9]{4,10}"
+                  maxlength="10"
+                  inputmode="numeric"
+                  aria-describedby="hsCodeHint"
+                  required
+                />
+                <small id="hsCodeHint" class="field-hint">
+                  Use 4-10 digits, for example 0901 for coffee.
+                </small>
+              </div>
+
+              <div class="input-group">
+                <label for="analyticsReporter">Reporter country code</label>
+                <input
+                  type="text"
+                  id="analyticsReporter"
+                  name="reporterCode"
+                  placeholder="e.g. 356 for India"
+                  pattern="[0-9]{1,3}"
+                  maxlength="3"
+                  inputmode="numeric"
+                  aria-describedby="reporterHint"
+                />
+                <small id="reporterHint" class="field-hint">
+                  Optional UN Comtrade reporter code. Leave blank for all available reporters.
+                </small>
+              </div>
+            </div>
+
+            <button class="primary" type="submit" id="analyticsSubmitBtn">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <span class="button-label">Search HS Code</span>
+            </button>
+          </form>
+        </section>
+
+        <section class="dashboard-section" aria-labelledby="hsWorkflowHeading">
+          <div class="section-heading">
+            <h2 id="hsWorkflowHeading">How this page works</h2>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <h3>1. Enter HS code</h3>
+              <p>Use a product HS code such as 0901, 1006, 6109 or 3004.</p>
+            </article>
+
+            <article class="feature-card">
+              <h3>2. Fetch trade records</h3>
+              <p>TradeAI requests official trade data through the backend API.</p>
+            </article>
+
+            <article class="feature-card">
+              <h3>3. Review insights</h3>
+              <p>See total trade value, records, top country and AI signals.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section" aria-labelledby="tradeAnalyticsHeading">
+          <div class="section-heading">
+            <h2 id="tradeAnalyticsHeading">Analytics Summary</h2>
+          </div>
+
+          <div id="tradeAnalytics" class="analytics-grid" aria-live="polite">
+            <article class="analytics-card">
+              <h3>Run analytics above</h3>
+              <p>Enter an HS code and click Search HS Code to load live results.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section" aria-labelledby="tradeInsightsHeading">
+          <div class="section-heading">
+            <h2 id="tradeInsightsHeading">AI Trade Insights</h2>
+          </div>
+
+          <div id="tradeInsights" class="activity-grid" aria-live="polite">
+            <article class="activity-card">
+              <h4>No insights yet</h4>
+              <p>Run analytics to generate country and opportunity insights.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+          <div class="footer-grid">
+            <div>
+              <h4>Company</h4>
+
+              <a href="about.html"> About </a>
+
+              <a href="contact.html"> Contact </a>
+            </div>
+
+            <div>
+              <h4>Resources</h4>
+
+              <a href="help-centre.html"> Help Centre </a>
+
+              <a href="privacy-policy.html"> Privacy </a>
+            </div>
+          </div>
+
+          <p>© 2026 TradeAI. All rights reserved.</p>
+        </footer>
+      </div>
+    </main>
+
+    <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/authGuard.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/state/appState.js" defer></script>
+    <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/dashboard.js" defer></script>
+    <script src="../js/trade-analytics.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
+
+

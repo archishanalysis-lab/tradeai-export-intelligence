@@ -1,0 +1,1276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Trade Corridors | TradeAI</title>
+
+    <meta
+      name="description"
+      content="Explore TradeAI trade corridors across India to East Africa, India to Gulf/GCC and India-China sourcing intelligence."
+    />
+
+    <meta name="robots" content="index, follow" />
+
+    <link rel="canonical" href="https://tradeai.com/corridors.html" />
+
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "TradeAI Trade Corridors",
+        "description": "TradeAI explains focused trade corridors across India to East Africa, India to Gulf/GCC and India-China sourcing intelligence.",
+        "url": "https://tradeai.com/corridors.html",
+        "publisher": {
+          "@type": "Organization",
+          "name": "TradeAI"
+        }
+      }
+    </script>
+
+    <style>
+      :root {
+        --ta-navy: #071a33;
+        --ta-navy-2: #10294b;
+        --ta-blue: #0f4c81;
+        --ta-gold: #d8a441;
+        --ta-light: #f7f9fc;
+        --ta-white: #ffffff;
+        --ta-text: #1f2937;
+        --ta-muted: #6b7280;
+        --ta-border: #dfe5ee;
+        --ta-green: #0f766e;
+        --ta-green-soft: #e7f7f3;
+        --ta-shadow: 0 18px 45px rgba(7, 26, 51, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        padding-top: 0;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: var(--ta-light);
+        color: var(--ta-text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .corridors-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(7, 26, 51, 0.96);
+        color: var(--ta-white);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+      }
+
+      .corridors-nav {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--ta-gold), #fff0b8);
+        color: var(--ta-navy);
+        font-weight: 900;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--ta-gold);
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .btn {
+        min-height: 44px;
+        border: 0;
+        border-radius: 999px;
+        padding: 11px 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.25s ease;
+        font-size: 14px;
+      }
+
+      .btn-primary {
+        background: var(--ta-gold);
+        color: var(--ta-navy);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(216, 164, 65, 0.28);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        color: var(--ta-white);
+      }
+
+      .btn-outline:hover {
+        border-color: var(--ta-gold);
+        color: var(--ta-gold);
+      }
+
+      .menu-toggle {
+        display: none;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: transparent;
+        color: var(--ta-white);
+        font-size: 22px;
+        cursor: pointer;
+      }
+
+      .hero {
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(216, 164, 65, 0.22),
+            transparent 32%
+          ),
+          linear-gradient(135deg, #071a33 0%, #10294b 58%, #071a33 100%);
+        color: var(--ta-white);
+        padding: 90px 20px 98px;
+      }
+
+      .hero-inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 42px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        width: fit-content;
+        align-items: center;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(216, 164, 65, 0.13);
+        border: 1px solid rgba(216, 164, 65, 0.36);
+        color: #ffe6a7;
+        font-size: 13px;
+        font-weight: 900;
+        margin-bottom: 18px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(36px, 5vw, 62px);
+        line-height: 1.05;
+        letter-spacing: -1.5px;
+      }
+
+      .hero p {
+        max-width: 720px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 18px;
+        line-height: 1.7;
+        margin: 20px 0 0;
+      }
+
+      .hero-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .hero-card {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 30px;
+        padding: 28px;
+        box-shadow: var(--ta-shadow);
+      }
+
+      .hero-card h2 {
+        margin: 0 0 18px;
+        color: #fff2bf;
+        font-size: 24px;
+      }
+
+      .corridor-mini-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .corridor-mini-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .corridor-mini-item i {
+        color: var(--ta-gold);
+        margin-top: 4px;
+      }
+
+      .corridor-mini-item strong {
+        display: block;
+        color: var(--ta-white);
+        margin-bottom: 4px;
+      }
+
+      .corridor-mini-item span {
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .section {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 68px 20px;
+      }
+
+      .section-head {
+        max-width: 780px;
+        margin: 0 auto 36px;
+        text-align: center;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        color: var(--ta-navy);
+        font-size: clamp(28px, 4vw, 42px);
+        letter-spacing: -0.9px;
+      }
+
+      .section-head p {
+        color: var(--ta-muted);
+        line-height: 1.7;
+        margin: 12px 0 0;
+      }
+
+      .corridor-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .corridor-card {
+        position: relative;
+        overflow: hidden;
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 28px;
+        padding: 28px;
+        box-shadow: 0 10px 28px rgba(7, 26, 51, 0.06);
+        transition: 0.25s ease;
+      }
+
+      .corridor-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--ta-shadow);
+      }
+
+      .corridor-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--ta-gold), var(--ta-blue));
+      }
+
+      .corridor-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: rgba(216, 164, 65, 0.14);
+        color: var(--ta-navy);
+        font-size: 24px;
+        margin-bottom: 18px;
+      }
+
+      .corridor-card h3 {
+        margin: 0 0 10px;
+        color: var(--ta-navy);
+        font-size: 24px;
+      }
+
+      .corridor-card p {
+        margin: 0 0 18px;
+        color: var(--ta-muted);
+        line-height: 1.65;
+      }
+
+      .country-pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-bottom: 20px;
+      }
+
+      .country-pill-row a,
+      .country-pill-row span {
+        padding: 8px 11px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: var(--ta-navy);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .country-pill-row a:hover {
+        background: var(--ta-navy);
+        color: var(--ta-white);
+      }
+
+      .feature-list {
+        display: grid;
+        gap: 12px;
+        margin: 20px 0;
+      }
+
+      .feature-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        color: var(--ta-text);
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .feature-item i {
+        color: var(--ta-green);
+        margin-top: 3px;
+      }
+
+      .corridor-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .card-primary-link {
+        min-height: 44px;
+        border-radius: 999px;
+        background: var(--ta-navy);
+        color: var(--ta-white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 14px;
+      }
+
+      .card-primary-link:hover {
+        background: var(--ta-navy-2);
+      }
+
+      .card-secondary-link {
+        min-height: 44px;
+        border-radius: 999px;
+        background: #edf3f9;
+        color: var(--ta-navy);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 14px;
+      }
+
+      .card-secondary-link:hover {
+        background: #dfeaf5;
+      }
+
+      .why-section {
+        background: var(--ta-white);
+        border-radius: 34px;
+        padding: 36px;
+        border: 1px solid var(--ta-border);
+        box-shadow: var(--ta-shadow);
+      }
+
+      .why-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .why-card {
+        padding: 20px;
+        border-radius: 22px;
+        background: var(--ta-light);
+        border: 1px solid var(--ta-border);
+      }
+
+      .why-card i {
+        color: var(--ta-gold);
+        font-size: 26px;
+        margin-bottom: 12px;
+      }
+
+      .why-card h3 {
+        margin: 0 0 8px;
+        color: var(--ta-navy);
+        font-size: 17px;
+      }
+
+      .why-card p {
+        margin: 0;
+        color: var(--ta-muted);
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      .search-box {
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 28px;
+        box-shadow: var(--ta-shadow);
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr auto;
+        gap: 14px;
+        align-items: end;
+      }
+
+      .field label {
+        display: block;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--ta-navy);
+        margin-bottom: 8px;
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        min-height: 48px;
+        border-radius: 14px;
+        border: 1px solid var(--ta-border);
+        padding: 0 14px;
+        font-size: 14px;
+        outline: none;
+      }
+
+      .field input:focus,
+      .field select:focus {
+        border-color: var(--ta-gold);
+        box-shadow: 0 0 0 4px rgba(216, 164, 65, 0.14);
+      }
+
+      .workflow-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .workflow-card {
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 10px 28px rgba(7, 26, 51, 0.06);
+      }
+
+      .workflow-step {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--ta-navy);
+        color: var(--ta-white);
+        font-weight: 900;
+        margin-bottom: 14px;
+      }
+
+      .workflow-card h3 {
+        margin: 0 0 8px;
+        color: var(--ta-navy);
+        font-size: 17px;
+      }
+
+      .workflow-card p {
+        margin: 0;
+        color: var(--ta-muted);
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      .cta-box {
+        background:
+          radial-gradient(
+            circle at top right,
+            rgba(216, 164, 65, 0.25),
+            transparent 30%
+          ),
+          linear-gradient(135deg, var(--ta-navy), var(--ta-navy-2));
+        color: var(--ta-white);
+        border-radius: 32px;
+        padding: 50px 32px;
+        text-align: center;
+        box-shadow: var(--ta-shadow);
+      }
+
+      .cta-box h2 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 44px);
+      }
+
+      .cta-box p {
+        color: rgba(255, 255, 255, 0.76);
+        max-width: 720px;
+        margin: 14px auto 24px;
+        line-height: 1.7;
+      }
+
+      .footer {
+        background: var(--ta-navy);
+        color: rgba(255, 255, 255, 0.72);
+        padding: 38px 20px;
+      }
+
+      .footer-inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.2fr repeat(3, 1fr);
+        gap: 28px;
+      }
+
+      .footer h3 {
+        margin: 0 0 14px;
+        color: var(--ta-white);
+        font-size: 16px;
+      }
+
+      .footer a {
+        display: block;
+        color: rgba(255, 255, 255, 0.72);
+        margin: 8px 0;
+        font-size: 14px;
+      }
+
+      .footer a:hover {
+        color: var(--ta-gold);
+      }
+
+      .footer-brand {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--ta-white);
+      }
+
+      .footer p {
+        line-height: 1.65;
+      }
+
+      .copyright {
+        max-width: 1180px;
+        margin: 28px auto 0;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        text-align: center;
+        font-size: 14px;
+      }
+
+      html:not(.light-theme) body {
+        background: #08111f;
+        color: #f8fafc;
+      }
+
+      html:not(.light-theme) .corridor-card,
+      html:not(.light-theme) .why-section,
+      html:not(.light-theme) .why-card,
+      html:not(.light-theme) .search-box,
+      html:not(.light-theme) .workflow-card {
+        background: rgba(15, 23, 42, 0.92);
+        border-color: rgba(148, 163, 184, 0.18);
+        color: #f8fafc;
+        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22);
+      }
+
+      html:not(.light-theme) .corridor-card p,
+      html:not(.light-theme) .why-section p,
+      html:not(.light-theme) .workflow-card p,
+      html:not(.light-theme) .search-box p,
+      html:not(.light-theme) .section-head p {
+        color: #cbd5e1;
+      }
+
+      html:not(.light-theme) .corridor-card h3,
+      html:not(.light-theme) .why-section h2,
+      html:not(.light-theme) .why-card h3,
+      html:not(.light-theme) .workflow-card h3,
+      html:not(.light-theme) .section-head h2,
+      html:not(.light-theme) .field label {
+        color: #f8fafc;
+      }
+
+      html:not(.light-theme) .corridor-check-list li {
+        color: #cbd5e1;
+      }
+
+      @media (max-width: 1080px) {
+        .hero-inner,
+        .corridor-grid,
+        .why-grid,
+        .search-box,
+        .footer-inner {
+          grid-template-columns: 1fr;
+        }
+
+        .workflow-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .corridors-nav {
+          flex-wrap: wrap;
+        }
+
+        .menu-toggle {
+          display: inline-grid;
+          place-items: center;
+        }
+
+        .nav-links,
+        .nav-actions {
+          display: none;
+          width: 100%;
+        }
+
+        .nav-links.open,
+        .nav-actions.open {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .hero {
+          padding: 64px 20px 76px;
+        }
+
+        .why-section,
+        .cta-box {
+          padding: 28px 20px;
+        }
+
+        .workflow-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="corridors-header">
+      <nav class="corridors-nav" aria-label="Main navigation">
+        <a href="../index.html" class="brand" aria-label="TradeAI Home">
+          <span class="brand-mark">T</span>
+          <span>TradeAI</span>
+        </a>
+
+        <button
+          class="menu-toggle"
+          id="menuToggle"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+
+        <div class="nav-links" id="navLinks">
+          <a href="../index.html" data-i18n="home">Home</a>
+          <a href="countries.html" data-i18n="countries">Countries</a>
+          <a href="corridors.html" class="active" data-i18n="corridors">Corridors</a>
+          <a href="export-opportunity-report.html" data-i18n="reports">Reports</a>
+          <a href="pricing.html" data-i18n="pricing">Pricing</a>
+          <a href="contact.html" data-i18n="contact">Contact</a>
+        </div>
+
+        <div class="nav-actions" id="navActions">
+          <a href="login.html" class="btn btn-outline" data-i18n="login">Login</a>
+          <a
+            href="register.html?plan=Free&source=corridors-header"
+            class="btn btn-primary"
+            data-i18n="startFree"
+          >
+            Start Free
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-inner">
+          <div>
+            <span class="eyebrow">TradeAI Corridor Strategy</span>
+
+            <h1>Focused trade corridors instead of generic global guessing</h1>
+
+            <p>
+              TradeAI starts with practical India-linked corridors where users
+              can repeatedly search products, compare countries, generate
+              reports, discover buyers or suppliers and review trade documents.
+            </p>
+
+            <div class="hero-cta">
+              <a href="#corridors" class="btn btn-primary">
+                Explore Corridors
+              </a>
+
+              <a
+                href="register.html?plan=Free&source=corridors-hero&intent=opportunity-preview"
+                class="btn btn-outline"
+              >
+                Generate Free Preview
+              </a>
+            </div>
+          </div>
+
+          <aside class="hero-card">
+            <h2>3 Phase-1 Corridors</h2>
+
+            <div class="corridor-mini-list">
+              <div class="corridor-mini-item">
+                <i class="fa-solid fa-earth-africa" aria-hidden="true"></i>
+                <div>
+                  <strong>India → East Africa</strong>
+                  <span>Kenya, Tanzania, Uganda and Rwanda.</span>
+                </div>
+              </div>
+
+              <div class="corridor-mini-item">
+                <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
+                <div>
+                  <strong>India → Gulf / GCC</strong>
+                  <span>UAE, Saudi Arabia, Oman and Qatar.</span>
+                </div>
+              </div>
+
+              <div class="corridor-mini-item">
+                <i class="fa-solid fa-industry" aria-hidden="true"></i>
+                <div>
+                  <strong>India ↔ China</strong>
+                  <span
+                    >Sourcing, suppliers, import risk and benchmarking.</span
+                  >
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- CORRIDORS -->
+      <section class="section" id="corridors">
+        <div class="section-head">
+          <span class="eyebrow" style="color: #6b4b12; background: #fff7e6">
+            Corridor Groups
+          </span>
+
+          <h2>Choose your trade corridor</h2>
+
+          <p>
+            Each corridor has a different business purpose. East Africa is
+            useful for export expansion, Gulf for premium demand and China for
+            sourcing/import intelligence.
+          </p>
+        </div>
+
+        <div class="corridor-grid">
+          <!-- EAST AFRICA -->
+          <article class="corridor-card">
+            <div class="corridor-icon">
+              <i class="fa-solid fa-earth-africa" aria-hidden="true"></i>
+            </div>
+
+            <h3>India → East Africa</h3>
+
+            <p>
+              Best for Indian exporters exploring growing African demand,
+              distributor networks, food products, pharma, textiles, packaging,
+              machinery and SME supply opportunities.
+            </p>
+
+            <div class="country-pill-row">
+              <a href="india-kenya.html">Kenya</a>
+              <a href="india-tanzania.html">Tanzania</a>
+              <a href="india-uganda.html">Uganda</a>
+              <a href="india-rwanda.html">Rwanda</a>
+            </div>
+
+            <div class="feature-list">
+              <div class="feature-item">
+                <i class="fa-solid fa-check"></i>
+                <span>Best for exporters testing African demand.</span>
+              </div>
+
+              <div class="feature-item">
+                <i class="fa-solid fa-check"></i>
+                <span
+                  >Useful for food, pharma, textile and machinery
+                  exporters.</span
+                >
+              </div>
+
+              <div class="feature-item">
+                <i class="fa-solid fa-check"></i>
+                <span>Supports buyer discovery and country comparison.</span>
+              </div>
+            </div>
+
+            <div class="corridor-actions">
+              <a class="card-primary-link" href="countries.html#east-africa">
+                Explore East Africa
+              </a>
+              <a
+                class="card-secondary-link"
+                href="register.html?plan=Free&source=corridors&intent=east-africa-report&country=east-africa"
+              >
+                Free East Africa Preview
+              </a>
+            </div>
+          </article>
+
+          <!-- GULF -->
+          <article class="corridor-card">
+            <div class="corridor-icon">
+              <i class="fa-solid fa-city" aria-hidden="true"></i>
+            </div>
+
+            <h3>India → Gulf / GCC</h3>
+
+            <p>
+              Best for exporters targeting premium Gulf markets, re-export hubs,
+              higher purchasing power, B2B distributors, food demand, textiles,
+              engineering goods and consumer products.
+            </p>
+
+            <div class="country-pill-row">
+              <a href="india-uae.html">UAE</a>
+              <a href="india-saudi-arabia.html">Saudi Arabia</a>
+              <a href="india-oman.html">Oman</a>
+              <a href="india-qatar.html">Qatar</a>
+            </div>
+
+            <div class="feature-list">
+              <div class="feature-item">
+                <i class="fa-solid fa-check"></i>
+                <span>Best for premium and repeat B2B demand.</span>
+              </div>
+
+              <div class="feature-item">
+                <i class="fa-solid fa-check"></i>
+                <span
+                  >Useful for food, textiles, engineering and materials.</span
+                >
+              </div>
+
+              <div class="feature-item">
+                <i class="fa-solid fa-check"></i>
+                <span>Supports buyer discovery and export reports.</span>
+              </div>
+            </div>
+
+            <div class="corridor-actions">
+              <a class="card-primary-link" href="countries.html#gulf">
+                Explore Gulf / GCC
+              </a>
+              <a
+                class="card-secondary-link"
+                href="register.html?plan=Free&source=corridors&intent=gulf-report&country=gulf"
+              >
+                Free Gulf Preview
+              </a>
+            </div>
+          </article>
+
+          <!-- CHINA -->
+          <article class="corridor-card">
+            <div class="corridor-icon">
+              <i class="fa-solid fa-industry" aria-hidden="true"></i>
+            </div>
+
+            <h3>India ↔ China Sourcing</h3>
+
+            <p>
+              China should be treated differently from export target markets.
+              Use this corridor for sourcing intelligence, supplier discovery,
+              import dependency, competitor tracking and price benchmarking.
+            </p>
+
+            <div class="country-pill-row">
+              <a href="india-china.html">China Sourcing</a>
+              <span>Supplier Intelligence</span>
+              <span>Import Risk</span>
+              <span>Price Benchmarking</span>
+            </div>
+
+            <div class="feature-list">
+              <div class="feature-item">
+                <i class="fa-solid fa-check"></i>
+                <span>Best for importers and sourcing teams.</span>
+              </div>
+
+              <div class="feature-item">
+                <i class="fa-solid fa-check"></i>
+                <span
+                  >Useful for electronics, machinery, chemicals and
+                  components.</span
+                >
+              </div>
+
+              <div class="feature-item">
+                <i class="fa-solid fa-check"></i>
+                <span>Supports supplier comparison and sourcing reports.</span>
+              </div>
+            </div>
+
+            <div class="corridor-actions">
+              <a class="card-primary-link" href="india-china.html">
+                Explore China Sourcing
+              </a>
+              <a
+                class="card-secondary-link"
+                href="register.html?plan=Free&source=corridors&intent=china-sourcing&country=china"
+              >
+                Free China Sourcing Preview
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- WHY CORRIDORS -->
+      <section class="section">
+        <div class="why-section">
+          <div class="section-head" style="margin-bottom: 28px">
+            <h2>Why TradeAI uses corridor-based targeting</h2>
+            <p>
+              Generic global search is too broad for phase 1. Corridor-based
+              targeting gives TradeAI stronger positioning, clearer SEO, better
+              registration intent and more practical paid report opportunities.
+            </p>
+          </div>
+
+          <div class="why-grid">
+            <article class="why-card">
+              <i class="fa-solid fa-bullseye" aria-hidden="true"></i>
+              <h3>Focused launch</h3>
+              <p>
+                Fewer markets means deeper messaging, faster development and
+                clearer marketing.
+              </p>
+            </article>
+
+            <article class="why-card">
+              <i
+                class="fa-solid fa-magnifying-glass-chart"
+                aria-hidden="true"
+              ></i>
+              <h3>Better SEO</h3>
+              <p>
+                Country and corridor pages can rank for targeted export-import
+                search terms.
+              </p>
+            </article>
+
+            <article class="why-card">
+              <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+              <h3>Report revenue</h3>
+              <p>
+                Each corridor supports repeatable product-country opportunity
+                reports.
+              </p>
+            </article>
+
+            <article class="why-card">
+              <i class="fa-solid fa-route" aria-hidden="true"></i>
+              <h3>Clear user journey</h3>
+              <p>
+                Users can move from country interest to preview, registration,
+                report and buyer discovery.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEARCH -->
+      <section class="section">
+        <div class="section-head">
+          <h2>Generate a corridor opportunity preview</h2>
+          <p>
+            This form sends product, corridor and intent into the registration
+            flow so you can personalize the user journey after signup.
+          </p>
+        </div>
+
+        <form class="search-box" id="corridorOpportunityForm">
+          <div class="field">
+            <label for="productInput">Product / HS code / category</label>
+            <input
+              type="text"
+              id="productInput"
+              name="product"
+              placeholder="Example: turmeric, textiles, machinery, electronics"
+            />
+          </div>
+
+          <div class="field">
+            <label for="corridorSelect">Select corridor</label>
+            <select id="corridorSelect" name="country">
+              <option value="east-africa">India → East Africa</option>
+              <option value="gulf">India → Gulf / GCC</option>
+              <option value="china">India ↔ China Sourcing</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            Generate Preview
+          </button>
+        </form>
+      </section>
+
+      <!-- WORKFLOW -->
+      <section class="section">
+        <div class="section-head">
+          <h2>How corridor intelligence should work inside TradeAI</h2>
+          <p>
+            This page supports the product logic: users select a corridor, add a
+            product, receive a preview, then move into reports and
+            buyer/supplier discovery.
+          </p>
+        </div>
+
+        <div class="workflow-grid">
+          <article class="workflow-card">
+            <div class="workflow-step">1</div>
+            <h3>Select corridor</h3>
+            <p>Choose East Africa, Gulf/GCC or China sourcing.</p>
+          </article>
+
+          <article class="workflow-card">
+            <div class="workflow-step">2</div>
+            <h3>Enter product</h3>
+            <p>Search product, HS code or category.</p>
+          </article>
+
+          <article class="workflow-card">
+            <div class="workflow-step">3</div>
+            <h3>Compare markets</h3>
+            <p>View country fit, risk and opportunity signal.</p>
+          </article>
+
+          <article class="workflow-card">
+            <div class="workflow-step">4</div>
+            <h3>Generate report</h3>
+            <p>Convert interest into a product-country report.</p>
+          </article>
+
+          <article class="workflow-card">
+            <div class="workflow-step">5</div>
+            <h3>Discover leads</h3>
+            <p>Move toward buyer or supplier discovery.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- FINAL CTA -->
+      <section class="section">
+        <div class="cta-box">
+          <h2>Ready to choose your first trade corridor?</h2>
+          <p>
+            Start with a free preview and upgrade when you need detailed AI
+            reports, buyer discovery, supplier intelligence, HS code support or
+            document checklist guidance.
+          </p>
+
+          <a
+            href="register.html?plan=Free&source=corridors-final-cta&intent=opportunity-preview"
+            class="btn btn-primary"
+          >
+            Start Free Corridor Preview
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <a href="../index.html" class="footer-brand">TradeAI</a>
+          <p>
+            AI-powered export-import intelligence for East Africa, Gulf/GCC and
+            China sourcing corridors.
+          </p>
+        </div>
+
+        <div>
+          <h3>Corridors</h3>
+          <a href="countries.html#east-africa">East Africa</a>
+          <a href="countries.html#gulf">Gulf / GCC</a>
+          <a href="india-china.html">China Sourcing</a>
+        </div>
+
+        <div>
+          <h3>Countries</h3>
+          <a href="india-kenya.html">Kenya</a>
+          <a href="india-uae.html">UAE</a>
+          <a href="india-saudi-arabia.html">Saudi Arabia</a>
+          <a href="india-china.html">China</a>
+        </div>
+
+        <div>
+          <h3>Platform</h3>
+          <a href="countries.html">Target Countries</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+
+      <div class="copyright">© 2026 TradeAI. All rights reserved.</div>
+    </footer>
+
+    <script>
+      const menuToggle = document.getElementById("menuToggle");
+      const navLinks = document.getElementById("navLinks");
+      const navActions = document.getElementById("navActions");
+      const corridorOpportunityForm = document.getElementById(
+        "corridorOpportunityForm",
+      );
+
+      if (menuToggle) {
+        menuToggle.addEventListener("click", () => {
+          const isOpen = navLinks.classList.toggle("open");
+          navActions.classList.toggle("open", isOpen);
+
+          menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          menuToggle.setAttribute(
+            "aria-label",
+            isOpen ? "Close menu" : "Open menu",
+          );
+        });
+      }
+
+      if (corridorOpportunityForm) {
+        corridorOpportunityForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+
+          const product = document.getElementById("productInput").value.trim();
+          const corridor = document.getElementById("corridorSelect").value;
+
+          const intent =
+            corridor === "china" ? "sourcing-preview" : "opportunity-preview";
+
+          const params = new URLSearchParams({
+            plan: "Free",
+            source: "corridors-search",
+            intent,
+            country: corridor,
+          });
+
+          if (product) {
+            params.set("product", product);
+          }
+
+          window.location.href = `register.html?${params.toString()}`;
+        });
+      }
+    </script>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

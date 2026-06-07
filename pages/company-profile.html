@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Company Profile - TradeAI</title>
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body class="dashboard-page">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="export-dash.html">Dashboard</a>
+          <a href="buyer-dashboard.html">Buyers</a>
+          <a href="saved-search.html">Saved</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+        <button class="menu-toggle">Menu</button>
+      </div>
+    </header>
+
+    <main class="dashboard-main no-sidebar">
+      <div class="container">
+        <section class="dashboard-hero">
+          <div>
+            <span class="section-kicker">Company profile</span>
+            <h1>Build your TradeAI business profile</h1>
+            <p>Save exporter or importer details so TradeAI can personalize buyer matches, saved suppliers and inquiry workflows.</p>
+          </div>
+        </section>
+
+        <section class="analytics-grid compact-stats">
+          <article class="analytics-card">
+            <h3>Profile completion</h3>
+            <div class="summary-card"><h2 id="profileCompletion">0%</h2></div>
+          </article>
+          <article class="analytics-card">
+            <h3>Verification</h3>
+            <div class="summary-card"><h2 id="profileVerification">pending</h2></div>
+          </article>
+          <article class="analytics-card">
+            <h3>Current plan</h3>
+            <div class="summary-card"><h2 id="profilePlanName">free</h2></div>
+          </article>
+        </section>
+
+        <section class="dashboard-section">
+          <article class="dashboard-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="section-kicker">Marketplace-ready profile</span>
+                <h2>Business details</h2>
+              </div>
+              <a class="secondary" href="pricing.html">Manage Plan</a>
+            </div>
+
+            <form class="settings-form" id="profileForm">
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileCompanyName">Company name</label>
+                  <input id="profileCompanyName" placeholder="Your company name" />
+                </div>
+                <div class="input-group">
+                  <label for="profileContactPerson">Contact person</label>
+                  <input id="profileContactPerson" placeholder="Primary contact" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileBusinessType">Business type</label>
+                  <select id="profileBusinessType">
+                    <option value="">Select type</option>
+                    <option value="Manufacturer">Manufacturer</option>
+                    <option value="Exporter">Exporter</option>
+                    <option value="Importer">Importer</option>
+                    <option value="Distributor">Distributor</option>
+                    <option value="Consultant">Trade Consultant</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="profilePhone">Phone</label>
+                  <input id="profilePhone" placeholder="+91..." />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileIndustry">Industry</label>
+                  <input id="profileIndustry" placeholder="Textiles, Agriculture, Machinery" />
+                </div>
+                <div class="input-group">
+                  <label for="profileEmail">Business email</label>
+                  <input id="profileEmail" type="email" placeholder="sales@company.com" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileCountry">Country</label>
+                  <input id="profileCountry" placeholder="India" />
+                </div>
+                <div class="input-group">
+                  <label for="profileState">State</label>
+                  <input id="profileState" placeholder="Maharashtra" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileCity">City</label>
+                  <input id="profileCity" placeholder="Mumbai" />
+                </div>
+                <div class="input-group">
+                  <label for="profileAddress">Address</label>
+                  <input id="profileAddress" placeholder="Factory / office address" />
+                </div>
+              </div>
+              <div class="input-group">
+                <label for="profileWebsite">Website</label>
+                <input id="profileWebsite" placeholder="https://company.com" />
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileGst">GST number</label>
+                  <input id="profileGst" placeholder="Optional" />
+                </div>
+                <div class="input-group">
+                  <label for="profileIec">IEC number</label>
+                  <input id="profileIec" placeholder="Importer Exporter Code" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileYearEstablished">Year established</label>
+                  <input id="profileYearEstablished" type="number" placeholder="2018" />
+                </div>
+                <div class="input-group">
+                  <label for="profileEmployeeCount">Employee count</label>
+                  <input id="profileEmployeeCount" placeholder="11-50" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileExportCategories">Export categories</label>
+                  <input id="profileExportCategories" placeholder="textiles, spices, machinery" />
+                </div>
+                <div class="input-group">
+                  <label for="profileTargetMarkets">Target markets</label>
+                  <input id="profileTargetMarkets" placeholder="USA, UAE, Germany" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileMainProducts">Main products</label>
+                  <input id="profileMainProducts" placeholder="Cotton T-shirts, Turmeric, Packaging rolls" />
+                </div>
+                <div class="input-group">
+                  <label for="profileHsCodes">HS codes</label>
+                  <input id="profileHsCodes" placeholder="6109, 0910, 3923" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileExportCountries">Export countries</label>
+                  <input id="profileExportCountries" placeholder="USA, UAE, UK" />
+                </div>
+                <div class="input-group">
+                  <label for="profileImportCountries">Import countries</label>
+                  <input id="profileImportCountries" placeholder="India, Vietnam, China" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileInterestedProducts">Importer interested products</label>
+                  <input id="profileInterestedProducts" placeholder="cotton, turmeric, packaging" />
+                </div>
+                <div class="input-group">
+                  <label for="profileSupplierCountries">Preferred supplier countries</label>
+                  <input id="profileSupplierCountries" placeholder="India, Vietnam, China" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileBuyingQuantity">Buying quantity</label>
+                  <input id="profileBuyingQuantity" placeholder="Monthly MOQ or yearly demand" />
+                </div>
+                <div class="input-group">
+                  <label for="profileCertificates">Certificates</label>
+                  <input id="profileCertificates" placeholder="ISO, FSSAI, Organic" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="profileMoq">MOQ</label>
+                  <input id="profileMoq" placeholder="500 pieces / 1 container" />
+                </div>
+                <div class="input-group">
+                  <label for="profileAnnualRevenue">Annual revenue</label>
+                  <input id="profileAnnualRevenue" placeholder="₹1Cr - ₹5Cr" />
+                </div>
+              </div>
+              <div class="input-group">
+                <label for="profileProductionCapacity">Production capacity</label>
+                <input id="profileProductionCapacity" placeholder="50,000 units/month" />
+              </div>
+              <div class="input-group">
+                <label for="profileLogoUrl">Company logo URL</label>
+                <input id="profileLogoUrl" placeholder="https://..." />
+              </div>
+              <div class="input-group">
+                <label for="profileBannerUrl">Company banner URL</label>
+                <input id="profileBannerUrl" placeholder="https://..." />
+              </div>
+              <div class="input-group">
+                <label for="profileCatalogPdfUrl">Catalog PDF URL</label>
+                <input id="profileCatalogPdfUrl" placeholder="https://.../catalog.pdf" />
+              </div>
+              <div class="input-group">
+                <label for="profileGallery">Company gallery image URLs</label>
+                <input id="profileGallery" placeholder="https://image1.jpg, https://image2.jpg" />
+              </div>
+              <div class="input-group">
+                <label for="profileKycDocuments">KYC document URLs</label>
+                <input id="profileKycDocuments" placeholder="GST certificate, IEC certificate or license URLs" />
+              </div>
+              <div class="input-group">
+                <label for="profileWhatsapp">WhatsApp / chat number</label>
+                <input id="profileWhatsapp" placeholder="+91..." />
+              </div>
+              <div class="input-group">
+                <label for="profileAbout">About company</label>
+                <textarea id="profileAbout" rows="5" placeholder="Describe your business, products, capacity and trade strengths."></textarea>
+              </div>
+              <button class="primary" type="submit">Save Profile</button>
+            </form>
+          </article>
+        </section>
+
+        <section class="dashboard-section">
+          <article class="dashboard-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="section-kicker">KYC verification</span>
+                <h2>Submit verification documents</h2>
+              </div>
+            </div>
+            <form class="settings-form" id="kycForm">
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="kycDocumentType">Document type</label>
+                  <select id="kycDocumentType">
+                    <option value="gst">GST Certificate</option>
+                    <option value="iec">IEC Certificate</option>
+                    <option value="pan">PAN</option>
+                    <option value="business_license">Business License</option>
+                    <option value="certificate">Business Certificate</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="kycDocumentNumber">Document number</label>
+                  <input id="kycDocumentNumber" placeholder="GSTIN / IEC / PAN" />
+                </div>
+              </div>
+              <div class="input-group">
+                <label for="kycDocumentUrl">Document URL</label>
+                <input id="kycDocumentUrl" placeholder="Upload file first, then paste secure URL" />
+              </div>
+              <button class="primary" type="submit">Submit KYC</button>
+            </form>
+          </article>
+        </section>
+      </div>
+    </main>
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
+    <script src="../js/state/appState.js" defer></script>
+    <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/api/profileApi.js" defer></script>
+    <script src="../js/profile.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
+
+

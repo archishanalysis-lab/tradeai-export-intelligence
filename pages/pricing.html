@@ -1,0 +1,1681 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Pricing | TradeAI</title>
+
+    <meta
+      name="description"
+      content="TradeAI pricing plans for exporters, importers, SMEs and trade consultants. Choose AI-powered export intelligence, buyer discovery, HS code reports, document review and enterprise trade intelligence."
+    />
+
+    <meta name="robots" content="index, follow" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- If your main.css already imports Inter, you can remove this line later. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+
+    <!-- SaaS Pricing Schema / JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "TradeAI",
+        "description": "AI-powered export-import intelligence platform for SMEs, exporters, importers and trade consultants.",
+        "brand": {
+          "@type": "Brand",
+          "name": "TradeAI"
+        },
+        "category": "B2B SaaS",
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "TradeAI Free",
+            "price": "0",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          },
+          {
+            "@type": "Offer",
+            "name": "TradeAI Starter",
+            "price": "999",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "999",
+              "priceCurrency": "INR",
+              "billingDuration": "P1M"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "TradeAI Pro",
+            "price": "4999",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "4999",
+              "priceCurrency": "INR",
+              "billingDuration": "P1M"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "TradeAI Growth",
+            "price": "14999",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "14999",
+              "priceCurrency": "INR",
+              "billingDuration": "P1M"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "TradeAI Enterprise",
+            "price": "50000",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "50000",
+              "priceCurrency": "INR",
+              "billingDuration": "P1M"
+            }
+          }
+        ]
+      }
+    </script>
+
+    <style>
+      :root {
+        --ta-navy: #071a33;
+        --ta-navy-2: #10294b;
+        --ta-blue: #0f4c81;
+        --ta-gold: #d8a441;
+        --ta-gold-soft: #fff4d2;
+        --ta-light: #f7f9fc;
+        --ta-white: #ffffff;
+        --ta-text: #1f2937;
+        --ta-muted: #6b7280;
+        --ta-border: #dfe5ee;
+        --ta-green: #0f766e;
+        --ta-green-soft: #e7f7f3;
+        --ta-red: #b91c1c;
+        --ta-shadow: 0 18px 45px rgba(7, 26, 51, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        padding-top: 0;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: var(--ta-light);
+        color: var(--ta-text);
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font-family: inherit;
+      }
+
+      .pricing-header {
+        width: 100%;
+        background: rgba(7, 26, 51, 0.96);
+        color: var(--ta-white);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+      }
+
+      .pricing-nav {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 22px;
+        letter-spacing: 0.2px;
+        flex-shrink: 0;
+      }
+
+      .brand-mark {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--ta-gold), #fff2b3);
+        display: grid;
+        place-items: center;
+        color: var(--ta-navy);
+        font-weight: 900;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--ta-gold);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn {
+        border: 0;
+        outline: 0;
+        border-radius: 999px;
+        min-height: 44px;
+        padding: 11px 18px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+
+      .btn-primary {
+        background: var(--ta-gold);
+        color: var(--ta-navy);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(216, 164, 65, 0.3);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--ta-white);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+      }
+
+      .btn-outline:hover {
+        border-color: var(--ta-gold);
+        color: var(--ta-gold);
+      }
+
+      .btn-dark {
+        background: var(--ta-navy);
+        color: var(--ta-white);
+      }
+
+      .btn-dark:hover {
+        background: var(--ta-navy-2);
+        transform: translateY(-2px);
+      }
+
+      .btn-soft {
+        background: #edf3f9;
+        color: var(--ta-navy);
+      }
+
+      .btn-soft:hover {
+        background: #dfeaf5;
+        transform: translateY(-2px);
+      }
+
+      .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        color: var(--ta-white);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 10px;
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 22px;
+        cursor: pointer;
+      }
+
+      .pricing-hero {
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(216, 164, 65, 0.18),
+            transparent 30%
+          ),
+          linear-gradient(135deg, #071a33 0%, #0f2748 58%, #071a33 100%);
+        color: var(--ta-white);
+        padding: 82px 20px 110px;
+        text-align: center;
+      }
+
+      .hero-inner {
+        max-width: 980px;
+        margin: 0 auto;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(216, 164, 65, 0.12);
+        border: 1px solid rgba(216, 164, 65, 0.36);
+        color: #ffe6a7;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 20px;
+      }
+
+      .pricing-hero h1 {
+        margin: 0;
+        font-size: clamp(34px, 5vw, 62px);
+        line-height: 1.05;
+        letter-spacing: -1.4px;
+      }
+
+      .pricing-hero p {
+        max-width: 760px;
+        margin: 20px auto 0;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 18px;
+        line-height: 1.7;
+      }
+
+      .hero-trust {
+        margin: 26px auto 0;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .trust-pill {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: rgba(255, 255, 255, 0.86);
+        padding: 9px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .pricing-toggle-card {
+        max-width: 1180px;
+        margin: -52px auto 32px;
+        padding: 0 20px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .toggle-box {
+        background: var(--ta-white);
+        border-radius: 26px;
+        padding: 22px;
+        box-shadow: var(--ta-shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        border: 1px solid var(--ta-border);
+      }
+
+      .toggle-copy h2 {
+        margin: 0 0 6px;
+        font-size: 22px;
+        color: var(--ta-navy);
+      }
+
+      .toggle-copy p {
+        margin: 0;
+        color: var(--ta-muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .billing-toggle {
+        background: #eef3f8;
+        border-radius: 999px;
+        padding: 6px;
+        display: flex;
+        gap: 6px;
+        min-width: 260px;
+      }
+
+      .billing-toggle button {
+        flex: 1;
+        border: 0;
+        border-radius: 999px;
+        min-height: 44px;
+        padding: 11px 14px;
+        font-weight: 900;
+        color: var(--ta-muted);
+        cursor: pointer;
+        background: transparent;
+      }
+
+      .billing-toggle button.active {
+        background: var(--ta-navy);
+        color: var(--ta-white);
+        box-shadow: 0 10px 24px rgba(7, 26, 51, 0.16);
+      }
+
+      .discount-badge {
+        color: var(--ta-green);
+        font-weight: 900;
+        font-size: 12px;
+        margin-left: 5px;
+      }
+
+      .pricing-section {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 22px 20px 60px;
+      }
+
+      .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .plan-card {
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 24px;
+        padding: 24px 20px;
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        position: relative;
+        overflow: hidden;
+        transition: 0.25s ease;
+      }
+
+      .plan-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--ta-shadow);
+      }
+
+      .plan-card.featured {
+        border: 2px solid var(--ta-gold);
+        box-shadow: 0 20px 55px rgba(216, 164, 65, 0.2);
+      }
+
+      .plan-card.best-value {
+        border: 2px solid var(--ta-green);
+        box-shadow: 0 20px 55px rgba(15, 118, 110, 0.14);
+      }
+
+      .popular-tag,
+      .team-tag {
+        position: absolute;
+        top: 16px;
+        right: -36px;
+        font-size: 12px;
+        font-weight: 900;
+        padding: 7px 42px;
+        transform: rotate(35deg);
+      }
+
+      .popular-tag {
+        background: var(--ta-gold);
+        color: var(--ta-navy);
+      }
+
+      .team-tag {
+        background: var(--ta-green);
+        color: var(--ta-white);
+      }
+
+      .plan-name {
+        margin: 0 0 8px;
+        color: var(--ta-navy);
+        font-size: 22px;
+      }
+
+      .plan-audience {
+        min-height: 48px;
+        margin: 0 0 14px;
+        color: var(--ta-muted);
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .micro-trust {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        width: fit-content;
+        margin-bottom: 16px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: var(--ta-green-soft);
+        color: var(--ta-green);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .price {
+        display: flex;
+        align-items: flex-end;
+        gap: 5px;
+        margin-bottom: 4px;
+        color: var(--ta-navy);
+      }
+
+      .currency {
+        font-size: 20px;
+        font-weight: 800;
+        padding-bottom: 6px;
+      }
+
+      .amount {
+        font-size: 36px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: -1px;
+      }
+
+      .period {
+        color: var(--ta-muted);
+        font-size: 13px;
+        padding-bottom: 7px;
+      }
+
+      .annual-note {
+        min-height: 22px;
+        color: var(--ta-green);
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 20px;
+      }
+
+      .features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 24px;
+        display: grid;
+        gap: 12px;
+        flex: 1;
+      }
+
+      .features li {
+        display: flex;
+        gap: 9px;
+        color: #374151;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .features li::before {
+        content: "✓";
+        color: var(--ta-green);
+        font-weight: 900;
+        flex: 0 0 auto;
+      }
+
+      .plan-btn {
+        width: 100%;
+        margin-top: auto;
+      }
+
+      .section-head {
+        max-width: 760px;
+        margin: 0 auto 34px;
+        text-align: center;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        color: var(--ta-navy);
+        font-size: clamp(28px, 4vw, 42px);
+        letter-spacing: -0.8px;
+      }
+
+      .section-head p {
+        margin: 12px 0 0;
+        color: var(--ta-muted);
+        line-height: 1.7;
+      }
+
+      .addons-section,
+      .comparison-section,
+      .proof-section,
+      .faq-section,
+      .cta-section {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 52px 20px;
+      }
+
+      .addons-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .addon-card {
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 22px;
+        padding: 22px;
+        box-shadow: 0 10px 28px rgba(7, 26, 51, 0.06);
+      }
+
+      .addon-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: rgba(216, 164, 65, 0.16);
+        color: var(--ta-navy);
+        font-size: 22px;
+        margin-bottom: 14px;
+      }
+
+      .addon-card h3 {
+        margin: 0 0 8px;
+        color: var(--ta-navy);
+        font-size: 18px;
+      }
+
+      .addon-card p {
+        margin: 0 0 14px;
+        color: var(--ta-muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .addon-price {
+        font-weight: 900;
+        color: var(--ta-blue);
+        font-size: 17px;
+      }
+
+      .comparison-table-wrap {
+        overflow-x: auto;
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 24px;
+        box-shadow: 0 10px 28px rgba(7, 26, 51, 0.06);
+      }
+
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 860px;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 17px 18px;
+        text-align: left;
+        border-bottom: 1px solid var(--ta-border);
+        font-size: 14px;
+      }
+
+      .comparison-table th {
+        background: #f1f5f9;
+        color: var(--ta-navy);
+        font-weight: 900;
+      }
+
+      .comparison-table td {
+        color: #374151;
+      }
+
+      .comparison-table tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .yes {
+        color: var(--ta-green);
+        font-weight: 900;
+      }
+
+      .no {
+        color: #9ca3af;
+        font-weight: 900;
+      }
+
+      .proof-grid {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .proof-metrics,
+      .testimonial-card {
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 24px;
+        padding: 26px;
+        box-shadow: 0 10px 28px rgba(7, 26, 51, 0.06);
+      }
+
+      .proof-metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .metric-box {
+        background: #f5f8fb;
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .metric-value {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--ta-navy);
+      }
+
+      .metric-label {
+        margin: 5px 0 0;
+        color: var(--ta-muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .testimonial-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .quote-mark {
+        color: var(--ta-gold);
+        font-size: 46px;
+        line-height: 1;
+        font-weight: 900;
+        margin-bottom: 8px;
+      }
+
+      .testimonial-card blockquote {
+        margin: 0;
+        color: var(--ta-text);
+        font-size: 20px;
+        line-height: 1.65;
+        font-weight: 600;
+      }
+
+      .testimonial-author {
+        margin-top: 18px;
+        color: var(--ta-muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .testimonial-author strong {
+        color: var(--ta-navy);
+      }
+
+      .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .faq-item {
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 20px;
+        padding: 22px;
+      }
+
+      .faq-item h3 {
+        margin: 0 0 8px;
+        color: var(--ta-navy);
+        font-size: 17px;
+      }
+
+      .faq-item p {
+        margin: 0;
+        color: var(--ta-muted);
+        line-height: 1.65;
+        font-size: 14px;
+      }
+
+      .cta-box {
+        background:
+          radial-gradient(
+            circle at top right,
+            rgba(216, 164, 65, 0.26),
+            transparent 28%
+          ),
+          linear-gradient(135deg, var(--ta-navy), var(--ta-navy-2));
+        color: var(--ta-white);
+        border-radius: 32px;
+        padding: 52px 34px;
+        text-align: center;
+        box-shadow: var(--ta-shadow);
+      }
+
+      .cta-box h2 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 44px);
+        letter-spacing: -0.8px;
+      }
+
+      .cta-box p {
+        max-width: 720px;
+        margin: 16px auto 24px;
+        color: rgba(255, 255, 255, 0.76);
+        line-height: 1.7;
+      }
+
+      .pricing-footer {
+        background: var(--ta-navy);
+        color: rgba(255, 255, 255, 0.75);
+        padding: 28px 20px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      html:not(.light-theme) body {
+        background: #08111f;
+        color: #f8fafc;
+      }
+
+      html:not(.light-theme) .toggle-box,
+      html:not(.light-theme) .plan-card,
+      html:not(.light-theme) .addon-card,
+      html:not(.light-theme) .comparison-table-wrap,
+      html:not(.light-theme) .proof-metrics,
+      html:not(.light-theme) .metric-box,
+      html:not(.light-theme) .testimonial-card,
+      html:not(.light-theme) .faq-item {
+        background: rgba(15, 23, 42, 0.92);
+        border-color: rgba(148, 163, 184, 0.18);
+        color: #f8fafc;
+        box-shadow: 0 20px 48px rgba(0, 0, 0, 0.22);
+      }
+
+      html:not(.light-theme) .section-head p,
+      html:not(.light-theme) .toggle-copy p,
+      html:not(.light-theme) .plan-card p,
+      html:not(.light-theme) .features li,
+      html:not(.light-theme) .plan-audience,
+      html:not(.light-theme) .period,
+      html:not(.light-theme) .addon-card p,
+      html:not(.light-theme) .testimonial-card p,
+      html:not(.light-theme) .metric-label,
+      html:not(.light-theme) .testimonial-author,
+      html:not(.light-theme) .faq-item p,
+      html:not(.light-theme) .plan-feature,
+      html:not(.light-theme) td {
+        color: #cbd5e1;
+      }
+
+      html:not(.light-theme) th,
+      html:not(.light-theme) .section-head h2,
+      html:not(.light-theme) .toggle-copy h2,
+      html:not(.light-theme) .plan-name,
+      html:not(.light-theme) .price,
+      html:not(.light-theme) .metric-value,
+      html:not(.light-theme) .testimonial-card blockquote,
+      html:not(.light-theme) .testimonial-author strong,
+      html:not(.light-theme) .plan-card h3,
+      html:not(.light-theme) .addon-card h3,
+      html:not(.light-theme) .faq-item h3 {
+        color: #f8fafc;
+      }
+
+      html:not(.light-theme) .addon-price {
+        color: #fff7d6;
+      }
+
+      html:not(.light-theme) .comparison-table th {
+        background: rgba(30, 41, 59, 0.92);
+      }
+
+      @media (max-width: 1120px) {
+        .plans-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .addons-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .proof-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .pricing-nav {
+          flex-wrap: wrap;
+        }
+
+        .mobile-menu-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .nav-links,
+        .nav-actions {
+          display: none;
+          width: 100%;
+        }
+
+        .nav-links.open,
+        .nav-actions.open {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .nav-links {
+          padding-top: 12px;
+          gap: 12px;
+        }
+
+        .toggle-box {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .billing-toggle {
+          width: 100%;
+          min-width: auto;
+        }
+
+        .plans-grid,
+        .addons-grid,
+        .faq-grid,
+        .proof-metrics {
+          grid-template-columns: 1fr;
+        }
+
+        .pricing-hero {
+          padding-top: 56px;
+        }
+
+        .plan-card {
+          padding: 24px 18px;
+        }
+
+        .cta-box {
+          padding: 38px 22px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="pricing-header">
+      <nav class="pricing-nav" aria-label="Main navigation">
+        <a href="../index.html" class="brand" aria-label="TradeAI Home">
+          <span class="brand-mark">T</span>
+          <span>TradeAI</span>
+        </a>
+
+        <button
+          class="mobile-menu-btn"
+          id="mobileMenuBtn"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="navLinks navActions"
+        >
+          ☰
+        </button>
+
+        <div class="nav-links" id="navLinks">
+          <a href="../index.html" data-i18n="home">Home</a>
+          <a href="countries.html" data-i18n="countries">Countries</a>
+          <a href="corridors.html" data-i18n="corridors">Corridors</a>
+          <a href="export-opportunity-report.html" data-i18n="reports">Reports</a>
+          <a href="pricing.html" class="active" data-i18n="pricing">Pricing</a>
+          <a href="contact.html" data-i18n="contact">Contact</a>
+        </div>
+
+        <div class="nav-actions" id="navActions">
+          <a href="login.html" class="btn btn-outline" data-i18n="login">Login</a>
+          <a href="register.html" class="btn btn-primary" data-i18n="startFree">Start Free</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="pricing-hero">
+        <div class="hero-inner">
+          <span class="eyebrow">AI-Powered Import Export Intelligence</span>
+
+          <h1>Choose the right TradeAI plan for your export growth</h1>
+
+          <p>
+            Start free, upgrade when you need serious country intelligence, HS
+            code support, buyer discovery, document review and export
+            opportunity reports.
+          </p>
+
+          <div class="hero-trust" aria-label="TradeAI trust signals">
+            <span class="trust-pill">Cancel anytime</span>
+            <span class="trust-pill">Built for SMEs and exporters</span>
+            <span class="trust-pill">AI-assisted report previews</span>
+            <span class="trust-pill">India → Africa/Gulf focus</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing-toggle-card" aria-label="Billing toggle">
+        <div class="toggle-box">
+          <div class="toggle-copy">
+            <h2>Simple pricing for exporters, importers and consultants</h2>
+            <p>
+              Pay monthly or save with annual billing. Request buyer discovery,
+              reports and document checklist guidance anytime.
+            </p>
+          </div>
+
+          <div
+            class="billing-toggle"
+            role="group"
+            aria-label="Billing frequency"
+          >
+            <button type="button" class="active" data-billing="monthly">
+              Monthly
+            </button>
+            <button type="button" data-billing="yearly">
+              Yearly <span class="discount-badge">Save up to 16%</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing-section" aria-label="TradeAI pricing plans">
+        <div class="plans-grid" id="plansGrid"></div>
+      </section>
+
+      <section class="addons-section">
+        <div class="section-head">
+          <h2>Repeat-use add-ons</h2>
+          <p>
+            These add-ons are designed for recurring customer needs: new buyers,
+            new documents, new products, new countries and new export
+            opportunities.
+          </p>
+        </div>
+
+        <div class="addons-grid">
+          <article class="addon-card">
+            <div class="addon-icon" aria-hidden="true">👥</div>
+            <h3>Buyer Discovery Add-on</h3>
+            <p>
+              Manual buyer discovery support for exporters who need importer
+              category direction.
+            </p>
+            <div class="addon-price">₹1,999 – ₹49,999</div>
+          </article>
+
+          <article class="addon-card">
+            <div class="addon-icon" aria-hidden="true">📊</div>
+            <h3>Export Opportunity Reports</h3>
+            <p>
+              Product-country reports with demand, HS code, competitor and risk
+              analysis.
+            </p>
+            <div class="addon-price">₹2,999 – ₹1 lakh+</div>
+          </article>
+
+          <article class="addon-card">
+            <div class="addon-icon" aria-hidden="true">📄</div>
+            <h3>AI Document Review</h3>
+            <p>
+              AI-assisted invoice, packing list, certificate and shipment
+              document checklist review.
+            </p>
+            <div class="addon-price">₹199 – ₹14,999</div>
+          </article>
+
+          <article class="addon-card">
+            <div class="addon-icon" aria-hidden="true">🔎</div>
+            <h3>HS Code Intelligence</h3>
+            <p>
+              AI-assisted HS code suggestions, product classification and duty
+              intelligence.
+            </p>
+            <div class="addon-price">₹299 – ₹1,499</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="comparison-section">
+        <div class="section-head">
+          <h2>Compare plans</h2>
+          <p>
+            Start with the plan that fits your current export stage. Upgrade as
+            your trade activity grows.
+          </p>
+        </div>
+
+        <div class="comparison-table-wrap">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Free</th>
+                <th>Starter</th>
+                <th>Pro</th>
+                <th>Growth</th>
+                <th>Enterprise</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Product-country searches</td>
+                <td>3/month</td>
+                <td>20/month</td>
+                <td>100/month</td>
+                <td>500/month</td>
+                <td>Custom</td>
+              </tr>
+              <tr>
+                <td>AI export opportunity score</td>
+                <td>Preview</td>
+                <td>Basic</td>
+                <td>Advanced</td>
+                <td>Advanced + risk</td>
+                <td>Custom model</td>
+              </tr>
+              <tr>
+                <td>HS code support</td>
+                <td>Education only</td>
+                <td>Basic</td>
+                <td>Advanced</td>
+                <td>Advanced</td>
+                <td>Bulk/API</td>
+              </tr>
+              <tr>
+                <td>Buyer discovery</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td>Sources</td>
+                <td>Dashboard + credits</td>
+                <td>Custom database</td>
+              </tr>
+              <tr>
+                <td>Report previews / manual detailed reports</td>
+                <td class="no">—</td>
+                <td>Basic</td>
+                <td>20/month</td>
+                <td>50+/month</td>
+                <td>White-label</td>
+              </tr>
+              <tr>
+                <td>Team access</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td>3 users</td>
+                <td>Custom users</td>
+              </tr>
+              <tr>
+                <td>Priority support</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓ Dedicated</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="proof-section">
+        <div class="section-head">
+          <h2>Built for repeat trade decisions</h2>
+          <p>
+            TradeAI pricing is designed around repeat monthly needs: new buyers,
+            new documents, new products, new countries and better export
+            decisions.
+          </p>
+        </div>
+
+        <div class="proof-grid">
+          <div class="proof-metrics">
+            <div class="metric-box">
+              <p class="metric-value">10+ hrs</p>
+              <p class="metric-label">
+                Potential research time saved per export opportunity report.
+              </p>
+            </div>
+
+            <div class="metric-box">
+              <p class="metric-value">50+</p>
+              <p class="metric-label">
+                SME-style workflows planned for exporter, importer and
+                consultant use cases.
+              </p>
+            </div>
+
+            <div class="metric-box">
+              <p class="metric-value">3</p>
+              <p class="metric-label">
+                Core corridors to start: India → Africa, India → Gulf, India ↔
+                China.
+              </p>
+            </div>
+
+            <div class="metric-box">
+              <p class="metric-value">24/7</p>
+              <p class="metric-label">
+                AI-assisted product, country, HS code and report exploration.
+              </p>
+            </div>
+          </div>
+
+          <article class="testimonial-card">
+            <div class="quote-mark" aria-hidden="true">“</div>
+            <blockquote>
+              TradeAI is being designed to help exporters reduce manual
+              research, compare countries faster and prepare more confident
+              export decisions.
+            </blockquote>
+            <div class="testimonial-author">
+              <strong>Early product direction</strong><br />
+              Export market intelligence, buyer discovery and AI-assisted
+              documentation.
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="faq-section">
+        <div class="section-head">
+          <h2>Pricing FAQs</h2>
+          <p>Important answers before customers choose a TradeAI plan.</p>
+        </div>
+
+        <div class="faq-grid">
+          <article class="faq-item">
+            <h3>Can I start without paying?</h3>
+            <p>
+              Yes. The Free plan is for basic exploration. Serious exporters
+              should upgrade when they need reports, buyer discovery and deeper
+              country intelligence.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <h3>Is buyer discovery included in every plan?</h3>
+            <p>
+              Basic buyer source suggestions are included in Pro. Buyer
+              discovery support can be added based on scope.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <h3>Is document review legal certification?</h3>
+            <p>
+              No. TradeAI provides AI-assisted document review and checklist
+              guidance. Final compliance should be verified by a qualified
+              professional or relevant authority.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <h3>Which plan is best for SMEs?</h3>
+            <p>
+              Pro is best for most SMEs. Growth is better for active exporters,
+              consultants or teams handling multiple products and markets.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-section">
+        <div class="cta-box">
+          <h2>
+            Start with export intelligence. Grow with trade opportunity previews.
+          </h2>
+          <p>
+            TradeAI helps you move from guesswork to data-backed export
+            decisions: product-country analysis, buyer discovery, HS code
+            support and AI-assisted report previews.
+          </p>
+          <a
+            href="register.html?plan=Free"
+            class="btn btn-primary"
+            data-track="cta_create_free_account"
+          >
+            Create Free Account
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pricing-footer">
+      <p>
+        © <span id="currentYear"></span> TradeAI. Import-Export | AI-Powered |
+        Global Growth.
+      </p>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+    <script>
+      const plansData = {
+        Free: {
+          name: "Free",
+          audience:
+            "For students, beginners and first-time exporters exploring TradeAI.",
+          monthly: 0,
+          yearly: 0,
+          noteMonthly: "No credit card required",
+          noteYearly: "No credit card required",
+          buttonText: "Start Free",
+          buttonClass: "btn-soft",
+          badge: "",
+          cardClass: "",
+          trust: "",
+          features: [
+            "3 product-country searches/month",
+            "Basic HS code education",
+            "Basic country overview",
+            "Export readiness checklist",
+            "Limited AI export score preview",
+          ],
+        },
+        Starter: {
+          name: "Starter",
+          audience:
+            "For new exporters validating products and target countries.",
+          monthly: 999,
+          yearly: 9999,
+          buttonText: "Choose Starter",
+          buttonClass: "btn-soft",
+          badge: "",
+          cardClass: "",
+          trust: "Cancel anytime",
+          features: [
+            "20 product-country searches/month",
+            "Basic HS code suggestions",
+            "5 country comparison reports",
+            "Basic export opportunity score",
+            "Save 5 products",
+            "Manual PDF report available on request",
+          ],
+        },
+        Pro: {
+          name: "Pro",
+          audience:
+            "For SMEs, exporters and consultants who need serious market intelligence.",
+          monthly: 4999,
+          yearly: 49999,
+          buttonText: "Choose Pro",
+          buttonClass: "btn-primary",
+          badge: "Popular",
+          cardClass: "featured",
+          trust: "Trusted by early SME workflows",
+          features: [
+            "100 product-country searches/month",
+            "Advanced HS code/product classification",
+            "AI market opportunity scoring",
+            "Competitor country analysis",
+            "Buyer/supplier source suggestions",
+            "Manual report requests available",
+            "Basic documentation checklist",
+          ],
+        },
+        Growth: {
+          name: "Growth",
+          audience:
+            "For active exporters, agencies and consultants handling multiple products.",
+          monthly: 14999,
+          yearly: 149999,
+          buttonText: "Choose Growth",
+          buttonClass: "btn-dark",
+          badge: "Best for Teams",
+          cardClass: "best-value",
+          trust: "Best value for repeat users",
+          features: [
+            "500 product-country searches/month",
+            "Buyer discovery dashboard",
+            "Supplier discovery dashboard",
+            "Buyer discovery add-on available",
+            "Advanced risk scoring",
+            "Team access for 3 users",
+            "Monthly custom market report",
+          ],
+        },
+        Enterprise: {
+          name: "Enterprise",
+          audience:
+            "For trade agencies, large SMEs, chambers, logistics firms and consultants.",
+          monthly: 50000,
+          yearly: 500000,
+          isCustom: true,
+          buttonText: "Schedule Demo",
+          buttonClass: "btn-dark",
+          badge: "",
+          cardClass: "",
+          trust: "Custom onboarding",
+          features: [
+            "Multi-user dashboard",
+            "Custom corridor intelligence",
+            "Bulk product/category analytics",
+            "White-label reports planned for enterprise",
+            "API/data export",
+            "Priority support",
+            "Dedicated analyst support",
+          ],
+        },
+      };
+
+      const billingButtons = document.querySelectorAll("[data-billing]");
+      const plansGrid = document.getElementById("plansGrid");
+      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+      const navLinks = document.getElementById("navLinks");
+      const navActions = document.getElementById("navActions");
+
+      function normalizeBilling(value) {
+        return value === "yearly" || value === "monthly" ? value : "monthly";
+      }
+
+      let selectedBilling = normalizeBilling(
+        localStorage.getItem("tradeai_selected_billing"),
+      );
+
+      function formatIndianNumber(value) {
+        const numericValue = Number(value);
+        return Number.isFinite(numericValue)
+          ? numericValue.toLocaleString("en-IN")
+          : "0";
+      }
+
+      function calculateAnnualSaving(monthly, yearly) {
+        if (!monthly || !yearly) return 0;
+        const monthlyYearTotal = monthly * 12;
+        return monthlyYearTotal - yearly;
+      }
+
+      function getPriceDisplay(plan, billingType) {
+        const safeBillingType = normalizeBilling(billingType);
+
+        if (plan.isCustom) {
+          return safeBillingType === "yearly" ? "5,00,000+" : "50,000+";
+        }
+
+        return formatIndianNumber(plan[safeBillingType]);
+      }
+
+      function getPeriodDisplay(billingType) {
+        return normalizeBilling(billingType) === "yearly" ? "/year" : "/month";
+      }
+
+      function getPlanNote(plan, billingType) {
+        const safeBillingType = normalizeBilling(billingType);
+
+        if (plan.noteMonthly && safeBillingType === "monthly")
+          return plan.noteMonthly;
+        if (plan.noteYearly && safeBillingType === "yearly") return plan.noteYearly;
+
+        if (plan.isCustom) return "Custom contract";
+
+        if (safeBillingType === "yearly") {
+          const saving = calculateAnnualSaving(plan.monthly, plan.yearly);
+          if (saving > 0) {
+            return `Save ₹${formatIndianNumber(saving)} yearly`;
+          }
+
+          return `₹${formatIndianNumber(plan.yearly)}/year`;
+        }
+
+        return "Monthly billing. Cancel anytime.";
+      }
+
+      function trackEvent(eventName, eventParams = {}) {
+        if (typeof window.gtag === "function") {
+          window.gtag("event", eventName, eventParams);
+        }
+
+        if (
+          typeof window.mixpanel !== "undefined" &&
+          typeof window.mixpanel.track === "function"
+        ) {
+          window.mixpanel.track(eventName, eventParams);
+        }
+
+        console.log("[TradeAI Analytics]", eventName, eventParams);
+      }
+
+      function renderPlans() {
+        plansGrid.innerHTML = Object.values(plansData)
+          .map((plan) => {
+            const badgeHtml = plan.badge
+              ? `<div class="${plan.name === "Growth" ? "team-tag" : "popular-tag"}">${plan.badge}</div>`
+              : "";
+
+            const trustHtml = plan.trust
+              ? `<div class="micro-trust">✓ ${plan.trust}</div>`
+              : `<div class="micro-trust" style="visibility:hidden;">Placeholder</div>`;
+
+            const featuresHtml = plan.features
+              .map((feature) => `<li>${feature}</li>`)
+              .join("");
+
+            return `
+          <article class="plan-card ${plan.cardClass}" data-plan-card="${plan.name}">
+            ${badgeHtml}
+
+            <h2 class="plan-name">${plan.name}</h2>
+            <p class="plan-audience">${plan.audience}</p>
+
+            ${trustHtml}
+
+            <div class="price">
+              <span class="currency">₹</span>
+              <span class="amount" data-price-for="${plan.name}">
+                ${getPriceDisplay(plan, selectedBilling)}
+              </span>
+              <span class="period" data-period-for="${plan.name}">
+                ${getPeriodDisplay(selectedBilling)}
+              </span>
+            </div>
+
+            <div class="annual-note" data-note-for="${plan.name}">
+              ${getPlanNote(plan, selectedBilling)}
+            </div>
+
+            <ul class="features">
+              ${featuresHtml}
+            </ul>
+
+            <button
+              class="btn ${plan.buttonClass} plan-btn"
+              type="button"
+              data-plan="${plan.name}"
+            >
+              ${plan.buttonText}
+            </button>
+          </article>
+        `;
+          })
+          .join("");
+
+        attachPlanButtonEvents();
+      }
+
+      function updatePrices(billingType) {
+        selectedBilling = normalizeBilling(billingType);
+        localStorage.setItem("tradeai_selected_billing", selectedBilling);
+
+        billingButtons.forEach((button) => {
+          button.classList.toggle(
+            "active",
+            button.dataset.billing === billingType,
+          );
+          button.setAttribute(
+            "aria-pressed",
+            button.dataset.billing === billingType ? "true" : "false",
+          );
+        });
+
+        Object.values(plansData).forEach((plan) => {
+          const priceEl = document.querySelector(
+            `[data-price-for="${plan.name}"]`,
+          );
+          const periodEl = document.querySelector(
+            `[data-period-for="${plan.name}"]`,
+          );
+          const noteEl = document.querySelector(
+            `[data-note-for="${plan.name}"]`,
+          );
+
+          if (priceEl) priceEl.textContent = getPriceDisplay(plan, billingType);
+          if (periodEl) periodEl.textContent = getPeriodDisplay(billingType);
+          if (noteEl) noteEl.textContent = getPlanNote(plan, billingType);
+        });
+
+        trackEvent("pricing_billing_toggle", {
+          billing: selectedBilling,
+        });
+      }
+
+      function attachPlanButtonEvents() {
+        document.querySelectorAll(".plan-btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            const planName = button.dataset.plan;
+            const encodedPlan = encodeURIComponent(planName);
+            const encodedBilling = encodeURIComponent(selectedBilling);
+
+            localStorage.setItem("tradeai_selected_plan", planName);
+            localStorage.setItem("tradeai_selected_billing", selectedBilling);
+
+            trackEvent("pricing_plan_click", {
+              plan: planName,
+              billing: selectedBilling,
+              source: "pricing_page",
+            });
+
+            if (planName === "Enterprise") {
+              /*
+              Make contact.html read these params:
+              ?interest=enterprise&plan=Enterprise&billing=monthly&source=pricing
+
+              Recommended behavior in contact.html:
+              - Pre-select "Enterprise / Schedule Demo"
+              - Show a "Schedule Demo" CTA
+              - Optionally embed Calendly later
+            */
+              window.location.href = `contact.html?interest=enterprise&plan=${encodedPlan}&billing=${encodedBilling}&source=pricing`;
+              return;
+            }
+
+            if (planName === "Free") {
+              window.location.href = `register.html?plan=${encodedPlan}&billing=${encodedBilling}&source=pricing`;
+              return;
+            }
+
+            /*
+            Later, when Razorpay checkout is ready, replace this redirect with:
+            window.location.href = `checkout.html?plan=${encodedPlan}&billing=${encodedBilling}&source=pricing`;
+          */
+            window.location.href = `register.html?plan=${encodedPlan}&billing=${encodedBilling}&source=pricing`;
+          });
+        });
+      }
+
+      billingButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          updatePrices(button.dataset.billing);
+        });
+      });
+
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener("click", () => {
+          const isOpen = navLinks.classList.toggle("open");
+          navActions.classList.toggle("open", isOpen);
+
+          mobileMenuBtn.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false",
+          );
+          mobileMenuBtn.setAttribute(
+            "aria-label",
+            isOpen ? "Close menu" : "Open menu",
+          );
+
+          trackEvent("mobile_menu_toggle", {
+            expanded: isOpen,
+          });
+        });
+      }
+
+      document.querySelectorAll("[data-track]").forEach((element) => {
+        element.addEventListener("click", () => {
+          trackEvent(element.dataset.track, {
+            source: "pricing_page",
+          });
+        });
+      });
+
+      document.getElementById("currentYear").textContent =
+        new Date().getFullYear();
+
+      renderPlans();
+      updatePrices(selectedBilling);
+    </script>
+  </body>
+</html>

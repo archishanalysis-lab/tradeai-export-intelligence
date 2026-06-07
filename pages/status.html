@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Status - TradeAI</title>
+    <meta
+      name="description"
+      content="Current availability status for TradeAI frontend, backend API, database and trade intelligence services."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="../index.html#features">Features</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <div class="auth-buttons">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+        </div>
+        <button class="menu-toggle" aria-label="Open mobile menu">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#features">Features</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </div>
+
+    <main>
+      <section class="pricing-hero">
+        <div class="container">
+          <div class="pricing-hero-content">
+            <div class="pricing-badge">Operational Transparency</div>
+            <h1>TradeAI System Status</h1>
+            <p>Track platform availability before running buyer discovery, product uploads or inquiry workflows.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing-section">
+        <div class="container">
+          <div class="trust-grid">
+            <article class="trust-card">
+              <i class="fa-solid fa-circle-check"></i>
+              <h3>Frontend App</h3>
+              <p>Operational. Static pages and dashboard UI are available locally and ready for Vercel deployment.</p>
+            </article>
+            <article class="trust-card">
+              <i class="fa-solid fa-circle-check"></i>
+              <h3>Backend API</h3>
+              <p>Operational when the Express server is running on port 5000 with valid environment variables.</p>
+            </article>
+            <article class="trust-card">
+              <i class="fa-solid fa-circle-check"></i>
+              <h3>MongoDB Atlas</h3>
+              <p>Connected. Buyers, products, inquiries, profiles and users are stored in the TradeAI database.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+      <script src="../js/i18n.js" defer></script>
+</body>
+</html>

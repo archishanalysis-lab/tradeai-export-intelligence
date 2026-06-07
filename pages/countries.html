@@ -1,0 +1,1321 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Target Countries | TradeAI</title>
+
+    <meta
+      name="description"
+      content="Explore TradeAI target countries for India export-import intelligence across East Africa, Gulf/GCC and China sourcing corridors."
+    />
+
+    <meta name="robots" content="index, follow" />
+
+    <link rel="canonical" href="https://tradeai.com/countries.html" />
+
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "TradeAI Target Countries",
+        "description": "Explore TradeAI target countries across East Africa, Gulf/GCC and China sourcing corridors.",
+        "url": "https://tradeai.com/countries.html",
+        "publisher": {
+          "@type": "Organization",
+          "name": "TradeAI"
+        }
+      }
+    </script>
+
+    <style>
+      :root {
+        --ta-navy: #071a33;
+        --ta-navy-2: #10294b;
+        --ta-blue: #0f4c81;
+        --ta-gold: #d8a441;
+        --ta-light: #f7f9fc;
+        --ta-white: #ffffff;
+        --ta-text: #1f2937;
+        --ta-muted: #6b7280;
+        --ta-border: #dfe5ee;
+        --ta-green: #0f766e;
+        --ta-green-soft: #e7f7f3;
+        --ta-shadow: 0 18px 45px rgba(7, 26, 51, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        padding-top: 0;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: var(--ta-light);
+        color: var(--ta-text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .countries-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(7, 26, 51, 0.96);
+        color: var(--ta-white);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+      }
+
+      .countries-nav {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--ta-gold), #fff0b8);
+        color: var(--ta-navy);
+        font-weight: 900;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--ta-gold);
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .btn {
+        min-height: 44px;
+        border: 0;
+        border-radius: 999px;
+        padding: 11px 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.25s ease;
+        font-size: 14px;
+      }
+
+      .btn-primary {
+        background: var(--ta-gold);
+        color: var(--ta-navy);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(216, 164, 65, 0.28);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        color: var(--ta-white);
+      }
+
+      .btn-outline:hover {
+        border-color: var(--ta-gold);
+        color: var(--ta-gold);
+      }
+
+      .menu-toggle {
+        display: none;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: transparent;
+        color: var(--ta-white);
+        font-size: 22px;
+        cursor: pointer;
+      }
+
+      .hero {
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(216, 164, 65, 0.22),
+            transparent 32%
+          ),
+          linear-gradient(135deg, #071a33 0%, #10294b 58%, #071a33 100%);
+        color: var(--ta-white);
+        padding: 88px 20px 96px;
+      }
+
+      .hero-inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 42px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        width: fit-content;
+        align-items: center;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(216, 164, 65, 0.13);
+        border: 1px solid rgba(216, 164, 65, 0.36);
+        color: #ffe6a7;
+        font-size: 13px;
+        font-weight: 900;
+        margin-bottom: 18px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(36px, 5vw, 62px);
+        line-height: 1.05;
+        letter-spacing: -1.5px;
+      }
+
+      .hero p {
+        max-width: 720px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 18px;
+        line-height: 1.7;
+        margin: 20px 0 0;
+      }
+
+      .hero-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .hero-card {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 28px;
+        padding: 28px;
+        box-shadow: var(--ta-shadow);
+      }
+
+      .hero-card h2 {
+        margin: 0 0 16px;
+        color: #fff2bf;
+      }
+
+      .hero-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .hero-stat {
+        padding: 18px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .hero-stat strong {
+        display: block;
+        font-size: 30px;
+        color: var(--ta-gold);
+        margin-bottom: 4px;
+      }
+
+      .hero-stat span {
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .section {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 66px 20px;
+      }
+
+      .section-head {
+        max-width: 780px;
+        margin: 0 auto 34px;
+        text-align: center;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        color: var(--ta-navy);
+        font-size: clamp(28px, 4vw, 42px);
+        letter-spacing: -0.9px;
+      }
+
+      .section-head p {
+        color: var(--ta-muted);
+        line-height: 1.7;
+        margin: 12px 0 0;
+      }
+
+      .search-box {
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 28px;
+        box-shadow: var(--ta-shadow);
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr auto;
+        gap: 14px;
+        align-items: end;
+      }
+
+      .field label {
+        display: block;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--ta-navy);
+        margin-bottom: 8px;
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        min-height: 48px;
+        border-radius: 14px;
+        border: 1px solid var(--ta-border);
+        padding: 0 14px;
+        font-size: 14px;
+        outline: none;
+      }
+
+      .field input:focus,
+      .field select:focus {
+        border-color: var(--ta-gold);
+        box-shadow: 0 0 0 4px rgba(216, 164, 65, 0.14);
+      }
+
+      .corridor-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+
+      .corridor-tabs a {
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        color: var(--ta-navy);
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      .corridor-tabs a:hover {
+        background: var(--ta-navy);
+        color: var(--ta-white);
+      }
+
+      .corridor-block {
+        margin-top: 34px;
+      }
+
+      .corridor-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+
+      .corridor-title h2 {
+        margin: 0;
+        color: var(--ta-navy);
+        font-size: 30px;
+      }
+
+      .corridor-title p {
+        margin: 0;
+        color: var(--ta-muted);
+        max-width: 640px;
+        line-height: 1.65;
+      }
+
+      .country-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .country-card {
+        background: var(--ta-white);
+        border: 1px solid var(--ta-border);
+        border-radius: 24px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        box-shadow: 0 10px 28px rgba(7, 26, 51, 0.06);
+        transition: 0.25s ease;
+      }
+
+      .country-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--ta-shadow);
+      }
+
+      .country-badge {
+        display: inline-flex;
+        width: fit-content;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: var(--ta-green-soft);
+        color: var(--ta-green);
+        font-size: 12px;
+        font-weight: 900;
+        margin-bottom: 14px;
+      }
+
+      .country-card h3 {
+        margin: 0 0 8px;
+        color: var(--ta-navy);
+        font-size: 22px;
+      }
+
+      .country-card p {
+        margin: 0 0 16px;
+        color: var(--ta-muted);
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      .category-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0 0 20px;
+      }
+
+      .category-list span {
+        padding: 7px 9px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: var(--ta-navy);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .country-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: auto;
+      }
+
+      .country-link-primary {
+        min-height: 42px;
+        border-radius: 999px;
+        background: var(--ta-navy);
+        color: var(--ta-white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      .country-link-primary:hover {
+        background: var(--ta-navy-2);
+      }
+
+      .country-link-secondary {
+        min-height: 42px;
+        border-radius: 999px;
+        background: #edf3f9;
+        color: var(--ta-navy);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      .country-link-secondary:hover {
+        background: #dfeaf5;
+      }
+
+      .compare-section {
+        background: var(--ta-white);
+        border-radius: 32px;
+        padding: 34px;
+        border: 1px solid var(--ta-border);
+        box-shadow: var(--ta-shadow);
+      }
+
+      .compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 14px;
+        align-items: end;
+      }
+
+      .cta-box {
+        background:
+          radial-gradient(
+            circle at top right,
+            rgba(216, 164, 65, 0.25),
+            transparent 30%
+          ),
+          linear-gradient(135deg, var(--ta-navy), var(--ta-navy-2));
+        color: var(--ta-white);
+        border-radius: 32px;
+        padding: 50px 32px;
+        text-align: center;
+        box-shadow: var(--ta-shadow);
+      }
+
+      .cta-box h2 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 44px);
+      }
+
+      .cta-box p {
+        color: rgba(255, 255, 255, 0.76);
+        max-width: 720px;
+        margin: 14px auto 24px;
+        line-height: 1.7;
+      }
+
+      .footer {
+        background: var(--ta-navy);
+        color: rgba(255, 255, 255, 0.72);
+        padding: 38px 20px;
+      }
+
+      .footer-inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.2fr repeat(3, 1fr);
+        gap: 28px;
+      }
+
+      .footer h3 {
+        margin: 0 0 14px;
+        color: var(--ta-white);
+        font-size: 16px;
+      }
+
+      .footer a {
+        display: block;
+        color: rgba(255, 255, 255, 0.72);
+        margin: 8px 0;
+        font-size: 14px;
+      }
+
+      .footer a:hover {
+        color: var(--ta-gold);
+      }
+
+      .footer-brand {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--ta-white);
+      }
+
+      .footer p {
+        line-height: 1.65;
+      }
+
+      .copyright {
+        max-width: 1180px;
+        margin: 28px auto 0;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        text-align: center;
+        font-size: 14px;
+      }
+
+      html:not(.light-theme) body {
+        background: #08111f;
+        color: #f8fafc;
+      }
+
+      html:not(.light-theme) .search-box,
+      html:not(.light-theme) .country-card,
+      html:not(.light-theme) .compare-section,
+      html:not(.light-theme) .filter-chip {
+        background: rgba(15, 23, 42, 0.92);
+        border-color: rgba(148, 163, 184, 0.18);
+        color: #f8fafc;
+        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22);
+      }
+
+      html:not(.light-theme) .country-card p,
+      html:not(.light-theme) .compare-section p,
+      html:not(.light-theme) .search-box p,
+      html:not(.light-theme) .section-head p {
+        color: #cbd5e1;
+      }
+
+      html:not(.light-theme) .country-card h3,
+      html:not(.light-theme) .compare-section h2,
+      html:not(.light-theme) .section-head h2,
+      html:not(.light-theme) .field label,
+      html:not(.light-theme) .filter-chip {
+        color: #f8fafc;
+      }
+
+      @media (max-width: 1040px) {
+        .hero-inner {
+          grid-template-columns: 1fr;
+        }
+
+        .country-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .search-box,
+        .compare-grid,
+        .footer-inner {
+          grid-template-columns: 1fr;
+        }
+
+        .corridor-title {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .countries-nav {
+          flex-wrap: wrap;
+        }
+
+        .menu-toggle {
+          display: inline-grid;
+          place-items: center;
+        }
+
+        .nav-links,
+        .nav-actions {
+          display: none;
+          width: 100%;
+        }
+
+        .nav-links.open,
+        .nav-actions.open {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .country-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding: 64px 20px 76px;
+        }
+
+        .compare-section,
+        .cta-box {
+          padding: 28px 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="countries-header">
+      <nav class="countries-nav" aria-label="Main navigation">
+        <a href="../index.html" class="brand" aria-label="TradeAI Home">
+          <span class="brand-mark">T</span>
+          <span>TradeAI</span>
+        </a>
+
+        <button
+          class="menu-toggle"
+          id="menuToggle"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+
+        <div class="nav-links" id="navLinks">
+          <a href="../index.html" data-i18n="home">Home</a>
+          <a href="countries.html" class="active" data-i18n="countries">Countries</a>
+          <a href="corridors.html" data-i18n="corridors">Corridors</a>
+          <a href="export-opportunity-report.html" data-i18n="reports">Reports</a>
+          <a href="pricing.html" data-i18n="pricing">Pricing</a>
+          <a href="contact.html" data-i18n="contact">Contact</a>
+        </div>
+
+        <div class="nav-actions" id="navActions">
+          <a href="login.html" class="btn btn-outline" data-i18n="login">Login</a>
+          <a
+            href="register.html?plan=Free&source=countries-header"
+            class="btn btn-primary"
+            data-i18n="startFree"
+          >
+            Start Free
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-inner">
+          <div>
+            <span class="eyebrow">TradeAI Target Countries</span>
+
+            <h1>Explore Export-Import Opportunities Across 9 Focus Markets</h1>
+
+            <p>
+              TradeAI starts with practical India-linked trade corridors across
+              East Africa, Gulf/GCC and China. Compare product-country
+              opportunities, buyer discovery, HS code risks, document readiness
+              and AI-assisted report previews.
+            </p>
+
+            <div class="hero-cta">
+              <a href="#countries" class="btn btn-primary">
+                Explore Countries
+              </a>
+
+              <a
+                href="register.html?plan=Free&source=countries-hero&intent=opportunity-preview"
+                class="btn btn-outline"
+              >
+                Generate Free Preview
+              </a>
+            </div>
+          </div>
+
+          <aside class="hero-card">
+            <h2>Phase 1 Coverage</h2>
+
+            <div class="hero-stat-grid">
+              <div class="hero-stat">
+                <strong>4</strong>
+                <span>East Africa countries</span>
+              </div>
+
+              <div class="hero-stat">
+                <strong>4</strong>
+                <span>Gulf / GCC countries</span>
+              </div>
+
+              <div class="hero-stat">
+                <strong>1</strong>
+                <span>China sourcing corridor</span>
+              </div>
+
+              <div class="hero-stat">
+                <strong>9</strong>
+                <span>Total target countries</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- SEARCH -->
+      <section class="section">
+        <form class="search-box" id="countryOpportunityForm">
+          <div class="field">
+            <label for="productInput"
+              >What do you want to export or source?</label
+            >
+            <input
+              type="text"
+              id="productInput"
+              name="product"
+              placeholder="Example: turmeric, textiles, machinery, electronics"
+            />
+          </div>
+
+          <div class="field">
+            <label for="countrySelect">Select target country</label>
+            <select id="countrySelect" name="country">
+              <option value="kenya">Kenya</option>
+              <option value="tanzania">Tanzania</option>
+              <option value="uganda">Uganda</option>
+              <option value="rwanda">Rwanda</option>
+              <option value="uae">UAE</option>
+              <option value="saudi-arabia">Saudi Arabia</option>
+              <option value="oman">Oman</option>
+              <option value="qatar">Qatar</option>
+              <option value="china">China</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            Generate Opportunity Preview
+          </button>
+        </form>
+      </section>
+
+      <!-- COUNTRY HUB -->
+      <section class="section" id="countries">
+        <div class="section-head">
+          <span class="eyebrow" style="color: #6b4b12; background: #fff7e6">
+            Country Hub
+          </span>
+
+          <h2>Choose your target market</h2>
+
+          <p>
+            Start with one country, compare nearby markets, then generate a
+            product-country report when you are ready.
+          </p>
+        </div>
+
+        <div class="corridor-tabs">
+          <a href="#east-africa">East Africa</a>
+          <a href="#gulf">Gulf / GCC</a>
+          <a href="#china">China</a>
+        </div>
+
+        <!-- EAST AFRICA -->
+        <div class="corridor-block" id="east-africa">
+          <div class="corridor-title">
+            <h2>India → East Africa</h2>
+            <p>
+              Best for exporters exploring growing African demand across food,
+              pharma, packaging, textiles, machinery, FMCG and business
+              supplies.
+            </p>
+          </div>
+
+          <div class="country-grid">
+            <article class="country-card">
+              <span class="country-badge">East Africa Gateway</span>
+              <h3>Kenya</h3>
+              <p>
+                Strong gateway market for Nairobi, Mombasa and wider East
+                African buyer discovery.
+              </p>
+
+              <div class="category-list">
+                <span>Pharma</span>
+                <span>Food</span>
+                <span>Textiles</span>
+                <span>Machinery</span>
+              </div>
+
+              <div class="country-actions">
+                <a class="country-link-primary" href="india-kenya.html">
+                  Explore Kenya
+                </a>
+                <a
+                  class="country-link-secondary"
+                  href="register.html?plan=Free&source=countries&intent=kenya-report&country=kenya"
+                >
+                  Free Kenya Report
+                </a>
+              </div>
+            </article>
+
+            <article class="country-card">
+              <span class="country-badge">Coastal Trade Access</span>
+              <h3>Tanzania</h3>
+              <p>
+                Explore Dar es Salaam, Zanzibar and broader East African coastal
+                trade opportunities.
+              </p>
+
+              <div class="category-list">
+                <span>Food</span>
+                <span>Pharma</span>
+                <span>Textiles</span>
+                <span>Equipment</span>
+              </div>
+
+              <div class="country-actions">
+                <a class="country-link-primary" href="india-tanzania.html">
+                  Explore Tanzania
+                </a>
+                <a
+                  class="country-link-secondary"
+                  href="register.html?plan=Free&source=countries&intent=tanzania-report&country=tanzania"
+                >
+                  Free Tanzania Report
+                </a>
+              </div>
+            </article>
+
+            <article class="country-card">
+              <span class="country-badge">Inland Market</span>
+              <h3>Uganda</h3>
+              <p>
+                Useful for distributor discovery, Kampala buyer networks and
+                inland East African demand.
+              </p>
+
+              <div class="category-list">
+                <span>Pharma</span>
+                <span>Packaging</span>
+                <span>Textiles</span>
+                <span>Tools</span>
+              </div>
+
+              <div class="country-actions">
+                <a class="country-link-primary" href="india-uganda.html">
+                  Explore Uganda
+                </a>
+                <a
+                  class="country-link-secondary"
+                  href="register.html?plan=Free&source=countries&intent=uganda-report&country=uganda"
+                >
+                  Free Uganda Report
+                </a>
+              </div>
+            </article>
+
+            <article class="country-card">
+              <span class="country-badge">Focused Gateway</span>
+              <h3>Rwanda</h3>
+              <p>
+                Smaller but structured market for focused SME export validation
+                and distributor outreach.
+              </p>
+
+              <div class="category-list">
+                <span>Pharma</span>
+                <span>FMCG</span>
+                <span>Packaging</span>
+                <span>Machinery</span>
+              </div>
+
+              <div class="country-actions">
+                <a class="country-link-primary" href="india-rwanda.html">
+                  Explore Rwanda
+                </a>
+                <a
+                  class="country-link-secondary"
+                  href="register.html?plan=Free&source=countries&intent=rwanda-report&country=rwanda"
+                >
+                  Free Rwanda Report
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- GULF -->
+        <div class="corridor-block" id="gulf">
+          <div class="corridor-title">
+            <h2>India → Gulf / GCC</h2>
+            <p>
+              Best for exporters targeting premium Gulf markets, re-export
+              channels, food, textiles, engineering goods, chemicals and
+              consumer products.
+            </p>
+          </div>
+
+          <div class="country-grid">
+            <article class="country-card">
+              <span class="country-badge">Premium + Re-export Hub</span>
+              <h3>UAE</h3>
+              <p>
+                Explore Dubai, Abu Dhabi, distributor networks and re-export
+                buyer opportunities.
+              </p>
+
+              <div class="category-list">
+                <span>Food</span>
+                <span>Textiles</span>
+                <span>Jewellery</span>
+                <span>Engineering</span>
+              </div>
+
+              <div class="country-actions">
+                <a class="country-link-primary" href="india-uae.html">
+                  Explore UAE
+                </a>
+                <a
+                  class="country-link-secondary"
+                  href="register.html?plan=Free&source=countries&intent=uae-report&country=uae"
+                >
+                  Free UAE Report
+                </a>
+              </div>
+            </article>
+
+            <article class="country-card">
+              <span class="country-badge">Large Gulf Demand</span>
+              <h3>Saudi Arabia</h3>
+              <p>
+                Large demand market for food, engineering goods, materials,
+                textiles and industrial supplies.
+              </p>
+
+              <div class="category-list">
+                <span>Food</span>
+                <span>Chemicals</span>
+                <span>Textiles</span>
+                <span>Machinery</span>
+              </div>
+
+              <div class="country-actions">
+                <a class="country-link-primary" href="india-saudi-arabia.html">
+                  Explore Saudi
+                </a>
+                <a
+                  class="country-link-secondary"
+                  href="register.html?plan=Free&source=countries&intent=saudi-report&country=saudi-arabia"
+                >
+                  Free Saudi Report
+                </a>
+              </div>
+            </article>
+
+            <article class="country-card">
+              <span class="country-badge">Focused Gulf Market</span>
+              <h3>Oman</h3>
+              <p>
+                Explore Muscat, Sohar, Salalah and focused Gulf trade
+                opportunities for Indian exporters.
+              </p>
+
+              <div class="category-list">
+                <span>Food</span>
+                <span>Textiles</span>
+                <span>Materials</span>
+                <span>Engineering</span>
+              </div>
+
+              <div class="country-actions">
+                <a class="country-link-primary" href="india-oman.html">
+                  Explore Oman
+                </a>
+                <a
+                  class="country-link-secondary"
+                  href="register.html?plan=Free&source=countries&intent=oman-report&country=oman"
+                >
+                  Free Oman Report
+                </a>
+              </div>
+            </article>
+
+            <article class="country-card">
+              <span class="country-badge">Premium Niche Market</span>
+              <h3>Qatar</h3>
+              <p>
+                Focused premium Gulf market for food, construction materials,
+                textiles and institutional buyers.
+              </p>
+
+              <div class="category-list">
+                <span>Food</span>
+                <span>Textiles</span>
+                <span>Construction</span>
+                <span>Engineering</span>
+              </div>
+
+              <div class="country-actions">
+                <a class="country-link-primary" href="india-qatar.html">
+                  Explore Qatar
+                </a>
+                <a
+                  class="country-link-secondary"
+                  href="register.html?plan=Free&source=countries&intent=qatar-report&country=qatar"
+                >
+                  Free Qatar Report
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- CHINA -->
+        <div class="corridor-block" id="china">
+          <div class="corridor-title">
+            <h2>India ↔ China Sourcing</h2>
+            <p>
+              China is positioned differently: sourcing intelligence, supplier
+              comparison, import dependency analysis, price benchmarking and
+              competitor tracking.
+            </p>
+          </div>
+
+          <div class="country-grid">
+            <article class="country-card">
+              <span class="country-badge">Sourcing Intelligence</span>
+              <h3>China</h3>
+              <p>
+                Compare Chinese suppliers, product categories, import risks,
+                price benchmarks and sourcing opportunities.
+              </p>
+
+              <div class="category-list">
+                <span>Electronics</span>
+                <span>Machinery</span>
+                <span>Chemicals</span>
+                <span>Auto Parts</span>
+              </div>
+
+              <div class="country-actions">
+                <a class="country-link-primary" href="india-china.html">
+                  Explore China
+                </a>
+                <a
+                  class="country-link-secondary"
+                  href="register.html?plan=Free&source=countries&intent=china-sourcing&country=china"
+                >
+                  Free China Report
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMPARE -->
+      <section class="section">
+        <div class="compare-section">
+          <div class="section-head" style="margin-bottom: 24px">
+            <h2>Compare two target countries</h2>
+            <p>
+              Use this as a lead capture flow. Later, this can connect to your
+              AI comparison engine.
+            </p>
+          </div>
+
+          <form class="compare-grid" id="countryCompareForm">
+            <div class="field">
+              <label for="compareCountryOne">Country 1</label>
+              <select id="compareCountryOne">
+                <option value="kenya">Kenya</option>
+                <option value="tanzania">Tanzania</option>
+                <option value="uganda">Uganda</option>
+                <option value="rwanda">Rwanda</option>
+                <option value="uae">UAE</option>
+                <option value="saudi-arabia">Saudi Arabia</option>
+                <option value="oman">Oman</option>
+                <option value="qatar">Qatar</option>
+                <option value="china">China</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="compareCountryTwo">Country 2</label>
+              <select id="compareCountryTwo">
+                <option value="uae">UAE</option>
+                <option value="kenya">Kenya</option>
+                <option value="tanzania">Tanzania</option>
+                <option value="uganda">Uganda</option>
+                <option value="rwanda">Rwanda</option>
+                <option value="saudi-arabia">Saudi Arabia</option>
+                <option value="oman">Oman</option>
+                <option value="qatar">Qatar</option>
+                <option value="china">China</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              Compare Countries
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- FINAL CTA -->
+      <section class="section">
+        <div class="cta-box">
+          <h2>Ready to find your next export-import opportunity?</h2>
+          <p>
+            Start with a free opportunity preview and upgrade when you need
+            buyer discovery, HS code support, document checklist guidance or
+            manual detailed reports available on request.
+          </p>
+
+          <a
+            href="register.html?plan=Free&source=countries-final-cta&intent=opportunity-preview"
+            class="btn btn-primary"
+          >
+            Start Free Opportunity Preview
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <a href="../index.html" class="footer-brand">TradeAI</a>
+          <p>
+            AI-powered export-import intelligence for East Africa, Gulf/GCC and
+            China sourcing corridors.
+          </p>
+        </div>
+
+        <div>
+          <h3>Countries</h3>
+          <a href="india-kenya.html">Kenya</a>
+          <a href="india-uae.html">UAE</a>
+          <a href="india-saudi-arabia.html">Saudi Arabia</a>
+          <a href="india-china.html">China</a>
+        </div>
+
+        <div>
+          <h3>Platform</h3>
+          <a href="corridors.html">Corridors</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="contact.html">Contact</a>
+        </div>
+
+        <div>
+          <h3>Account</h3>
+          <a href="register.html">Register</a>
+          <a href="login.html">Login</a>
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a href="terms-and-conditions.html">Terms</a>
+        </div>
+      </div>
+
+      <div class="copyright">© 2026 TradeAI. All rights reserved.</div>
+    </footer>
+
+    <script>
+      const menuToggle = document.getElementById("menuToggle");
+      const navLinks = document.getElementById("navLinks");
+      const navActions = document.getElementById("navActions");
+      const countryOpportunityForm = document.getElementById(
+        "countryOpportunityForm",
+      );
+      const countryCompareForm = document.getElementById("countryCompareForm");
+
+      if (menuToggle) {
+        menuToggle.addEventListener("click", () => {
+          const isOpen = navLinks.classList.toggle("open");
+          navActions.classList.toggle("open", isOpen);
+
+          menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          menuToggle.setAttribute(
+            "aria-label",
+            isOpen ? "Close menu" : "Open menu",
+          );
+        });
+      }
+
+      if (countryOpportunityForm) {
+        countryOpportunityForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+
+          const product = document.getElementById("productInput").value.trim();
+          const country = document.getElementById("countrySelect").value;
+
+          const intent =
+            country === "china" ? "sourcing-preview" : "opportunity-preview";
+
+          const params = new URLSearchParams({
+            plan: "Free",
+            source: "countries-search",
+            intent,
+            country,
+          });
+
+          if (product) {
+            params.set("product", product);
+          }
+
+          window.location.href = `register.html?${params.toString()}`;
+        });
+      }
+
+      if (countryCompareForm) {
+        countryCompareForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+
+          const countryOne = document.getElementById("compareCountryOne").value;
+          const countryTwo = document.getElementById("compareCountryTwo").value;
+
+          const params = new URLSearchParams({
+            plan: "Free",
+            source: "countries-compare",
+            intent: "country-comparison",
+            country: `${countryOne}-vs-${countryTwo}`,
+          });
+
+          window.location.href = `register.html?${params.toString()}`;
+        });
+      }
+    </script>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>
