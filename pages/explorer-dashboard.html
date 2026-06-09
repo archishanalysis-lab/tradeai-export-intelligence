@@ -7,7 +7,12 @@
     <meta name="robots" content="noindex, nofollow" />
 <meta http-equiv="refresh" content="0; url=dashboard.html#overview" />
     <script>
-      window.location.replace("dashboard.html#overview");
+      const token = localStorage.getItem('tradeai_token');
+      if (!token) {
+        window.location.href = '/pages/login.html';
+      } else {
+        window.location.replace("dashboard.html#overview");
+      }
     </script>
 
     <title>Explorer Dashboard - TradeAI</title>
@@ -37,6 +42,17 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
       integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+      .demo-badge {
+        font-size: 0.65rem;
+        background: #f0ad4e;
+        color: #fff;
+        padding: 2px 6px;
+        border-radius: 3px;
+        display: block;
+        margin-bottom: 4px;
+      }
+    </style>
   </head>
 
   <body class="dashboard-page">
@@ -145,7 +161,7 @@
 
         <a href="saved-search.html"> Saved Searches </a>
 
-        <a href="notification.html"> Notifications </a>
+        <a href="notification.html">🔔 Notifications</a>
 
         <a href="help-centre.html"> Help Centre </a>
 
@@ -210,28 +226,28 @@
         <!-- STATS -->
 
         <section class="stats-grid">
-          <div class="stat-card">
-            <h3 class="stat-number" data-target="2450">0</h3>
-
+          <div class="stat-card metric-card" data-demo="true">
+            <span class="demo-badge">Sample</span>
+            <h3>3</h3>
             <p>Buyer Discovery Signals</p>
           </div>
 
-          <div class="stat-card">
-            <h3 class="stat-number" data-target="128">0</h3>
-
+          <div class="stat-card metric-card" data-demo="true">
+            <span class="demo-badge">Sample</span>
+            <h3>2</h3>
             <p>Active Markets</p>
           </div>
 
-          <div class="stat-card">
-            <h3 class="stat-number" data-target="584">0</h3>
-
+          <div class="stat-card metric-card" data-demo="true">
+            <span class="demo-badge">Sample</span>
+            <h3>5</h3>
             <p>HS Codes Tracked</p>
           </div>
 
-          <div class="stat-card">
-            <h3 class="stat-number" data-target="96">0</h3>
-
-            <p>AI Reports</p>
+          <div class="stat-card metric-card" data-demo="true">
+            <span class="demo-badge">Sample</span>
+            <h3>1</h3>
+            <p>AI Reports Generated</p>
           </div>
         </section>
 
@@ -301,31 +317,13 @@
             <h2>Corridor Intelligence</h2>
           </div>
 
-          <div class="ai-insight-card">
-            <span class="status-badge status-pending">Demo data</span>
-
-            <h3>India to UAE spice and packaged food corridor</h3>
-
-            <p>
-              <strong>Corridor:</strong> India to UAE
-            </p>
-            <p>
-              <strong>Sector:</strong> Spices, packaged food and specialty
-              grocery distribution
-            </p>
-            <p>
-              <strong>HS code:</strong> 0910 example category
-            </p>
-            <p>
-              <strong>Source label:</strong> Sample corridor intelligence for
-              MVP review, not live real-time market data.
-            </p>
-
-            <p class="table-subtext">Last updated: June 2026</p>
-            <div class="form-actions">
-              <a class="secondary" href="copilot.html">Ask Copilot</a>
-              <a class="secondary" href="export-opportunity-report.html">Download sample report</a>
-            </div>
+          <div class="insight-card">
+            <span class="badge">MVP Sample</span>
+            <h4>India → UAE: Food & Beverage Demand</h4>
+            <p>UAE imported $2.1B in food products from India in 2023.
+            Spices, rice, and processed foods lead demand.
+            Source: UN Comtrade 2023 estimates.</p>
+            <small>Sample data — connect live data source for real signals.</small>
           </div>
         </section>
 
@@ -342,16 +340,9 @@
               role="img"
               aria-label="Trade volume analytics demo chart"
             >
-              <div class="empty-state">
-                <h3>Trade volume chart unavailable</h3>
-                <p>
-                  Open market analysis to review the demo corridor view while
-                  chart rendering is unavailable.
-                </p>
-                <a class="secondary" href="market-analysis.html">
-                  Open market analysis
-                </a>
-              </div>
+              <p style="color:#888;text-align:center;padding:2rem;">
+                Chart data unavailable. Connect a data source to view analytics.
+              </p>
             </canvas>
           </div>
         </section>
