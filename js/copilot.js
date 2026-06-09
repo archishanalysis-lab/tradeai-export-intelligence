@@ -1,264 +1,150 @@
-(function () {
-  const form = document.getElementById("copilotForm");
-  const prompt = document.getElementById("copilotPrompt");
-  const response = document.getElementById("copilotResponse");
-  const history = document.getElementById("copilotHistory");
-  const loadingState = document.getElementById("copilotLoading");
-  const errorState = document.getElementById("copilotError");
-  const errorMessage = document.getElementById("copilotErrorMessage");
-  const statusBadge = document.getElementById("copilotStatus");
-  const submitButton = document.getElementById("copilotSubmit");
-  const submitLabel = submitButton?.querySelector(".button-label");
+const API_BASE_URL = window.TRADEAI_API_URL
+  || 'https://tradeai-backend.onrender.com';
 
-  if (!form || !prompt || !response || !window.TradeAI) return;
+const btn = document.getElementById('ask-copilot-btn')
+         || document.querySelector('button');
+const input = document.getElementById('copilot-input')
+           || document.querySelector('textarea, input[type=text]');
+const loading = document.getElementById('copilot-loading');
+const response = document.getElementById('copilot-response');
+const errorDiv = document.getElementById('copilot-error');
 
-  const promptHints = [
-    "best markets for turmeric from India",
-    "Find UAE buyers for Indian spices",
-    "Recommend HS codes for cotton T-shirts",
-    "Create a buyer outreach plan for Kenya",
-  ];
+btn.addEventListener('click', async () => {
+  const question = input.value.trim();
+  if (!question) return;
 
-  const sessionHistory = [];
-  let hintIndex = 0;
+  // Reset state
+  loading.style.display = 'block';
+  response.style.display = 'none';
+  errorDiv.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Analyzing...';
 
-  function escapeHtml(value) {
-    return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function getAuthToken() {
-    function readStorage(storage, key) {
-      try {
-        return storage.getItem(key);
-      } catch (error) {
-        return "";
-      }
-    }
-
-    return (
-      window.TradeAI?.auth?.getToken?.() ||
-      readStorage(window.localStorage, "tradeai_token") ||
-      readStorage(window.sessionStorage, "tradeai_token") ||
-      ""
-    );
-  }
-
-  function setStatus(label, tone = "") {
-    if (!statusBadge) return;
-    statusBadge.textContent = label;
-    statusBadge.className = `status-badge ${tone}`.trim();
-  }
-
-  function setLoading(isLoading) {
-    response.setAttribute("aria-busy", String(isLoading));
-    if (loadingState) loadingState.hidden = !isLoading;
-
-    if (!submitButton) return;
-
-    submitButton.disabled = isLoading;
-
-    if (submitLabel) {
-      submitLabel.textContent = isLoading ? "Thinking..." : "Ask Copilot";
-    }
-  }
-
-  function normalizeAnswer(data) {
-    if (typeof data === "string") {
-      return { answer: data };
-    }
-
-    return {
-      answer:
-        data?.answer ||
-        data?.response ||
-        data?.message ||
-        "Copilot returned a response, but no answer text was provided.",
-      provider: data?.provider || data?.source || "TradeAI Copilot",
-      assistantLabel: data?.assistantLabel || "",
-      isLiveAI: Boolean(data?.isLiveAI),
-      suggestedActions: Array.isArray(data?.suggestedActions)
-        ? data.suggestedActions
-        : Array.isArray(data?.actions)
-          ? data.actions
-          : [],
-      checklist: Array.isArray(data?.checklist) ? data.checklist : [],
-      isFallback: Boolean(data?.isFallback),
-    };
-  }
-
-  function turmericFallback() {
-    return {
-      isFallback: true,
-      provider: "DEMO FALLBACK",
-      answer:
-        "For turmeric exports from India, good MVP-review target markets are UAE, Saudi Arabia, Kenya, Qatar and Oman. UAE is useful for premium retail and re-export routes, Saudi Arabia and Qatar are attractive for food-service and packaged spice demand, while Kenya can be a practical East Africa entry corridor. Treat this as sample guidance until live market, buyer and compliance data are connected.",
-      suggestedActions: [
-        "Compare UAE and Saudi Arabia first for premium packaged turmeric demand.",
-        "Validate HS code 0910 and product form before quoting.",
-        "Prepare buyer-ready specs: curcumin percentage, packaging, certifications and MOQ.",
-        "Use Buyer Discovery to shortlist importer, distributor and food-service segments.",
-      ],
-      checklist: [
-        "Confirm turmeric format: whole, powder, organic or extract.",
-        "Check destination labeling and residue requirements.",
-        "Compare landed cost, shelf life and buyer MOQ expectations.",
-      ],
-    };
-  }
-
-  function genericFallback(question) {
-    if (/turmeric|haldi/i.test(question)) {
-      return turmericFallback();
-    }
-
-    return {
-      isFallback: true,
-      provider: "DEMO FALLBACK",
-      answer:
-        "TradeAI Copilot is running in MVP fallback mode. A practical next step is to define the product, target country, buyer type, HS-code range and compliance risk, then compare two corridors before outreach. Live AI recommendations will become more specific once the backend Copilot service is available.",
-      suggestedActions: [
-        "Choose one product and two target countries.",
-        "Review buyer segments before requesting introductions.",
-        "Generate an export opportunity report for a structured next-step plan.",
-      ],
-      checklist: [
-        "Product name and specs are clear.",
-        "Target market and buyer type are selected.",
-        "Compliance and document risks are noted.",
-      ],
-    };
-  }
-
-  function renderList(title, items) {
-    if (!items.length) return "";
-
-    return `
-      <div class="copilot-list-block">
-        <h5>${escapeHtml(title)}</h5>
-        <ul>
-          ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
-        </ul>
-      </div>
-    `;
-  }
-
-  function renderAnswer(question, data) {
-    const answer = normalizeAnswer(data);
-    const responseBadge = answer.isFallback
-      ? `<span class="status-badge status-pending">FALLBACK DEMO</span>`
-      : answer.isLiveAI
-        ? `<span class="status-badge status-active">LIVE AI RESPONSE</span>`
-        : `<span class="status-badge status-pending">LOCAL RULE-BASED ASSISTANT</span>`;
-
-    response.innerHTML = `
-      <article class="activity-card copilot-answer-card">
-        <div class="copilot-answer-header">
-          <h4>Copilot response</h4>
-          ${responseBadge}
-        </div>
-        <p class="table-subtext"><strong>Prompt:</strong> ${escapeHtml(question)}</p>
-        <p>${escapeHtml(answer.answer)}</p>
-        ${renderList("Suggested next actions", answer.suggestedActions)}
-        ${renderList("Readiness checklist", answer.checklist)}
-        <p class="table-subtext">Provider: ${escapeHtml(answer.assistantLabel || answer.provider)}</p>
-      </article>
-    `;
-
-    setStatus(answer.isFallback ? "Fallback demo" : answer.isLiveAI ? "Live AI" : "Rule-based", answer.isLiveAI ? "status-active" : "status-pending");
-    addHistory(question, answer);
-  }
-
-  function renderError(message) {
-    if (errorState) errorState.hidden = false;
-    if (errorMessage) {
-      errorMessage.textContent = message;
-    }
-    setStatus("Fallback mode", "status-pending");
-  }
-
-  function addHistory(question, answer) {
-    sessionHistory.unshift({
-      question,
-      answer: answer.answer,
-      fallback: answer.isFallback,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  try {
+    const token = localStorage.getItem('tradeai_token');
+    const res = await fetch(API_BASE_URL + '/api/copilot/ask', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token })
+      },
+      body: JSON.stringify({ question })
     });
 
-    sessionHistory.splice(5);
-    renderHistory();
-  }
+    if (!res.ok) throw new Error('Backend returned ' + res.status);
+    const data = await res.json();
 
-  function renderHistory() {
-    if (!history) return;
+    // Populate response card
+    document.getElementById('copilot-provider-label')
+      .textContent = data.provider || data.providerLabel || 'TradeAI Rule Engine';
+    document.getElementById('copilot-market-opportunity')
+      .textContent = data.marketOpportunity || '';
+    document.getElementById('copilot-buyer-type')
+      .textContent = data.buyerType || '';
+    document.getElementById('copilot-risk-level')
+      .textContent = data.riskLevel || '';
 
-    history.innerHTML = sessionHistory
-      .map(
-        (item) => `
-          <article class="activity-card">
-            <h4>${escapeHtml(item.question)}</h4>
-            <p>${escapeHtml(item.answer).slice(0, 180)}${item.answer.length > 180 ? "..." : ""}</p>
-            <p class="table-subtext">${escapeHtml(item.time)}${item.fallback ? " · fallback demo" : " · backend response"}</p>
-          </article>
-        `,
-      )
-      .join("");
-  }
-
-  async function askCopilot(question) {
-    const token = getAuthToken();
-
-    return TradeAI.request("/copilot/ask", {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-      body: JSON.stringify({ prompt: question }),
+    const docsList = document.getElementById('copilot-documents');
+    docsList.innerHTML = '';
+    (data.documentsNeeded || []).forEach(d => {
+      const li = document.createElement('li');
+      li.textContent = d;
+      docsList.appendChild(li);
     });
-  }
 
-  document.querySelectorAll("[data-prompt]").forEach((button) => {
-    button.addEventListener("click", () => {
-      prompt.value = button.dataset.prompt || "";
-      prompt.focus();
+    const actionsList = document.getElementById('copilot-next-actions');
+    actionsList.innerHTML = '';
+    (data.nextActions || []).forEach(a => {
+      const li = document.createElement('li');
+      li.textContent = a;
+      actionsList.appendChild(li);
     });
-  });
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+    document.getElementById('copilot-disclaimer')
+      .textContent = data.disclaimer || '';
 
-    if (!TradeAI.auth.requireAuth()) return;
+    loading.style.display = 'none';
+    response.style.display = 'block';
 
-    const question = prompt.value.trim();
+  } catch (err) {
+    // Show fallback rule-based response if backend fails
+    const fallback = getRuleBasedFallback(input.value);
+    document.getElementById('copilot-provider-label')
+      .textContent = 'TradeAI Rule Engine (offline preview)';
+    document.getElementById('copilot-market-opportunity')
+      .textContent = fallback.marketOpportunity;
+    document.getElementById('copilot-buyer-type')
+      .textContent = fallback.buyerType;
+    document.getElementById('copilot-risk-level')
+      .textContent = fallback.riskLevel;
 
-    if (!question) {
-      renderError("Please enter a trade question before asking Copilot.");
-      prompt.focus();
-      return;
-    }
+    const docsList = document.getElementById('copilot-documents');
+    docsList.innerHTML = '';
+    fallback.documentsNeeded.forEach(d => {
+      const li = document.createElement('li');
+      li.textContent = d;
+      docsList.appendChild(li);
+    });
 
-    try {
-      setLoading(true);
-      if (errorState) errorState.hidden = true;
-      setStatus("Thinking", "status-pending");
+    const actionsList = document.getElementById('copilot-next-actions');
+    actionsList.innerHTML = '';
+    fallback.nextActions.forEach(a => {
+      const li = document.createElement('li');
+      li.textContent = a;
+      actionsList.appendChild(li);
+    });
 
-      const data = await askCopilot(question);
-      renderAnswer(question, data);
-    } catch (error) {
-      const fallback = genericFallback(question);
-      renderError("Backend Copilot is unavailable. Showing clearly labeled demo guidance for MVP preview.");
-      renderAnswer(question, fallback);
-    } finally {
-      setLoading(false);
-    }
-  });
+    document.getElementById('copilot-disclaimer')
+      .textContent = fallback.disclaimer;
 
-  window.setInterval(() => {
-    if (document.activeElement === prompt || prompt.value.trim()) return;
+    loading.style.display = 'none';
+    response.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Ask Copilot';
+  }
+});
 
-    hintIndex = (hintIndex + 1) % promptHints.length;
-    prompt.placeholder = promptHints[hintIndex];
-  }, 3600);
-})();
+function getRuleBasedFallback(question) {
+  const q = question.toLowerCase();
+  const isGulf = /uae|dubai|saudi|oman|qatar|gulf/.test(q);
+  const isAfrica = /kenya|tanzania|uganda|rwanda|africa/.test(q);
+  const isChina = /china|sourcing|supplier/.test(q);
+  const isPharma = /pharma|medicine|drug|chemical/.test(q);
+
+  if (isGulf) return {
+    marketOpportunity: 'Gulf markets (UAE, Saudi Arabia, Oman, Qatar) show strong demand for Indian food products, textiles, and engineering goods. UAE is a major re-export hub reaching 50+ countries.',
+    buyerType: 'Distributors, wholesale importers, retail chains, re-exporters',
+    riskLevel: 'Medium - payment terms generally reliable via LC or TT. Regulatory compliance required.',
+    documentsNeeded: ['Commercial Invoice', 'Packing List', 'Certificate of Origin', 'Bill of Lading', isPharma ? 'Gulf Health Authority approval' : 'SASO/ESMA certification where applicable'],
+    nextActions: ['Validate HS code for Gulf tariff schedule', 'Check SASO requirements for Saudi Arabia', 'Register on TradeAI to access buyer directory', 'Generate full corridor report'],
+    disclaimer: 'Rule-based preview. Upgrade to AI plan for live buyer data and verified compliance guidance.'
+  };
+
+  if (isAfrica) return {
+    marketOpportunity: 'East Africa is a growing market for Indian pharmaceuticals, food products, and consumer goods. Kenya is the primary entry point with access to the EAC bloc.',
+    buyerType: 'Distributors, institutional buyers (hospitals, government), retail importers',
+    riskLevel: 'Medium-High - verify buyer creditworthiness. LC recommended for first shipments.',
+    documentsNeeded: ['Commercial Invoice', 'Packing List', 'Certificate of Origin', 'Bill of Lading', isPharma ? 'Pharmacy Board approval (Kenya PPB)' : 'PVoC Pre-export Verification of Conformity'],
+    nextActions: ['Check Kenya Bureau of Standards (KEBS) requirements', 'Validate HS code against EAC tariff', 'Request buyer discovery report', 'Generate Kenya corridor report'],
+    disclaimer: 'Rule-based preview. Upgrade to AI plan for live buyer data and verified compliance guidance.'
+  };
+
+  if (isChina) return {
+    marketOpportunity: 'China is primarily a sourcing market for Indian importers. Strong for machinery, electronics components, raw materials and consumer goods.',
+    buyerType: 'Chinese manufacturers, trading companies, OEM suppliers',
+    riskLevel: 'Medium - supplier verification critical. Quality inspection recommended before shipment.',
+    documentsNeeded: ['Proforma Invoice', 'Packing List', 'Bill of Lading', 'Import Declaration', 'Quality Inspection Certificate'],
+    nextActions: ['Identify product category and Chinese HS code equivalent', 'Request supplier verification workflow', 'Compare 3 suppliers before committing', 'Review import duty on Indian side'],
+    disclaimer: 'Rule-based preview. Upgrade to AI plan for live supplier data and sourcing intelligence.'
+  };
+
+  return {
+    marketOpportunity: 'TradeAI covers 9 markets across East Africa (Kenya, Tanzania, Uganda, Rwanda), Gulf (UAE, Saudi Arabia, Oman, Qatar) and China sourcing.',
+    buyerType: 'Distributors, importers, institutional buyers depending on corridor',
+    riskLevel: 'Varies by corridor and product category',
+    documentsNeeded: ['Commercial Invoice', 'Packing List', 'Certificate of Origin', 'Bill of Lading'],
+    nextActions: ['Specify your target country for tailored guidance', 'Generate an export opportunity report', 'Check HS code for your product', 'Review corridor comparison'],
+    disclaimer: 'Rule-based preview. Type a country name (Kenya, UAE, China) for specific guidance.'
+  };
+}

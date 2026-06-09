@@ -110,10 +110,54 @@
               </div>
 
               <div class="form-actions">
-                <button class="primary" type="submit" id="copilotSubmit">
+                <button class="primary" type="button" id="ask-copilot-btn">
                   <span class="button-label">Ask Copilot</span>
                   <span class="button-spinner" aria-hidden="true"></span>
                 </button>
+
+                <div id="copilot-loading"
+                     style="display:none;padding:1rem;color:#666;">
+                  Analyzing your query...
+                </div>
+
+                <div id="copilot-response"
+                     style="display:none;margin-top:1.5rem;padding:1.5rem;
+                            border:1px solid #e0e0e0;border-radius:8px;
+                            background:#f9f9f9;">
+                  <div style="font-size:0.75rem;color:#888;margin-bottom:1rem;">
+                    <span id="copilot-provider-label"></span>
+                  </div>
+                  <div style="margin-bottom:0.75rem;">
+                    <strong>Market Opportunity</strong>
+                    <p id="copilot-market-opportunity"></p>
+                  </div>
+                  <div style="margin-bottom:0.75rem;">
+                    <strong>Buyer Type</strong>
+                    <p id="copilot-buyer-type"></p>
+                  </div>
+                  <div style="margin-bottom:0.75rem;">
+                    <strong>Risk Level</strong>
+                    <p id="copilot-risk-level"></p>
+                  </div>
+                  <div style="margin-bottom:0.75rem;">
+                    <strong>Documents Needed</strong>
+                    <ul id="copilot-documents"></ul>
+                  </div>
+                  <div style="margin-bottom:0.75rem;">
+                    <strong>Next Actions</strong>
+                    <ul id="copilot-next-actions"></ul>
+                  </div>
+                  <p id="copilot-disclaimer"
+                     style="font-size:0.75rem;color:#999;margin-top:1rem;">
+                  </p>
+                </div>
+
+                <div id="copilot-error"
+                     style="display:none;padding:1rem;color:#c0392b;
+                            background:#fdf0f0;border-radius:6px;
+                            margin-top:1rem;">
+                  <p id="copilot-error-msg"></p>
+                </div>
               </div>
             </form>
           </article>
