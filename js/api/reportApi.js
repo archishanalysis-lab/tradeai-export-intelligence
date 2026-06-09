@@ -15,6 +15,12 @@
         body: JSON.stringify(payload),
       });
     },
+    generate(payload) {
+      return TradeAI.request("/reports/generate", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+    },
     get(id) {
       return TradeAI.request(`/reports/${id}`);
     },

@@ -728,7 +728,7 @@
             </div>
 
             <div class="form-actions">
-              <button type="submit" class="btn btn-primary">Generate Sample Report</button>
+              <button type="submit" class="btn btn-primary" id="generateReportButton">Generate Sample Report</button>
               <a class="btn btn-outline" href="contact.html?interest=feedback&source=report-form">Share Feedback</a>
             </div>
             <p id="reportRequestStatus" aria-live="polite"></p>
@@ -738,10 +738,10 @@
 
       <section class="section" id="sample-report-section">
         <div class="section-head">
-          <span class="preview-pill">Sample MVP Output</span>
-          <span class="preview-pill">DEMO DATA</span>
+          <span class="preview-pill" id="reportOutputLabel">Sample MVP Output</span>
+          <span class="preview-pill" id="reportProviderLabel">Rule Engine Preview</span>
           <h2>What TradeAI gives after report generation</h2>
-          <p>
+          <p id="reportOutputIntro">
             The sample output below is static demo guidance for MVP review. It
             is not live verified trade, legal, customs or pricing advice.
           </p>
@@ -751,8 +751,8 @@
         <article class="report-output" id="sampleReportOutput" hidden aria-live="polite">
           <div class="output-header">
             <div>
-              <span class="preview-pill">Sample MVP Output</span>
-              <span class="preview-pill">DEMO DATA</span>
+              <span class="preview-pill" id="sampleOutputLabel">Generated Output</span>
+              <span class="preview-pill" id="sampleProviderLabel">Rule Engine Preview</span>
               <h3 id="sampleReportTitle">Export opportunity preview</h3>
               <p id="sampleReportSummary"></p>
               <p>Last updated: June 2026</p>
@@ -762,11 +762,11 @@
 
           <div class="score-grid">
             <article class="score-card">
-              <h3>Demand Signal</h3>
+              <h3>Market Potential</h3>
               <p id="sampleDemand">Medium-high</p>
             </article>
             <article class="score-card">
-              <h3>Competition Level</h3>
+              <h3>Demand Reason</h3>
               <p id="sampleCompetition">Medium</p>
             </article>
             <article class="score-card">
@@ -792,7 +792,7 @@
           </div>
 
           <h3>Recommended Next Actions</h3>
-          <ol class="next-actions">
+          <ol class="next-actions" id="sampleNextActions">
             <li>Validate HS code with product specifications.</li>
             <li>Compare 2-3 target markets before selecting one corridor.</li>
             <li>Check documentation and compliance requirements.</li>
@@ -1037,6 +1037,11 @@
       document.addEventListener("DOMContentLoaded", function () {
         var form = document.getElementById("reportRequestForm");
         var output = document.getElementById("sampleReportOutput");
+        var outputLabel = document.getElementById("reportOutputLabel");
+        var providerLabel = document.getElementById("reportProviderLabel");
+        var outputIntro = document.getElementById("reportOutputIntro");
+        var sampleOutputLabel = document.getElementById("sampleOutputLabel");
+        var sampleProviderLabel = document.getElementById("sampleProviderLabel");
         var title = document.getElementById("sampleReportTitle");
         var summary = document.getElementById("sampleReportSummary");
         var score = document.getElementById("sampleReportScore");
@@ -1046,68 +1051,14 @@
         var corridor = document.getElementById("sampleCorridor");
         var buyerInsight = document.getElementById("sampleBuyerInsight");
         var hsNote = document.getElementById("sampleHsNote");
+        var nextActions = document.getElementById("sampleNextActions");
         var requestStatus = document.getElementById("reportRequestStatus");
+        var submitButton = document.getElementById("generateReportButton");
+        var defaultButtonText = submitButton ? submitButton.textContent : "Generate Sample Report";
 
         if (!form) {
           return;
         }
-
-        var corridorProfiles = {
-          uae: {
-            label: "India to UAE",
-            score: "78/100",
-            demand: "Medium-high",
-            competition: "Medium",
-            risk: "Moderate",
-            buyerInsight:
-              "Importer and distributor discovery is recommended before pricing finalization.",
-          },
-          kenya: {
-            label: "India to Kenya",
-            score: "74/100",
-            demand: "Medium-high",
-            competition: "Medium-low",
-            risk: "Moderate",
-            buyerInsight:
-              "Shortlist importers and regional distributors before expanding across East Africa.",
-          },
-          "saudi-arabia": {
-            label: "India to Saudi Arabia",
-            score: "72/100",
-            demand: "High",
-            competition: "High",
-            risk: "Higher",
-            buyerInsight:
-              "Buyer discovery should be paired with documentation and country-specific compliance review.",
-          },
-          tanzania: {
-            label: "India to Tanzania",
-            score: "69/100",
-            demand: "Medium",
-            competition: "Medium-low",
-            risk: "Moderate",
-            buyerInsight:
-              "Distributor discovery and landed-cost comparison should happen before launch planning.",
-          },
-          "east-africa": {
-            label: "East Africa comparison",
-            score: "76/100",
-            demand: "Medium-high",
-            competition: "Varies by country",
-            risk: "Moderate",
-            buyerInsight:
-              "Compare Kenya, Tanzania, Uganda and Rwanda before choosing a launch market.",
-          },
-          gulf: {
-            label: "Gulf market comparison",
-            score: "80/100",
-            demand: "High",
-            competition: "High",
-            risk: "Moderate to higher",
-            buyerInsight:
-              "Importer discovery should be prioritized with re-export and premium-market positioning checks.",
-          },
-        };
 
         function getValue(id) {
           return document.getElementById(id)?.value.trim() || "";
@@ -1136,154 +1087,140 @@
           return countryMap[value] || label || value;
         }
 
-        function getHsNote(product, hsCode) {
-          if (hsCode) {
-            return "Sample note: validate HS " + hsCode + " against product composition, packaging and target-country requirements.";
+        function getLocalToken() {
+          try {
+            return localStorage.getItem("tradeai_token") || "";
+          } catch (error) {
+            return "";
           }
-
-          return "Sample note: HS classification should be confirmed before buyer outreach for " + product + ".";
         }
 
-        function normalizeRoleType(businessType) {
-          var role = String(businessType || "").toLowerCase();
-
-          if (["exporter", "importer", "consultant"].includes(role)) {
-            return role;
-          }
-
-          return role ? "other" : "";
+        function escapeHtml(value) {
+          return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
         }
 
-        function buildReportRequestPayload(product, hsCode, origin, target, businessType, objective) {
+        function setLoading(isLoading) {
+          if (!submitButton) {
+            return;
+          }
+
+          submitButton.disabled = isLoading;
+          submitButton.textContent = isLoading ? "Generating..." : defaultButtonText;
+        }
+
+        function renderActionList(items) {
+          var safeItems = Array.isArray(items) && items.length
+            ? items
+            : ["Review the generated guidance and verify current trade data before action."];
+
+          if (!nextActions) {
+            return;
+          }
+
+          nextActions.innerHTML = safeItems
+            .map(function (item) {
+              return "<li>" + escapeHtml(item) + "</li>";
+            })
+            .join("");
+        }
+
+        function buildGeneratePayload() {
+          var country = getValue("reportCountry");
+          var target = getSelectedLabel("reportCountry");
+          var businessType = getSelectedLabel("businessType");
+
           return {
             name: getValue("requesterName"),
             email: getValue("requesterEmail"),
             company: getValue("requesterCompany"),
-            roleType: normalizeRoleType(businessType),
-            productName: product,
-            hsCode: hsCode,
-            originCountry: origin,
-            targetCountry: target,
+            productName: getValue("reportProduct"),
+            hsCode: getValue("reportHsCode"),
+            originCountry: getSelectedLabel("reportOrigin"),
+            targetCountry: getTargetCountryName(country, target),
+            country: country,
             businessType: businessType,
-            reportObjective: objective,
-            message:
-              "MVP export opportunity report request for " +
-              product +
-              " from " +
-              origin +
-              " to " +
-              target +
-              ". Objective: " +
-              objective +
-              ".",
-            source: "export-opportunity-report",
-            priority: "Medium priority",
-          };
-        }
-
-        function buildSavedReportPayload(product, hsCode, origin, targetCountry) {
-          return {
-            productName: product,
-            hsCode: hsCode,
-            originCountry: origin || "India",
-            targetCountry: targetCountry,
-            businessType: getSelectedLabel("businessType"),
             monthlyCapacity: getValue("monthlyCapacity"),
             priceRange: getValue("priceRange"),
             certifications: getValue("certifications"),
+            objective: getSelectedLabel("reportObjective"),
+            source: "export-opportunity-report",
+            token: getLocalToken(),
           };
         }
 
-        async function saveReportRequest(payload) {
-          if (!window.TradeAI?.api?.createReportRequest) {
-            return;
+        function renderReport(payload, report) {
+          var provider = report.providerLabel || report.dataSourceLabel || "Rule Engine Preview";
+          var scoreValue = Number(report.opportunityScore || 0);
+          var scoreText = scoreValue ? scoreValue + "/100" : "Pending";
+
+          if (outputLabel) outputLabel.textContent = "Generated Report Output";
+          if (providerLabel) providerLabel.textContent = provider;
+          if (sampleOutputLabel) sampleOutputLabel.textContent = "Generated Report Output";
+          if (sampleProviderLabel) sampleProviderLabel.textContent = provider;
+          if (outputIntro) {
+            outputIntro.textContent =
+              "This section now shows the structured report returned by TradeAI for the submitted form.";
           }
-
-          try {
-            await window.TradeAI.api.createReportRequest(payload);
-
-            if (requestStatus) {
-              requestStatus.textContent = "Report request saved for MVP follow-up.";
-            }
-
-            window.TradeAI?.toast?.("Report request saved for MVP follow-up.", "success");
-          } catch (error) {
-            var message =
-              "Report request is running in MVP preview mode. Your sample report is still available; please share full-report interest directly with the founder or try again after backend deployment.";
-
-            if (requestStatus) {
-              requestStatus.textContent = message;
-            }
-
-            window.TradeAI?.toast?.(message, "error");
+          if (title) title.textContent = payload.productName + " opportunity report";
+          if (summary) {
+            summary.textContent =
+              payload.originCountry +
+              " to " +
+              payload.targetCountry +
+              " report for " +
+              payload.businessType +
+              ". Provider: " +
+              provider +
+              ".";
           }
-        }
-
-        async function saveStructuredReport(payload) {
-          if (!window.TradeAI?.auth?.getToken?.() || !window.TradeAI?.api?.reports?.createOpportunity) {
-            return false;
-          }
-
-          try {
-            await window.TradeAI.api.reports.createOpportunity(payload);
-
-            if (requestStatus) {
-              requestStatus.innerHTML =
-                'Saved to your TradeAI dashboard. <a href="dashboard.html#reports">Open saved reports</a>.';
-            }
-
-            window.TradeAI?.toast?.("Export opportunity report saved to dashboard.", "success");
-            return true;
-          } catch (error) {
-            return false;
-          }
-        }
-
-        form.addEventListener("submit", function (event) {
-          event.preventDefault();
-
-          var product = getValue("reportProduct") || "selected product";
-          var hsCode = getValue("reportHsCode");
-          var origin = getSelectedLabel("reportOrigin");
-          var country = getValue("reportCountry");
-          var target = getSelectedLabel("reportCountry");
-          var targetCountryName = getTargetCountryName(country, target);
-          var businessType = getSelectedLabel("businessType");
-          var objective = getSelectedLabel("reportObjective");
-          var profile = corridorProfiles[country] || corridorProfiles.uae;
-
-          title.textContent = product + " opportunity report preview";
-          summary.textContent =
-            "Sample MVP output for " +
-            businessType.toLowerCase() +
-            " review: " +
-            origin +
-            " to " +
-            target +
-            " focused on " +
-            objective.toLowerCase() +
-            ". This is demo/sample guidance for stakeholder review.";
-          score.textContent = profile.score;
-          demand.textContent = profile.demand;
-          competition.textContent = profile.competition;
-          risk.textContent = profile.risk;
-          corridor.textContent = profile.label;
-          buyerInsight.textContent = profile.buyerInsight;
-          hsNote.textContent = getHsNote(product, hsCode);
+          if (score) score.textContent = scoreText;
+          if (demand) demand.textContent = report.marketPotential || "Market potential unavailable.";
+          if (competition) competition.textContent = report.demandReason || "Demand reason unavailable.";
+          if (risk) risk.textContent = report.riskLevel || "Risk level unavailable.";
+          if (corridor) corridor.textContent = payload.originCountry + " to " + payload.targetCountry;
+          if (buyerInsight) buyerInsight.textContent = report.buyerType || "Buyer type unavailable.";
+          if (hsNote) hsNote.textContent = report.complianceNotes || "Compliance notes unavailable.";
+          renderActionList(report.suggestedNextActions);
 
           output.hidden = false;
           output.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
 
-          saveStructuredReport(buildSavedReportPayload(product, hsCode, origin, targetCountryName))
-            .then(function (saved) {
-              if (saved) {
-                return;
-              }
+        form.addEventListener("submit", async function (event) {
+          event.preventDefault();
 
-              saveReportRequest(
-                buildReportRequestPayload(product, hsCode, origin, target, businessType, objective),
-              );
-            });
+          var payload = buildGeneratePayload();
+
+          if (requestStatus) {
+            requestStatus.textContent = "Generating report preview...";
+          }
+
+          setLoading(true);
+
+          try {
+            var report = await window.TradeAI.api.reports.generate(payload);
+            renderReport(payload, report);
+
+            if (requestStatus) {
+              requestStatus.textContent = report.isDemo
+                ? "Rule engine preview generated and saved as a guest/sample report."
+                : "AI-generated report created and saved.";
+            }
+          } catch (error) {
+            if (requestStatus) {
+              requestStatus.textContent =
+                "Sorry, TradeAI could not generate this report right now. Please check the form and try again.";
+            }
+
+            window.TradeAI?.toast?.("Report generation failed. Please try again.", "error");
+          } finally {
+            setLoading(false);
+          }
         });
       });
     </script>
