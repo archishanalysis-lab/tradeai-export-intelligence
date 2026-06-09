@@ -1,4 +1,9 @@
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
+import OpenAI from "openai";
+
 import AiReport from "../models/AiReport.js";
+import GeneratedReport from "../models/GeneratedReport.js";
 import Subscription from "../models/Subscription.js";
 import { answerTradeQuestion } from "../services/tradeCopilotService.js";
 
@@ -135,6 +140,120 @@ const getCountryProfile = (targetCountry = "") => {
         riskLevel: "Medium",
         complianceNotes: ["Validate HS classification.", "Check country-specific documentation and buyer reliability."],
     };
+};
+
+const getOptionalUserId = (req) => {
+    const bodyToken = req.body?.token;
+    const authHeader = req.headers.authorization || "";
+    const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    const token = bodyToken || bearerToken;
+
+    if (!token || !process.env.JWT_SECRET) {
+        return null;
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+            algorithms: ["HS256"],
+        });
+
+        return decoded.id || decoded._id || null;
+    } catch (error) {
+        return null;
+    }
+};
+
+const normalizeGeneratedReport = (value = {}) => ({
+    opportunityScore: Number.isFinite(Number(value.opportunityScore))
+        ? Math.max(0, Math.min(100, Number(value.opportunityScore)))
+        : 65,
+    marketPotential: String(value.marketPotential || "Market potential requires additional validation.").trim(),
+    demandReason: String(value.demandReason || "Demand should be validated with current buyer and trade data.").trim(),
+    buyerType: String(value.buyerType || "Importers, distributors and category buyers.").trim(),
+    riskLevel: String(value.riskLevel || "Medium").trim(),
+    complianceNotes: Array.isArray(value.complianceNotes)
+        ? value.complianceNotes.map((item) => String(item).trim()).filter(Boolean).join(" ")
+        : String(value.complianceNotes || "Validate HS code, destination documentation and buyer requirements.").trim(),
+    suggestedNextActions: Array.isArray(value.suggestedNextActions)
+        ? value.suggestedNextActions.map((item) => String(item).trim()).filter(Boolean)
+        : [],
+    dataSourceLabel: String(value.dataSourceLabel || "TradeAI generated report preview.").trim(),
+    isDemo: Boolean(value.isDemo),
+});
+
+const buildRuleBasedGeneratedReport = ({ productName, product, targetCountry, country, businessType }) => {
+    const normalizedTarget = String(targetCountry || country || "").trim();
+    const normalizedBusinessType = String(businessType || "").trim();
+    const normalizedProduct = String(productName || product || "selected product").trim();
+    const profile = getCountryProfile(normalizedTarget);
+    const type = normalizedBusinessType.toLowerCase();
+    const isImporter = type.includes("importer");
+    const isConsultant = type.includes("consultant");
+
+    return {
+        opportunityScore: isImporter ? Math.max(profile.opportunityScore - 6, 50) : profile.opportunityScore,
+        marketPotential: `${profile.marketPotential} This preview is tailored for ${normalizedBusinessType || "SME"} evaluation of ${normalizedProduct}.`,
+        demandReason: profile.demandReason,
+        buyerType: isImporter
+            ? "Supplier comparison, sourcing agents and verified manufacturers should be prioritized."
+            : isConsultant
+                ? "Importer, distributor and category-buyer segments are suitable for client opportunity validation."
+                : profile.buyerType,
+        riskLevel: profile.riskLevel,
+        complianceNotes: [
+            ...profile.complianceNotes,
+            "Validate HS classification, product standards and destination documentation before commercial action.",
+        ].join(" "),
+        suggestedNextActions: [
+            "Validate HS code and product specification details.",
+            "Compare buyer or supplier segments before outreach.",
+            "Check destination compliance and documentation requirements.",
+            "Prepare capacity, price range, certification and MOQ details.",
+        ],
+        dataSourceLabel: "Rule Engine Preview",
+        isDemo: true,
+    };
+};
+
+const generateWithOpenAI = async (payload) => {
+    if (!process.env.OPENAI_API_KEY) {
+        return null;
+    }
+
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const completion = await client.chat.completions.create({
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        messages: [
+            {
+                role: "system",
+                content:
+                    "You are TradeAI, an export-import intelligence assistant for Indian SME exporters. Generate only valid JSON with these keys: opportunityScore, marketPotential, demandReason, buyerType, riskLevel, complianceNotes, suggestedNextActions, dataSourceLabel, isDemo. suggestedNextActions must be an array. Keep guidance practical and clearly non-legal.",
+            },
+            {
+                role: "user",
+                content: JSON.stringify({
+                    productName: payload.productName || payload.product,
+                    hsCode: payload.hsCode,
+                    originCountry: payload.originCountry || "India",
+                    targetCountry: payload.targetCountry || payload.country,
+                    businessType: payload.businessType,
+                    monthlyCapacity: payload.monthlyCapacity,
+                    priceRange: payload.priceRange,
+                    certifications: payload.certifications,
+                    objective: payload.objective || payload.reportObjective,
+                }),
+            },
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.25,
+        max_tokens: 800,
+    });
+
+    return normalizeGeneratedReport({
+        ...JSON.parse(completion.choices[0]?.message?.content || "{}"),
+        dataSourceLabel: "AI-Generated",
+        isDemo: false,
+    });
 };
 
 const buildOpportunityReport = ({
@@ -321,6 +440,70 @@ const createOpportunityReport = async (req, res, next) => {
     }
 };
 
+const generateSampleReport = async (req, res, next) => {
+    try {
+        const productName = String(req.body.productName || req.body.product || "").trim();
+        const targetCountry = String(req.body.targetCountry || req.body.country || "").trim();
+        const businessType = String(req.body.businessType || "").trim();
+
+        if (!productName || !targetCountry || !businessType) {
+            res.status(400);
+            throw new Error("Product, target country and business type are required.");
+        }
+
+        let report;
+        let providerLabel = "Rule Engine Preview";
+
+        try {
+            const aiReport = await generateWithOpenAI(req.body);
+
+            if (aiReport) {
+                report = aiReport;
+                providerLabel = "AI-Generated";
+            }
+        } catch (error) {
+            console.error("Report OpenAI generation failed:", error.message);
+        }
+
+        if (!report) {
+            report = buildRuleBasedGeneratedReport(req.body);
+        }
+
+        report = normalizeGeneratedReport({
+            ...report,
+            dataSourceLabel: providerLabel,
+            isDemo: providerLabel !== "AI-Generated",
+        });
+
+        const userId = getOptionalUserId(req);
+        const guestId = userId ? "" : crypto.randomUUID();
+
+        await GeneratedReport.create({
+            userId,
+            guestId,
+            requesterEmail: req.body.email || "",
+            productName,
+            targetCountry,
+            businessType,
+            requestPayload: {
+                ...req.body,
+                token: undefined,
+            },
+            report: {
+                ...report,
+                providerLabel,
+            },
+        });
+
+        res.status(201).json({
+            ...report,
+            providerLabel,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const getAiReports = async (req, res, next) => {
     try {
         const reports = await AiReport.find({ organizationId: req.user.organizationId })
@@ -381,4 +564,4 @@ const exportAiReport = async (req, res, next) => {
     }
 };
 
-export { createAiReport, createOpportunityReport, exportAiReport, getAiReportById, getAiReports };
+export { createAiReport, createOpportunityReport, exportAiReport, generateSampleReport, getAiReportById, getAiReports };

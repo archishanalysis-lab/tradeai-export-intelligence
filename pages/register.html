@@ -146,15 +146,6 @@
             method="post"
             autocomplete="on"
           >
-            <!-- SELECTED PLAN FROM PRICING PAGE -->
-
-            <p class="selected-plan-note" id="selectedPlanNote">
-              <span data-i18n="selected">Selected:</span>
-              <strong id="selectedPlanLabel"
-                >Free plan • monthly billing</strong
-              >
-            </p>
-
             <input
               type="hidden"
               id="selectedPlan"
@@ -384,6 +375,7 @@
     ====================================================== -->
 
     <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
     <script src="../js/auth.js" defer></script>
     <script src="../js/navbar.js" defer></script>
     <script src="../js/theme.js" defer></script>
@@ -458,8 +450,6 @@
         const countryInput = document.getElementById("selectedCountry");
         const productInput = document.getElementById("selectedProduct");
         const reportTypeInput = document.getElementById("selectedReportType");
-        const planLabel = document.getElementById("selectedPlanLabel");
-        const planNote = document.getElementById("selectedPlanNote");
 
         if (planInput) planInput.value = selectedPlan;
         if (billingInput) billingInput.value = selectedBilling;
@@ -468,31 +458,6 @@
         if (countryInput) countryInput.value = country;
         if (productInput) productInput.value = product;
         if (reportTypeInput) reportTypeInput.value = reportType;
-
-        if (planLabel) {
-          const countryText = country ? ` • ${formatLabel(country)}` : "";
-          const productText = product ? ` • ${product}` : "";
-          planLabel.textContent = `${selectedPlan} plan • ${selectedBilling} billing${countryText}${productText}`;
-        }
-
-        if (planNote) {
-          planNote.setAttribute("data-source", source);
-
-          if (intent) {
-            planNote.setAttribute("data-intent", intent);
-          }
-
-          if (country) {
-            planNote.setAttribute("data-country", country);
-          }
-        }
-
-        function formatLabel(value) {
-          return value
-            .split("-")
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ");
-        }
       });
     </script>
   </body>

@@ -10,9 +10,10 @@
     throw new Error("TradeAI storage must load before api.js.");
   }
 
-  const API_BASE_URL =
-    window.TRADEAI_API_URL ||
-    (isLocalHost ? "http://localhost:5000/api" : "https://tradeai-export-intelligence-1.onrender.com/api");
+  const apiBaseUrl = (window.TradeAI?.config?.API_BASE_URL || window.TRADEAI_API_URL || (isLocalHost
+    ? "http://localhost:5000"
+    : "https://tradeai-export-intelligence-1.onrender.com")).replace(/\/$/, "");
+  const API_BASE_URL = window.TradeAI?.config?.API_URL || `${apiBaseUrl}/api`;
   const MVP_PREVIEW_MESSAGE =
     "This feature is currently running in MVP preview mode. Live backend data will appear here after deployment. Please continue reviewing the UI flow and sample experience.";
   const auth =

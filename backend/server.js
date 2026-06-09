@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import connectDB from "./config/db.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
@@ -15,7 +17,7 @@ import analyticsRoutes from "./routes/analyticsRoutes.js";
 import buyerRoutes from "./routes/buyerRoutes.js";
 import billingRoutes from "./routes/billingRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
-import copilotRoutes from "./routes/copilotRoutes.js";
+import copilotRoutes from "./routes/copilot.js";
 import dealRoutes from "./routes/dealRoutes.js";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
 import marketplaceIntroRoutes from "./routes/marketplaceIntroRoutes.js";
@@ -29,7 +31,10 @@ import tradeDataRoutes from "./routes/tradeDataRoutes.js";
 import tradeNewsRoutes from "./routes/tradeNewsRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 /* DATABASE CONNECTION */
 

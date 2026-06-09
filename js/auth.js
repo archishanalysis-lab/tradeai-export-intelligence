@@ -3,12 +3,13 @@
 ========================================================= */
 
 const API_BASE_URL =
-  window.TRADEAI_API_URL ||
+  window.TradeAI?.config?.API_URL ||
+  (window.TRADEAI_API_URL ? `${window.TRADEAI_API_URL.replace(/\/$/, "")}/api` : "") ||
   (["localhost", "127.0.0.1", ""].includes(window.location.hostname)
     ? "http://localhost:5000/api"
     : "https://tradeai-export-intelligence-1.onrender.com/api");
-const AUTH_MVP_PREVIEW_MESSAGE =
-  "Authentication is in staging for this MVP preview. Please review the interface and user journey. Live login/register will be available after backend deployment.";
+const AUTH_BACKEND_UNAVAILABLE_MESSAGE =
+  "Cannot connect to the TradeAI backend. Start the backend on http://localhost:5000 and try again.";
 
 const AUTH_KEY = "tradeai_logged_in";
 const USER_KEY = "tradeai_user";
@@ -103,14 +104,6 @@ const roleGuardMap = {
   "importer-dashboard": ["importer", "admin"],
   "admin-panel": ["admin"],
 };
-
-const mvpPreviewPages = [
-  "explorer-dashboard",
-  "export-dash",
-  "product-dashboard",
-  "importer-dashboard",
-  "admin-panel",
-];
 
 function isLoggedIn() {
   if (authState?.isLoggedIn) {
@@ -227,19 +220,8 @@ function logoutUser() {
   window.location.href = getLoginPath();
 }
 
-function isMvpPreviewPage() {
-  return mvpPreviewPages.includes(currentPage);
-}
-
 function requireAuth() {
-  if (isLoggedIn() || isMvpPreviewPage()) {
-    if (!isLoggedIn() && isMvpPreviewPage()) {
-      window.TradeAI?.toast?.(
-        "Dashboard is running in MVP preview mode. Live metrics will appear after backend deployment.",
-        "error",
-      );
-    }
-
+  if (isLoggedIn()) {
     return true;
   }
 
@@ -267,14 +249,6 @@ async function verifyServerSession() {
       status: user.status || currentUser.status,
     });
   } catch (error) {
-    if (window.TradeAI?.isPreviewApiError?.(error)) {
-      window.TradeAI?.toast?.(
-        "Dashboard is showing demo preview data until backend session checks are available.",
-        "error",
-      );
-      return;
-    }
-
     clearSession();
     window.location.href = getLoginPath();
   }
@@ -355,9 +329,7 @@ async function apiRequest(path, options = {}) {
       ...options,
     });
   } catch (error) {
-    const previewError = new Error(AUTH_MVP_PREVIEW_MESSAGE);
-    previewError.code = "MVP_PREVIEW_BACKEND_UNAVAILABLE";
-    throw previewError;
+    throw new Error(AUTH_BACKEND_UNAVAILABLE_MESSAGE);
   }
 
   const contentType = response.headers.get("content-type") || "";
@@ -368,7 +340,7 @@ async function apiRequest(path, options = {}) {
   if (!response.ok) {
     const error = new Error(
       response.status >= 500
-        ? AUTH_MVP_PREVIEW_MESSAGE
+        ? data.message || "TradeAI backend returned a server error. Please try again."
         : data.message || "Authentication could not be completed. Please try again.",
     );
     error.status = response.status;
@@ -379,11 +351,7 @@ async function apiRequest(path, options = {}) {
 }
 
 function getAuthFriendlyError(error) {
-  return (
-    window.TradeAI?.getPreviewMessage?.(error, AUTH_MVP_PREVIEW_MESSAGE) ||
-    error?.message ||
-    AUTH_MVP_PREVIEW_MESSAGE
-  );
+  return error?.message || "Authentication could not be completed. Please try again.";
 }
 
 function setSubmitState(form, isSubmitting) {
@@ -694,7 +662,7 @@ if (storage.get(AUTH_KEY) === "true" && getToken() && isTokenExpired(getToken())
 renderSignedInAuthPanel();
 window.addEventListener("tradeai:language-change", renderSignedInAuthPanel);
 
-if (protectedPages.includes(currentPage) && !isLoggedIn() && !isMvpPreviewPage()) {
+if (protectedPages.includes(currentPage) && !isLoggedIn()) {
   window.TradeAI?.toast?.("Please login first.", "error");
   window.location.href = getLoginPath();
 }
@@ -767,7 +735,7 @@ document.querySelectorAll(".toggle-password").forEach((toggle) => {
 });
 
 window.addEventListener("storage", () => {
-  if (!isLoggedIn() && protectedPages.includes(currentPage) && !isMvpPreviewPage()) {
+  if (!isLoggedIn() && protectedPages.includes(currentPage)) {
     window.location.href = getLoginPath();
   }
 });
@@ -782,7 +750,6 @@ window.TradeAI = {
     logoutUser,
     clearSession,
     requireAuth,
-    isMvpPreviewPage,
     getDashboardPath,
     isTokenExpired,
     verifyServerSession,
