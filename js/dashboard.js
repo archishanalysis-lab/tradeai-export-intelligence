@@ -1135,9 +1135,16 @@ async function renderMyReports() {
 
     lists.forEach((list) => renderMyReportsList(list, reports));
   } catch (error) {
+    const loginRequired =
+      /auth|login|session|token|not authorized/i.test(error?.message || "");
+    const message =
+      loginRequired
+        ? "Login required to view reports."
+        : "Saved reports could not load right now.";
+
     lists.forEach((list) => {
       list.innerHTML =
-        "<li>Saved reports could not load right now.</li>";
+        `<li>${message}</li>`;
     });
   }
 

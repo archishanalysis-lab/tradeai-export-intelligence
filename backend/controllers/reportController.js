@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import OpenAI from "openai";
 
 import AiReport from "../models/AiReport.js";
@@ -164,8 +165,11 @@ const getOptionalUserId = (req) => {
 
 const getAuthenticatedUserId = (req) => req.user?._id || req.user?.id || req.user?.userId || null;
 
+const isValidObjectId = (value) =>
+    Boolean(value) && mongoose.Types.ObjectId.isValid(String(value));
+
 const saveGeneratedReportForUser = async ({ userId, requestBody, report, providerLabel }) => {
-    if (!userId) {
+    if (!isValidObjectId(userId)) {
         return;
     }
 
@@ -524,11 +528,18 @@ const generateSampleReport = async (req, res, next) => {
 
 const getMyReports = async (req, res, next) => {
     try {
+        console.log("[reports/my-reports] called");
+        console.log("[reports/my-reports] user present:", Boolean(req.user));
+
         const userId = getAuthenticatedUserId(req);
 
-        if (!userId) {
-            res.status(401);
-            throw new Error("Not authorized, user missing");
+        console.log("[reports/my-reports] userId present:", Boolean(userId));
+
+        if (!isValidObjectId(userId)) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication required to view reports.",
+            });
         }
 
         const reports = await Report.find({ userId })
@@ -537,12 +548,14 @@ const getMyReports = async (req, res, next) => {
             .limit(20)
             .lean();
 
-        res.json({
+        console.log("[reports/my-reports] reports count:", reports.length);
+
+        return res.status(200).json({
             success: true,
             reports,
         });
     } catch (error) {
-        console.error("My reports fetch failed:", {
+        console.error("[reports/my-reports] failed:", {
             userPresent: Boolean(req.user),
             userIdType: typeof getAuthenticatedUserId(req),
             message: error.message,
@@ -555,9 +568,11 @@ const getMyReportById = async (req, res, next) => {
     try {
         const userId = getAuthenticatedUserId(req);
 
-        if (!userId) {
-            res.status(401);
-            throw new Error("Not authorized, user missing");
+        if (!isValidObjectId(userId)) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication required to view reports.",
+            });
         }
 
         const report = await Report.findOne({

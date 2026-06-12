@@ -24,8 +24,9 @@ const getCookieToken = (req) => {
 };
 
 const buildUserFromToken = (decoded) => ({
-    _id: decoded.id,
-    id: decoded.id,
+    _id: decoded.id || decoded._id || decoded.userId,
+    id: decoded.id || decoded._id || decoded.userId,
+    userId: decoded.userId || decoded.id || decoded._id,
     role: decoded.role,
     status: decoded.status,
     organizationId: decoded.organizationId,
@@ -51,7 +52,7 @@ const protect = async (req, res, next) => {
 
         // Backward compatibility for older tokens that only contain an id.
         if (!user.role || !user.organizationId || !user.status) {
-            const dbUser = await User.findById(decoded.id).select("-password");
+            const dbUser = await User.findById(decoded.id || decoded._id || decoded.userId).select("-password");
 
             if (!dbUser) {
                 next(createAuthError("Not authorized, user not found", 401));
