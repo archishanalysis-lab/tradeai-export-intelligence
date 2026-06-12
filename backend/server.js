@@ -51,11 +51,12 @@ const configuredOrigins = (process.env.FRONTEND_URL || "")
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
-const localOrigins = ["http://localhost:5500", "http://127.0.0.1:5500"];
-const allowedOrigins =
-    process.env.NODE_ENV === "production"
-        ? configuredOrigins
-        : Array.from(new Set([...localOrigins, ...configuredOrigins]));
+const defaultFrontendOrigins = [
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "https://tradeai-export-intelligence.vercel.app",
+];
+const allowedOrigins = Array.from(new Set([...defaultFrontendOrigins, ...configuredOrigins]));
 
 app.use(
     cors({
