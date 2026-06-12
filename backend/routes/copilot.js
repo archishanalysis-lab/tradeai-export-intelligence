@@ -106,6 +106,58 @@ function buildFallback(question) {
         };
     }
 
+    if (isPharma) {
+        return {
+            providerLabel: FALLBACK_PROVIDER_LABEL,
+            marketOpportunity:
+                "Indian pharma exporters should prioritize corridors where importer licensing, product registration and documentation readiness can be verified before outreach.",
+            buyerType:
+                "Licensed pharma importers, distributors, hospital procurement teams and institutional buyers.",
+            riskLevel:
+                "High: confirm product registration, buyer license, batch documentation and destination health authority requirements.",
+            documentsNeeded: [
+                "Commercial invoice",
+                "Packing list",
+                "Certificate of origin",
+                "Certificate of analysis",
+                "Product registration or health authority approval",
+            ],
+            nextActions: [
+                "Select one destination country and verify the registration pathway.",
+                "Prepare product dossier, COA and specification sheets.",
+                "Validate importer license and payment terms before sampling or shipment.",
+            ],
+            disclaimer:
+                "This is rule-based preview guidance, not live AI or legal advice. Pharma exports require current regulatory review.",
+        };
+    }
+
+    if (isFood) {
+        return {
+            providerLabel: FALLBACK_PROVIDER_LABEL,
+            marketOpportunity:
+                "For Indian food products such as turmeric, spices and rice, the Gulf corridor, especially UAE, is a practical first screen because of distributor depth, retail demand and re-export channels.",
+            buyerType:
+                "Food importers, supermarket suppliers, HORECA distributors, wholesale traders and re-export buyers.",
+            riskLevel:
+                "Medium: verify labeling, shelf-life, buyer payment terms and destination conformity requirements.",
+            documentsNeeded: [
+                "Commercial invoice",
+                "Packing list",
+                "Certificate of origin",
+                "Health or phytosanitary certificate",
+                "Product specification and labeling documents",
+            ],
+            nextActions: [
+                "Confirm HS code and destination labeling requirements.",
+                "Prepare buyer-ready specs with MOQ, shelf life and packaging details.",
+                "Shortlist UAE and GCC importers by product category.",
+            ],
+            disclaimer:
+                "This is rule-based preview guidance, not live AI or legal advice. Verify current food documentation and buyer details before action.",
+        };
+    }
+
     return {
         providerLabel: FALLBACK_PROVIDER_LABEL,
         marketOpportunity:
