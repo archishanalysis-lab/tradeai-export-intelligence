@@ -156,11 +156,13 @@ const getOptionalUserId = (req) => {
             algorithms: ["HS256"],
         });
 
-        return decoded.id || decoded._id || null;
+        return decoded.id || decoded._id || decoded.userId || null;
     } catch (error) {
         return null;
     }
 };
+
+const getAuthenticatedUserId = (req) => req.user?._id || req.user?.id || req.user?.userId || null;
 
 const saveGeneratedReportForUser = async ({ userId, requestBody, report, providerLabel }) => {
     if (!userId) {
@@ -522,23 +524,45 @@ const generateSampleReport = async (req, res, next) => {
 
 const getMyReports = async (req, res, next) => {
     try {
-        const reports = await Report.find({ userId: req.user._id || req.user.id })
+        const userId = getAuthenticatedUserId(req);
+
+        if (!userId) {
+            res.status(401);
+            throw new Error("Not authorized, user missing");
+        }
+
+        const reports = await Report.find({ userId })
             .select("_id productName targetCountry createdAt isDemo")
             .sort({ createdAt: -1 })
             .limit(20)
             .lean();
 
-        res.json(reports);
+        res.json({
+            success: true,
+            reports,
+        });
     } catch (error) {
+        console.error("My reports fetch failed:", {
+            userPresent: Boolean(req.user),
+            userIdType: typeof getAuthenticatedUserId(req),
+            message: error.message,
+        });
         next(error);
     }
 };
 
 const getMyReportById = async (req, res, next) => {
     try {
+        const userId = getAuthenticatedUserId(req);
+
+        if (!userId) {
+            res.status(401);
+            throw new Error("Not authorized, user missing");
+        }
+
         const report = await Report.findOne({
             _id: req.params.id,
-            userId: req.user._id || req.user.id,
+            userId,
         }).lean();
 
         if (!report) {
@@ -548,6 +572,11 @@ const getMyReportById = async (req, res, next) => {
 
         res.json(report);
     } catch (error) {
+        console.error("My report detail fetch failed:", {
+            userPresent: Boolean(req.user),
+            userIdType: typeof getAuthenticatedUserId(req),
+            message: error.message,
+        });
         next(error);
     }
 };
