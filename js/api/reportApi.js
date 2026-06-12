@@ -21,6 +21,12 @@
         body: JSON.stringify(payload),
       });
     },
+    myReports() {
+      return TradeAI.request("/reports/my-reports");
+    },
+    getMyReport(id) {
+      return TradeAI.request(`/reports/my-reports/${encodeURIComponent(id)}`);
+    },
     get(id) {
       return TradeAI.request(`/reports/${id}`);
     },

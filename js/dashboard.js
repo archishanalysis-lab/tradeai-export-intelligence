@@ -988,6 +988,170 @@ async function renderAccountSummary() {
 }
 
 /* =========================================================
+   MY REPORTS
+========================================================= */
+
+function formatReportDate(value) {
+
+  if (!value) return "";
+
+  const date =
+    new Date(value);
+
+  return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString();
+
+}
+
+function renderSavedReportFields(report) {
+
+  const data =
+    report?.reportData || {};
+  const actions =
+    Array.isArray(data.suggestedNextActions) ? data.suggestedNextActions : [];
+  const fields = [
+    ["Provider", data.providerLabel || data.dataSourceLabel],
+    ["Opportunity Score", Number.isFinite(Number(data.opportunityScore)) ? `${data.opportunityScore}/100` : ""],
+    ["Market Potential", data.marketPotential],
+    ["Demand Reason", data.demandReason],
+    ["Buyer Type", data.buyerType],
+    ["Risk Level", data.riskLevel],
+    ["Compliance Notes", data.complianceNotes],
+  ];
+
+  return `
+    <div class="activity-card saved-report-detail">
+      ${fields
+        .filter(([, value]) => value !== undefined && value !== null && String(value).trim())
+        .map(([label, value]) => `<p><strong>${escapeDashboardHtml(label)}:</strong> ${escapeDashboardHtml(value)}</p>`)
+        .join("")}
+      ${
+        actions.length
+          ? `<p><strong>Suggested Next Actions:</strong></p><ul>${actions.map((item) => `<li>${escapeDashboardHtml(item)}</li>`).join("")}</ul>`
+          : ""
+      }
+    </div>
+  `;
+
+}
+
+function renderMyReportsList(list, reports) {
+
+  if (!list)
+    return;
+
+  if (!reports.length) {
+    list.innerHTML = `
+      <li>
+        No reports yet. Generate your first export opportunity report.
+        <a href="export-opportunity-report.html">Generate report</a>
+      </li>
+    `;
+    return;
+  }
+
+  list.innerHTML =
+    reports
+      .map((report) => `
+        <li>
+          <span>${escapeDashboardHtml(report.productName || "Export report")}</span>
+          &mdash;
+          <span>${escapeDashboardHtml(report.targetCountry || "Target market")}</span>
+          ${report.isDemo ? '<span class="status-badge status-pending">Sample</span>' : ""}
+          <span>${escapeDashboardHtml(formatReportDate(report.createdAt))}</span>
+          <a href="#" data-report-id="${escapeDashboardHtml(report._id)}">View</a>
+          <div class="saved-report-detail-container" hidden></div>
+        </li>
+      `)
+      .join("");
+
+}
+
+async function handleMyReportView(event) {
+
+  const link =
+    event.target.closest("[data-report-id]");
+
+  if (!link)
+    return;
+
+  event.preventDefault();
+
+  const listItem =
+    link.closest("li");
+  const detailContainer =
+    listItem?.querySelector(".saved-report-detail-container");
+
+  if (!detailContainer)
+    return;
+
+  if (!detailContainer.hidden && detailContainer.innerHTML.trim()) {
+    detailContainer.hidden =
+      true;
+    link.textContent =
+      "View";
+    return;
+  }
+
+  detailContainer.hidden =
+    false;
+  detailContainer.innerHTML =
+    '<div class="activity-card"><p>Loading report...</p></div>';
+  link.textContent =
+    "Hide";
+
+  try {
+    const report =
+      await window.TradeAI?.api?.reports?.getMyReport?.(link.dataset.reportId);
+
+    detailContainer.innerHTML =
+      renderSavedReportFields(report);
+  } catch (error) {
+    detailContainer.innerHTML =
+      '<div class="activity-card"><p>Report details could not load right now.</p></div>';
+  }
+
+}
+
+async function renderMyReports() {
+
+  const lists = [
+    document.getElementById("my-reports-list"),
+    document.getElementById("reports-tab-my-reports-list"),
+  ].filter(Boolean);
+
+  if (!lists.length || !window.TradeAI?.auth?.isLoggedIn?.())
+    return;
+
+  lists.forEach((list) => {
+    list.innerHTML =
+      "<li>Loading reports...</li>";
+  });
+
+  try {
+    const response =
+      await window.TradeAI?.api?.reports?.myReports?.();
+    const reports =
+      Array.isArray(response) ? response : response?.reports || [];
+
+    lists.forEach((list) => renderMyReportsList(list, reports));
+  } catch (error) {
+    lists.forEach((list) => {
+      list.innerHTML =
+        "<li>Saved reports could not load right now.</li>";
+    });
+  }
+
+  lists.forEach((list) => {
+    if (!list.dataset.myReportsBound) {
+      list.addEventListener("click", handleMyReportView);
+      list.dataset.myReportsBound =
+        "true";
+    }
+  });
+
+}
+
+/* =========================================================
    DASHBOARD INIT
 ========================================================= */
 
@@ -998,6 +1162,8 @@ function initializeDashboard() {
   renderMvpDashboardPreview();
 
   renderAccountSummary();
+
+  renderMyReports();
 
   renderAnalytics();
 

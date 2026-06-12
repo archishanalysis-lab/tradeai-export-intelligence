@@ -1,9 +1,8 @@
-import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import OpenAI from "openai";
 
 import AiReport from "../models/AiReport.js";
-import GeneratedReport from "../models/GeneratedReport.js";
+import Report from "../models/Report.js";
 import Subscription from "../models/Subscription.js";
 import { answerTradeQuestion } from "../services/tradeCopilotService.js";
 
@@ -160,6 +159,29 @@ const getOptionalUserId = (req) => {
         return decoded.id || decoded._id || null;
     } catch (error) {
         return null;
+    }
+};
+
+const saveGeneratedReportForUser = async ({ userId, requestBody, report, providerLabel }) => {
+    if (!userId) {
+        return;
+    }
+
+    try {
+        await Report.create({
+            userId,
+            productName: String(requestBody.productName || requestBody.product || "").trim(),
+            hsCode: String(requestBody.hsCode || "").trim(),
+            targetCountry: String(requestBody.targetCountry || requestBody.country || "").trim(),
+            businessType: String(requestBody.businessType || "").trim(),
+            reportData: {
+                ...report,
+                providerLabel,
+            },
+            isDemo: Boolean(report.isDemo),
+        });
+    } catch (error) {
+        console.error("Generated report save failed:", error.message);
     }
 };
 
@@ -476,29 +498,55 @@ const generateSampleReport = async (req, res, next) => {
         });
 
         const userId = getOptionalUserId(req);
-        const guestId = userId ? "" : crypto.randomUUID();
 
-        await GeneratedReport.create({
+        await saveGeneratedReportForUser({
             userId,
-            guestId,
-            requesterEmail: req.body.email || "",
-            productName,
-            targetCountry,
-            businessType,
-            requestPayload: {
+            requestBody: {
                 ...req.body,
-                token: undefined,
+                productName,
+                targetCountry,
+                businessType,
             },
-            report: {
-                ...report,
-                providerLabel,
-            },
+            report,
+            providerLabel,
         });
 
         res.status(201).json({
             ...report,
             providerLabel,
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getMyReports = async (req, res, next) => {
+    try {
+        const reports = await Report.find({ userId: req.user._id || req.user.id })
+            .select("_id productName targetCountry createdAt isDemo")
+            .sort({ createdAt: -1 })
+            .limit(20)
+            .lean();
+
+        res.json(reports);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getMyReportById = async (req, res, next) => {
+    try {
+        const report = await Report.findOne({
+            _id: req.params.id,
+            userId: req.user._id || req.user.id,
+        }).lean();
+
+        if (!report) {
+            res.status(404);
+            throw new Error("Report not found");
+        }
+
+        res.json(report);
     } catch (error) {
         next(error);
     }
@@ -564,4 +612,13 @@ const exportAiReport = async (req, res, next) => {
     }
 };
 
-export { createAiReport, createOpportunityReport, exportAiReport, generateSampleReport, getAiReportById, getAiReports };
+export {
+    createAiReport,
+    createOpportunityReport,
+    exportAiReport,
+    generateSampleReport,
+    getAiReportById,
+    getAiReports,
+    getMyReportById,
+    getMyReports,
+};
