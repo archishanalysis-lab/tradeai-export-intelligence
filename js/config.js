@@ -1,9 +1,13 @@
 (function () {
   const isLocalHost = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
   const configuredBaseUrl = window.TRADEAI_BACKEND_URL || window.TRADEAI_API_URL;
-  const apiBaseUrl = (configuredBaseUrl || (isLocalHost
+  const normalizeBackendBaseUrl = (url) => {
+    const cleanUrl = String(url || "").replace(/\/$/, "");
+    return cleanUrl.endsWith("/api") ? cleanUrl.slice(0, -4) : cleanUrl;
+  };
+  const apiBaseUrl = normalizeBackendBaseUrl(configuredBaseUrl || (isLocalHost
     ? "http://localhost:5000"
-    : "https://tradeai-export-intelligence-1.onrender.com")).replace(/\/$/, "");
+    : "https://tradeai-export-intelligence-1.onrender.com"));
 
   window.TradeAI = {
     ...(window.TradeAI || {}),

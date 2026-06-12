@@ -25,7 +25,8 @@
       return TradeAI.request(`/reports/${id}`);
     },
     exportUrl(id, format = "txt") {
-      return `${TradeAI.API_BASE_URL}/reports/${id}/export?format=${encodeURIComponent(format)}`;
+      const apiUrl = TradeAI.config?.API_URL || TradeAI.API_BASE_URL;
+      return `${apiUrl}/reports/${id}/export?format=${encodeURIComponent(format)}`;
     },
   };
 

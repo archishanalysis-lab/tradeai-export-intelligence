@@ -2,12 +2,18 @@
    TRADEAI AUTH SYSTEM
 ========================================================= */
 
-const API_BASE_URL =
-  window.TradeAI?.config?.API_URL ||
-  (window.TRADEAI_API_URL ? `${window.TRADEAI_API_URL.replace(/\/$/, "")}/api` : "") ||
-  (["localhost", "127.0.0.1", ""].includes(window.location.hostname)
-    ? "http://localhost:5000/api"
-    : "https://tradeai-export-intelligence-1.onrender.com/api");
+const normalizeBackendBaseUrl = (url) => {
+  const cleanUrl = String(url || "").replace(/\/$/, "");
+  return cleanUrl.endsWith("/api") ? cleanUrl.slice(0, -4) : cleanUrl;
+};
+const backendBaseUrl = normalizeBackendBaseUrl(
+  window.TradeAI?.config?.API_BASE_URL ||
+    window.TRADEAI_API_URL ||
+    (["localhost", "127.0.0.1", ""].includes(window.location.hostname)
+      ? "http://localhost:5000"
+      : "https://tradeai-export-intelligence-1.onrender.com"),
+);
+const API_BASE_URL = window.TradeAI?.config?.API_URL || `${backendBaseUrl}/api`;
 const AUTH_BACKEND_UNAVAILABLE_MESSAGE =
   "Cannot connect to the TradeAI backend. Start the backend on http://localhost:5000 and try again.";
 

@@ -5,14 +5,18 @@
 (function () {
   const isLocalHost = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
   const storage = window.TradeAI?.storage;
+  const normalizeBackendBaseUrl = (url) => {
+    const cleanUrl = String(url || "").replace(/\/$/, "");
+    return cleanUrl.endsWith("/api") ? cleanUrl.slice(0, -4) : cleanUrl;
+  };
 
   if (!storage) {
     throw new Error("TradeAI storage must load before api.js.");
   }
 
-  const apiBaseUrl = (window.TradeAI?.config?.API_BASE_URL || window.TRADEAI_API_URL || (isLocalHost
+  const apiBaseUrl = normalizeBackendBaseUrl(window.TradeAI?.config?.API_BASE_URL || window.TRADEAI_API_URL || (isLocalHost
     ? "http://localhost:5000"
-    : "https://tradeai-export-intelligence-1.onrender.com")).replace(/\/$/, "");
+    : "https://tradeai-export-intelligence-1.onrender.com"));
   const API_BASE_URL = window.TradeAI?.config?.API_URL || `${apiBaseUrl}/api`;
   const MVP_PREVIEW_MESSAGE =
     "This feature is currently running in MVP preview mode. Live backend data will appear here after deployment. Please continue reviewing the UI flow and sample experience.";
@@ -244,6 +248,11 @@
 
   window.TradeAI = {
     ...(window.TradeAI || {}),
+    config: {
+      ...(window.TradeAI?.config || {}),
+      API_BASE_URL: apiBaseUrl,
+      API_URL: API_BASE_URL,
+    },
     API_BASE_URL,
     auth,
     api: {
@@ -257,6 +266,7 @@
     isPreviewApiError,
     getPreviewMessage,
   };
+  window.TRADEAI_API_URL = apiBaseUrl;
 
   window.addEventListener("error", (event) => {
     if (!event.filename || !event.filename.includes("/js/")) {

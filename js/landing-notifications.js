@@ -88,12 +88,14 @@
   async function buildBillingReminder() {
     const token = auth?.getToken?.() || storage?.get?.("tradeai_token");
 
-    if (!isLoggedIn() || !token || !window.TradeAI?.API_BASE_URL) {
+    const apiUrl = window.TradeAI?.config?.API_URL || window.TradeAI?.API_BASE_URL;
+
+    if (!isLoggedIn() || !token || !apiUrl) {
       return null;
     }
 
     try {
-      const response = await fetch(`${window.TradeAI.API_BASE_URL}/billing/status`, {
+      const response = await fetch(`${apiUrl}/billing/status`, {
         credentials: "include",
         headers: { Authorization: `Bearer ${token}` },
       });

@@ -122,7 +122,7 @@
   }
 
   function getApiBaseUrl() {
-    return window.TradeAI?.API_BASE_URL || window.TradeAI?.apiBaseUrl || null;
+    return window.TradeAI?.config?.API_URL || window.TradeAI?.API_BASE_URL || window.TradeAI?.apiBaseUrl || null;
   }
 
   function track(eventName, properties = {}) {
