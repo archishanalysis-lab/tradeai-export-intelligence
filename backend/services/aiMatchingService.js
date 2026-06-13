@@ -14,6 +14,18 @@ const SCORING_WEIGHTS = {
     tradeVolume: 10,
 };
 
+const safeBuyerFields = "_id companyName country industry products verified tradeVolume";
+
+const buildSafeBuyer = (buyer) => ({
+    _id: buyer._id,
+    companyName: buyer.companyName,
+    country: buyer.country,
+    industry: buyer.industry,
+    products: buyer.products || [],
+    verified: Boolean(buyer.verified),
+    tradeVolume: buyer.tradeVolume || 0,
+});
+
 const scoreBuyerForProduct = (buyer, product) => {
     let weightedScore = 0;
     const reasons = [];
@@ -71,7 +83,7 @@ const scoreBuyerForProduct = (buyer, product) => {
     }
 
     return {
-        buyer,
+        buyer: buildSafeBuyer(buyer),
         score: Math.min(Math.round(weightedScore), 98),
         scoring: SCORING_WEIGHTS,
         reasons: reasons.length ? reasons : ["General market fit based on buyer profile"],
@@ -79,6 +91,10 @@ const scoreBuyerForProduct = (buyer, product) => {
 };
 
 const getProductMatches = async (product, limit = 8) => {
+    if (!product?.organizationId) {
+        return [];
+    }
+
     const productTerms = [
         product.name,
         product.category,
@@ -89,8 +105,10 @@ const getProductMatches = async (product, limit = 8) => {
         ...(product.targetCountries || []),
     ].filter(Boolean);
 
+    const tenantScope = { organizationId: product.organizationId };
     const query = productTerms.length
         ? {
+              ...tenantScope,
               $or: productTerms.map((term) => ({
                   $or: [
                       { country: { $regex: term, $options: "i" } },
@@ -100,9 +118,9 @@ const getProductMatches = async (product, limit = 8) => {
                   ],
               })),
           }
-        : {};
+        : tenantScope;
 
-    const buyers = await Buyer.find(query).limit(60).lean();
+    const buyers = await Buyer.find(query).select(safeBuyerFields).limit(60).lean();
 
     return buyers
         .map((buyer) => scoreBuyerForProduct(buyer, product))

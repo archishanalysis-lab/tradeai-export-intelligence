@@ -5,7 +5,7 @@ import { refreshCompanyReputation } from "../services/reputationService.js";
 import { buildPagination, buildTextOrRegexSearch } from "../services/searchService.js";
 
 const publicProfileSelect =
-    "companyName publicSlug roleType industry businessType country state city address website phone email whatsapp gstNumber iecNumber exportCategories interestedProducts mainProducts hsCodes exportCountries importCountries targetMarkets preferredSupplierCountries buyingQuantity moq annualRevenue productionCapacity certificates logoUrl bannerUrl catalogPdfUrl gallery verificationStatus kycStatus isFeatured ratingAverage reviewsCount responseRate averageResponseHours fulfillmentScore reliabilityScore profileCompletion about createdAt";
+    "companyName publicSlug roleType industry businessType country state city exportCategories interestedProducts mainProducts hsCodes exportCountries importCountries targetMarkets preferredSupplierCountries buyingQuantity moq logoUrl bannerUrl gallery verificationStatus isFeatured ratingAverage reviewsCount about createdAt";
 
 const buildProfileQuery = (req, roleType) => ({
     ...(roleType ? { roleType } : {}),
@@ -66,6 +66,7 @@ const getMarketplaceProducts = async (req, res, next) => {
     try {
         const { page, limit, skip } = buildPagination(req.query, { limit: 12 });
         const query = {
+            approvalStatus: "approved",
             ...buildTextOrRegexSearch(req.query.search, [
                 "name",
                 "description",
@@ -114,7 +115,10 @@ const getCompanyBySlug = async (req, res, next) => {
         }
 
         const [featuredProducts, reviews] = await Promise.all([
-            Product.find({ organizationId: company.organizationId?._id || company.organizationId })
+            Product.find({
+                organizationId: company.organizationId?._id || company.organizationId,
+                approvalStatus: "approved",
+            })
                 .sort({ createdAt: -1 })
                 .limit(6)
                 .lean(),
