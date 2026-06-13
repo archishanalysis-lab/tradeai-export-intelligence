@@ -42,6 +42,7 @@ const reportSchema = new mongoose.Schema({
 });
 
 reportSchema.index({ userId: 1, createdAt: -1 });
+reportSchema.index({ userId: 1, hsCode: 1, createdAt: -1 });
 
 const Report = mongoose.model("Report", reportSchema);
 

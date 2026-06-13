@@ -36,6 +36,7 @@ savedCompanySchema.index(
     { organizationId: 1, companyProfile: 1 },
     { unique: true },
 );
+savedCompanySchema.index({ organizationId: 1, user: 1, createdAt: -1 });
 
 const SavedCompany = mongoose.model("SavedCompany", savedCompanySchema);
 

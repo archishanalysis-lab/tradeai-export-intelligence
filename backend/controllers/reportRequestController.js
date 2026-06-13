@@ -36,7 +36,8 @@ const getReportRequests = async (req, res, next) => {
                 .populate("reviewedBy", "name email")
                 .sort({ createdAt: -1 })
                 .skip(skip)
-                .limit(numericLimit),
+                .limit(numericLimit)
+                .lean(),
             ReportRequest.countDocuments(query),
         ]);
 

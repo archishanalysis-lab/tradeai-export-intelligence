@@ -5,7 +5,7 @@ import { refreshCompanyReputation } from "../services/reputationService.js";
 import { buildPagination, buildTextOrRegexSearch } from "../services/searchService.js";
 
 const publicProfileSelect =
-    "companyName publicSlug roleType industry businessType country state city address website phone email whatsapp gstNumber iecNumber exportCategories interestedProducts mainProducts hsCodes exportCountries importCountries targetMarkets preferredSupplierCountries buyingQuantity moq annualRevenue productionCapacity certificates logoUrl bannerUrl catalogPdfUrl gallery verificationStatus kycStatus isFeatured ratingAverage reviewsCount responseRate averageResponseHours fulfillmentScore reliabilityScore profileCompletion about createdAt";
+    "companyName publicSlug roleType industry businessType country state city exportCategories interestedProducts mainProducts hsCodes exportCountries importCountries targetMarkets preferredSupplierCountries buyingQuantity moq logoUrl bannerUrl gallery verificationStatus isFeatured ratingAverage reviewsCount about createdAt";
 
 const buildProfileQuery = (req, roleType) => ({
     ...(roleType ? { roleType } : {}),
@@ -36,7 +36,8 @@ const getCompanies = async (req, res, next) => {
                 .select(publicProfileSelect)
                 .sort({ isFeatured: -1, verificationStatus: -1, profileCompletion: -1, createdAt: -1 })
                 .skip(skip)
-                .limit(limit),
+                .limit(limit)
+                .lean(),
             CompanyProfile.countDocuments(query),
         ]);
 
@@ -65,6 +66,7 @@ const getMarketplaceProducts = async (req, res, next) => {
     try {
         const { page, limit, skip } = buildPagination(req.query, { limit: 12 });
         const query = {
+            approvalStatus: "approved",
             ...buildTextOrRegexSearch(req.query.search, [
                 "name",
                 "description",
@@ -84,7 +86,8 @@ const getMarketplaceProducts = async (req, res, next) => {
                 .populate("createdBy", "name company")
                 .sort({ createdAt: -1 })
                 .skip(skip)
-                .limit(limit),
+                .limit(limit)
+                .lean(),
             Product.countDocuments(query),
         ]);
 
@@ -103,7 +106,8 @@ const getCompanyBySlug = async (req, res, next) => {
     try {
         const company = await CompanyProfile.findOne({ publicSlug: req.params.slug })
             .select(publicProfileSelect)
-            .populate("organizationId", "name slug plan");
+            .populate("organizationId", "name slug plan")
+            .lean();
 
         if (!company) {
             res.status(404);
@@ -111,13 +115,18 @@ const getCompanyBySlug = async (req, res, next) => {
         }
 
         const [featuredProducts, reviews] = await Promise.all([
-            Product.find({ organizationId: company.organizationId?._id || company.organizationId })
+            Product.find({
+                organizationId: company.organizationId?._id || company.organizationId,
+                approvalStatus: "approved",
+            })
                 .sort({ createdAt: -1 })
-                .limit(6),
+                .limit(6)
+                .lean(),
             CompanyReview.find({ companyProfile: company._id, status: "approved" })
                 .populate("reviewer", "name company")
                 .sort({ createdAt: -1 })
-                .limit(8),
+                .limit(8)
+                .lean(),
         ]);
 
         res.json({ company, featuredProducts, reviews });
@@ -128,7 +137,7 @@ const getCompanyBySlug = async (req, res, next) => {
 
 const createCompanyReview = async (req, res, next) => {
     try {
-        const company = await CompanyProfile.findOne({ publicSlug: req.params.slug });
+        const company = await CompanyProfile.findOne({ publicSlug: req.params.slug }).lean();
 
         if (!company) {
             res.status(404);

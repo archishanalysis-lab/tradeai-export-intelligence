@@ -112,6 +112,7 @@ const marketplaceIntroRequestSchema = new mongoose.Schema(
 );
 
 marketplaceIntroRequestSchema.index({ status: 1, createdAt: -1 });
+marketplaceIntroRequestSchema.index({ status: 1, priority: 1, createdAt: -1 });
 marketplaceIntroRequestSchema.index({ requestType: 1, targetType: 1 });
 marketplaceIntroRequestSchema.index({ email: 1, createdAt: -1 });
 

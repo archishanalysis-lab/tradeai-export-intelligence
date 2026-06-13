@@ -5,6 +5,8 @@ import Subscription from "../models/Subscription.js";
 import User from "../models/User.js";
 import { sendEmail } from "../services/emailService.js";
 
+const PUBLIC_REGISTRATION_ROLES = ["explorer", "exporter", "importer", "consultant", "sme"];
+
 const slugify = (value = "") =>
     value
         .toLowerCase()
@@ -48,7 +50,7 @@ const ensureUserWorkspace = async (user) => {
     return user;
 };
 
-const buildUserResponse = (user) => ({
+const buildSafeUser = (user) => ({
     _id: user._id,
     name: user.name,
     email: user.email,
@@ -56,6 +58,10 @@ const buildUserResponse = (user) => ({
     organizationId: user.organizationId,
     role: user.role,
     status: user.status,
+});
+
+const buildUserResponse = (user) => ({
+    ...buildSafeUser(user),
     token: generateToken(user),
 });
 
@@ -106,7 +112,7 @@ const registerUser = async (req, res, next) => {
             throw new Error("Name, email, account type and password are required");
         }
 
-        if (!["admin", "explorer", "exporter", "importer", "consultant", "sme"].includes(role)) {
+        if (!PUBLIC_REGISTRATION_ROLES.includes(role)) {
             res.status(400);
             throw new Error("Please choose a valid account type");
         }
@@ -190,7 +196,7 @@ const loginUser = async (req, res, next) => {
             throw new Error("Please enter a valid email address");
         }
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select("+password");
 
         if (user?.status === "suspended") {
             res.status(403);
@@ -236,7 +242,7 @@ const requestPasswordReset = async (req, res, next) => {
 };
 
 const getMe = async (req, res) => {
-    res.json(req.user);
+    res.json(buildSafeUser(req.user));
 };
 
 export { getMe, loginUser, registerUser, requestPasswordReset };

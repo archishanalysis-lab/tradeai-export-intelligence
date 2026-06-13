@@ -601,7 +601,8 @@ const getAiReports = async (req, res, next) => {
         const reports = await AiReport.find({ organizationId: req.user.organizationId })
             .select("-answer")
             .sort({ createdAt: -1 })
-            .limit(50);
+            .limit(50)
+            .lean();
 
         res.json({ reports });
     } catch (error) {
@@ -614,7 +615,7 @@ const getAiReportById = async (req, res, next) => {
         const report = await AiReport.findOne({
             _id: req.params.id,
             organizationId: req.user.organizationId,
-        });
+        }).lean();
 
         if (!report) {
             res.status(404);
@@ -632,7 +633,7 @@ const exportAiReport = async (req, res, next) => {
         const report = await AiReport.findOne({
             _id: req.params.id,
             organizationId: req.user.organizationId,
-        });
+        }).lean();
 
         if (!report) {
             res.status(404);

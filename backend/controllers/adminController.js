@@ -56,7 +56,8 @@ const listCompanyProfiles = async (req, res, next) => {
         const profiles = await CompanyProfile.find()
             .populate("owner", "name email")
             .sort({ updatedAt: -1 })
-            .limit(80);
+            .limit(80)
+            .lean();
 
         res.json({ profiles });
     } catch (error) {
@@ -70,7 +71,8 @@ const listKycDocuments = async (req, res, next) => {
             .populate("companyProfile", "companyName publicSlug roleType verificationStatus")
             .populate("uploadedBy", "name email")
             .sort({ createdAt: -1 })
-            .limit(100);
+            .limit(100)
+            .lean();
 
         res.json({ documents });
     } catch (error) {
@@ -95,7 +97,8 @@ const listContactFeedback = async (req, res, next) => {
                 .populate("reviewedBy", "name email")
                 .sort({ createdAt: -1 })
                 .skip(skip)
-                .limit(numericLimit),
+                .limit(numericLimit)
+                .lean(),
             Contact.countDocuments(query),
         ]);
 
@@ -189,7 +192,8 @@ const listAdminUsers = async (req, res, next) => {
         const users = await User.find()
             .select("-password")
             .sort({ createdAt: -1 })
-            .limit(50);
+            .limit(50)
+            .lean();
 
         res.json({ users });
     } catch (error) {
@@ -225,7 +229,7 @@ const updateUserStatus = async (req, res, next) => {
 
 const listAdminBuyers = async (req, res, next) => {
     try {
-        const buyers = await Buyer.find().sort({ createdAt: -1 }).limit(50);
+        const buyers = await Buyer.find().sort({ createdAt: -1 }).limit(50).lean();
         res.json({ buyers });
     } catch (error) {
         next(error);
@@ -256,7 +260,8 @@ const listAdminProducts = async (req, res, next) => {
         const products = await Product.find()
             .populate("createdBy", "name email company")
             .sort({ createdAt: -1 })
-            .limit(50);
+            .limit(50)
+            .lean();
 
         res.json({ products });
     } catch (error) {
@@ -295,7 +300,8 @@ const listAdminInquiries = async (req, res, next) => {
         const inquiries = await Inquiry.find()
             .populate("product", "name category hsCode")
             .sort({ updatedAt: -1 })
-            .limit(50);
+            .limit(50)
+            .lean();
 
         res.json({ inquiries });
     } catch (error) {
@@ -310,7 +316,8 @@ const listAdminReports = async (req, res, next) => {
             .populate("organizationId", "name")
             .select("-answer")
             .sort({ createdAt: -1 })
-            .limit(80);
+            .limit(80)
+            .lean();
 
         res.json({ reports });
     } catch (error) {

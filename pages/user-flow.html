@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TradeAI User Flow Explanation</title>
+    <meta
+      name="description"
+      content="A stakeholder-friendly explanation of TradeAI user journeys, roles, MVP status, APIs and platform data flow."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <style>
+      :root {
+        --flow-ink: #102033;
+        --flow-muted: #5b6b7c;
+        --flow-line: #dbe4ee;
+        --flow-panel: #ffffff;
+        --flow-soft: #f6f8fb;
+        --flow-blue: #2463eb;
+        --flow-teal: #0f766e;
+        --flow-amber: #b45309;
+        --flow-purple: #6d28d9;
+      }
+
+      body.user-flow-page {
+        background: var(--flow-soft);
+        color: var(--flow-ink);
+      }
+
+      .flow-hero {
+        padding: 72px 0 42px;
+        background: linear-gradient(135deg, #eef5ff 0%, #f8fafc 55%, #eefdf8 100%);
+        border-bottom: 1px solid var(--flow-line);
+      }
+
+      .flow-hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+        gap: 32px;
+        align-items: start;
+      }
+
+      .flow-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+        color: var(--flow-teal);
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .flow-hero h1 {
+        max-width: 820px;
+        margin: 0 0 16px;
+        color: var(--flow-ink);
+        font-size: clamp(2rem, 4vw, 4.4rem);
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+
+      .flow-hero p {
+        max-width: 780px;
+        margin: 0 0 24px;
+        color: var(--flow-muted);
+        font-size: 1.06rem;
+        line-height: 1.7;
+      }
+
+      .flow-actions,
+      .flow-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .flow-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 16px;
+        border-radius: 8px;
+        border: 1px solid var(--flow-line);
+        background: #ffffff;
+        color: var(--flow-ink);
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .flow-button.primary {
+        border-color: var(--flow-blue);
+        background: var(--flow-blue);
+        color: #ffffff;
+      }
+
+      .flow-summary {
+        border: 1px solid var(--flow-line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+      }
+
+      .flow-summary h2 {
+        margin: 0 0 12px;
+        font-size: 1.1rem;
+      }
+
+      .flow-summary ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--flow-muted);
+        line-height: 1.8;
+      }
+
+      .flow-main {
+        padding: 42px 0 72px;
+      }
+
+      .flow-section {
+        margin-bottom: 34px;
+      }
+
+      .flow-section-header {
+        max-width: 920px;
+        margin-bottom: 18px;
+      }
+
+      .flow-section-header h2 {
+        margin: 0 0 8px;
+        color: var(--flow-ink);
+        font-size: 1.8rem;
+        letter-spacing: 0;
+      }
+
+      .flow-section-header p {
+        margin: 0;
+        color: var(--flow-muted);
+        line-height: 1.7;
+      }
+
+      .flow-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .flow-grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .flow-card,
+      .flow-step,
+      .flow-map {
+        border: 1px solid var(--flow-line);
+        border-radius: 8px;
+        background: var(--flow-panel);
+        padding: 18px;
+      }
+
+      .flow-card h3,
+      .flow-step h3,
+      .flow-map h3 {
+        margin: 0 0 10px;
+        color: var(--flow-ink);
+        font-size: 1.08rem;
+        letter-spacing: 0;
+      }
+
+      .flow-card p,
+      .flow-step p,
+      .flow-map p {
+        margin: 0 0 12px;
+        color: var(--flow-muted);
+        line-height: 1.65;
+      }
+
+      .flow-card ul,
+      .flow-map ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--flow-muted);
+        line-height: 1.7;
+      }
+
+      .status-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 12px 0;
+      }
+
+      .mvp-badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 0 9px;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        color: #ffffff;
+      }
+
+      .mvp-badge.working {
+        background: var(--flow-teal);
+      }
+
+      .mvp-badge.demo {
+        background: var(--flow-amber);
+      }
+
+      .mvp-badge.backend {
+        background: var(--flow-blue);
+      }
+
+      .mvp-badge.future {
+        background: var(--flow-purple);
+      }
+
+      .flow-diagram {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(130px, 1fr));
+        gap: 12px;
+      }
+
+      .flow-step {
+        position: relative;
+        min-height: 118px;
+      }
+
+      .flow-step::after {
+        content: ">";
+        position: absolute;
+        top: 50%;
+        right: -11px;
+        transform: translateY(-50%);
+        color: var(--flow-blue);
+        font-weight: 900;
+      }
+
+      .flow-step:last-child::after {
+        display: none;
+      }
+
+      .flow-code {
+        display: block;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #dbeafe;
+        font-size: 0.82rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+      }
+
+      .flow-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid var(--flow-line);
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .flow-table th,
+      .flow-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--flow-line);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .flow-table th {
+        background: #eef5ff;
+        color: var(--flow-ink);
+      }
+
+      .flow-table td {
+        color: var(--flow-muted);
+        line-height: 1.55;
+      }
+
+      .flow-note {
+        border-left: 4px solid var(--flow-blue);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 16px 18px;
+        color: var(--flow-muted);
+        line-height: 1.65;
+      }
+
+      @media (max-width: 980px) {
+        .flow-hero-grid,
+        .flow-grid,
+        .flow-grid.two,
+        .flow-diagram {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-step::after {
+          top: auto;
+          right: 18px;
+          bottom: -14px;
+          transform: rotate(90deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="user-flow-page">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="countries.html">Countries</a>
+          <a href="corridors.html">Corridors</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="copilot.html">Copilot</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <div class="nav-actions">
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+          <button id="themeToggle" class="theme-btn" type="button" aria-label="Toggle theme">
+            <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          </button>
+        </div>
+        <button class="menu-toggle" type="button" aria-label="Toggle menu">Menu</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="flow-hero">
+        <div class="container flow-hero-grid">
+          <div>
+            <span class="flow-kicker">Platform walkthrough</span>
+            <h1>TradeAI User Flow Explanation</h1>
+            <p>
+              A practical guide for users, reviewers, investors, collaborators and future
+              developers. It explains how each role moves through TradeAI, which parts are
+              working, which parts use demo data, and how the frontend connects to the backend.
+            </p>
+            <div class="flow-actions" aria-label="Primary actions">
+              <a class="flow-button primary" href="register.html?role=exporter&source=user-flow&intent=start-exporter">Start as Exporter</a>
+              <a class="flow-button" href="register.html?role=importer&source=user-flow&intent=start-importer">Start as Importer</a>
+              <a class="flow-button" href="countries.html">Explore Countries</a>
+              <a class="flow-button" href="copilot.html">Try Copilot</a>
+              <a class="flow-button" href="pricing.html">View Pricing</a>
+            </div>
+          </div>
+          <aside class="flow-summary" aria-labelledby="statusSummary">
+            <h2 id="statusSummary">MVP status legend</h2>
+            <div class="status-badges">
+              <span class="mvp-badge working">Working</span>
+              <span class="mvp-badge backend">Backend Connected</span>
+              <span class="mvp-badge demo">Demo Data</span>
+              <span class="mvp-badge future">Future Ready</span>
+            </div>
+            <ul>
+              <li>Frontend, backend and MongoDB flows are connected.</li>
+              <li>Sample states are labeled as MVP/demo when live data is absent.</li>
+              <li>Payment and some operational workflows are scaffolded for production expansion.</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <div class="container flow-main">
+        <section class="flow-section" aria-labelledby="endToEnd">
+          <div class="flow-section-header">
+            <h2 id="endToEnd">How TradeAI Works End-to-End</h2>
+            <p>
+              Most users start on a public page, register or login, reach a role-based dashboard,
+              then use reports, marketplace, Copilot, saved items, inquiries or billing features.
+            </p>
+          </div>
+          <div class="flow-diagram" aria-label="End to end flow diagram">
+            <article class="flow-step">
+              <h3>1. Public entry</h3>
+              <p>Landing, countries, corridors, marketplace previews, pricing and report page.</p>
+            </article>
+            <article class="flow-step">
+              <h3>2. Register or login</h3>
+              <p>User selects role, accepts terms/privacy, receives JWT-backed session.</p>
+            </article>
+            <article class="flow-step">
+              <h3>3. Role dashboard</h3>
+              <p>Exporter, importer, explorer, consultant, SME or admin workspace opens.</p>
+            </article>
+            <article class="flow-step">
+              <h3>4. Use tools</h3>
+              <p>Reports, Copilot, marketplace, products, buyers, inquiries, saved items.</p>
+            </article>
+            <article class="flow-step">
+              <h3>5. Backend response</h3>
+              <p>Express controllers read/write MongoDB and return JSON to the frontend.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="flow-section" aria-labelledby="roles">
+          <div class="flow-section-header">
+            <h2 id="roles">Role-Wise User Flows</h2>
+            <p>TradeAI supports public visitors plus registered explorer, exporter, importer, consultant, SME and admin roles.</p>
+          </div>
+          <div class="flow-grid">
+            <article class="flow-card">
+              <h3>Guest / Public Visitor</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge demo">Demo Data</span>
+              </div>
+              <p>Can browse country, corridor, marketplace, pricing and report pages without login.</p>
+              <ul>
+                <li>Entry: `index.html`, countries, corridors, reports, pricing.</li>
+                <li>CTA: register, request walkthrough, explore countries.</li>
+                <li>Value: understand TradeAI before creating an account.</li>
+              </ul>
+            </article>
+
+            <article class="flow-card">
+              <h3>Registered Explorer</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge backend">Backend Connected</span>
+              </div>
+              <p>Uses the unified dashboard for buyer discovery, market analysis, HS codes, reports and saved items.</p>
+              <ul>
+                <li>Dashboard: `dashboard.html#overview`.</li>
+                <li>APIs: reports, billing, buyers, saved items.</li>
+                <li>Value: one guided workspace for trade exploration.</li>
+              </ul>
+            </article>
+
+            <article class="flow-card">
+              <h3>Exporter</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge backend">Backend Connected</span>
+                <span class="mvp-badge demo">Demo Data</span>
+              </div>
+              <p>Moves from product and HS code to target countries, buyer discovery, reports and inquiries.</p>
+              <ul>
+                <li>Dashboard: `export-dash.html`.</li>
+                <li>Uses products, buyers, inquiries, uploads, reports, Copilot.</li>
+                <li>Value: structured export opportunity workflow.</li>
+              </ul>
+            </article>
+
+            <article class="flow-card">
+              <h3>Importer</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge backend">Backend Connected</span>
+                <span class="mvp-badge demo">Demo Data</span>
+              </div>
+              <p>Searches suppliers, products and companies, saves items and sends inquiries where available.</p>
+              <ul>
+                <li>Dashboard: `importer-dashboard.html`.</li>
+                <li>Uses marketplace, saved items, inquiries and Copilot.</li>
+                <li>Value: sourcing and supplier discovery support.</li>
+              </ul>
+            </article>
+
+            <article class="flow-card">
+              <h3>SME / Small Business</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge demo">Demo Data</span>
+              </div>
+              <p>Explores export readiness, target markets, reports and Copilot guidance from the explorer workspace.</p>
+              <ul>
+                <li>Dashboard: explorer dashboard path.</li>
+                <li>Best path: countries -> report -> register -> dashboard.</li>
+                <li>Value: clearer first export/import decisions.</li>
+              </ul>
+            </article>
+
+            <article class="flow-card">
+              <h3>Consultant / Advisor</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge future">Future Ready</span>
+              </div>
+              <p>Uses analytics, reports, marketplace research and Copilot to support client advisory work.</p>
+              <ul>
+                <li>Dashboard: `analytics-dashboard.html`.</li>
+                <li>Uses reports, marketplace, saved items and trade data.</li>
+                <li>Value: reusable client research and opportunity framing.</li>
+              </ul>
+            </article>
+
+            <article class="flow-card">
+              <h3>Admin</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge backend">Backend Connected</span>
+              </div>
+              <p>Reviews platform activity, users, KYC, buyers, products, inquiries, reports and requests.</p>
+              <ul>
+                <li>Dashboard: `admin-panel.html`.</li>
+                <li>Protected by admin-only middleware.</li>
+                <li>Value: MVP operational control and review visibility.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="flow-section" aria-labelledby="authFlow">
+          <div class="flow-section-header">
+            <h2 id="authFlow">Registration, Login and Protected Pages</h2>
+            <p>
+              Registration and login are connected to the backend. Protected pages redirect users to login when the token is missing or expired.
+            </p>
+          </div>
+          <div class="flow-grid two">
+            <article class="flow-map">
+              <h3>Registration</h3>
+              <p>Collects name, email, company, role, password, confirm password and terms/privacy agreement.</p>
+              <span class="flow-code">POST /api/auth/register
+backend/controllers/authController.js
+Models: User, Organization, CompanyProfile, Subscription</span>
+            </article>
+            <article class="flow-map">
+              <h3>Login and Token</h3>
+              <p>Stores the JWT session in browser storage and sends it as a Bearer token on API requests.</p>
+              <span class="flow-code">POST /api/auth/login
+Storage: tradeai_token, tradeai_user, tradeai_logged_in
+Redirect: role-based dashboard path in js/auth.js</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="flow-section" aria-labelledby="featureFlows">
+          <div class="flow-section-header">
+            <h2 id="featureFlows">Core Feature Flows</h2>
+            <p>These are the major product workflows currently represented in the codebase.</p>
+          </div>
+          <div class="flow-grid">
+            <article class="flow-card">
+              <h3>Copilot</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge backend">Backend Connected</span>
+              </div>
+              <p>Users ask trade questions on `copilot.html`; the mounted backend route can answer with OpenAI when configured, with fallback guidance when unavailable.</p>
+              <span class="flow-code">POST /api/copilot/ask
+Mounted route: backend/routes/copilot.js
+Token sent when available</span>
+            </article>
+
+            <article class="flow-card">
+              <h3>Export Opportunity Reports</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge backend">Backend Connected</span>
+                <span class="mvp-badge demo">Demo Data</span>
+              </div>
+              <p>Users submit product/country details, generate an MVP report preview, and logged-in users can see saved reports in dashboard.</p>
+              <span class="flow-code">POST /api/report-requests
+POST /api/reports/generate
+GET /api/reports/my-reports</span>
+            </article>
+
+            <article class="flow-card">
+              <h3>Marketplace</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge backend">Backend Connected</span>
+                <span class="mvp-badge demo">Demo Data</span>
+              </div>
+              <p>Users browse companies, suppliers, importers and products, then save companies/products when logged in.</p>
+              <span class="flow-code">GET /api/marketplace/companies
+GET /api/marketplace/products
+POST /api/saved-items/products</span>
+            </article>
+
+            <article class="flow-card">
+              <h3>Products, Buyers and Inquiries</h3>
+              <div class="status-badges">
+                <span class="mvp-badge working">Working</span>
+                <span class="mvp-badge backend">Backend Connected</span>
+              </div>
+              <p>Exporters manage products and buyers; importers/exporters use inquiries to track interest and messages.</p>
+              <span class="flow-code">/api/products
+/api/buyers
+/api/inquiries</span>
+            </article>
+
+            <article class="flow-card">
+              <h3>Uploads and KYC</h3>
+              <div class="status-badges">
+                <span class="mvp-badge backend">Backend Connected</span>
+                <span class="mvp-badge future">Future Ready</span>
+              </div>
+              <p>Protected upload routes support product images, certificates, catalogues and invoices. Admin has KYC review routes.</p>
+              <span class="flow-code">/api/uploads/*
+/api/admin/kyc</span>
+            </article>
+
+            <article class="flow-card">
+              <h3>Plans and Payments</h3>
+              <div class="status-badges">
+                <span class="mvp-badge backend">Backend Connected</span>
+                <span class="mvp-badge future">Future Ready</span>
+              </div>
+              <p>Pricing stores selected plan context. Razorpay checkout, verification, webhook and cancellation routes are scaffolded.</p>
+              <span class="flow-code">/api/billing/status
+/api/billing/checkout
+/api/billing/verify</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="flow-section" aria-labelledby="routeMapping">
+          <div class="flow-section-header">
+            <h2 id="routeMapping">Route, API and Model Mapping</h2>
+            <p>This table connects the user-visible flows to the real code paths.</p>
+          </div>
+          <table class="flow-table">
+            <thead>
+              <tr>
+                <th>Flow</th>
+                <th>Frontend</th>
+                <th>Backend routes</th>
+                <th>Models</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Auth</td>
+                <td>register.html, login.html, js/auth.js</td>
+                <td>/api/auth/register, /api/auth/login, /api/auth/me</td>
+                <td>User, Organization, CompanyProfile, Subscription</td>
+              </tr>
+              <tr>
+                <td>Dashboard reports</td>
+                <td>dashboard.html, js/dashboard.js, js/api/reportApi.js</td>
+                <td>/api/reports/my-reports, /api/reports/:id</td>
+                <td>Report, AiReport</td>
+              </tr>
+              <tr>
+                <td>Marketplace</td>
+                <td>companies.html, suppliers.html, importers.html, products.html</td>
+                <td>/api/marketplace/*, /api/saved-items/*</td>
+                <td>CompanyProfile, CompanyReview, Product, SavedItem</td>
+              </tr>
+              <tr>
+                <td>Exporter tools</td>
+                <td>export-dash.html, product-dashboard.html, inquiry-dashboard.html</td>
+                <td>/api/products, /api/buyers, /api/inquiries, /api/uploads</td>
+                <td>Product, Buyer, Inquiry</td>
+              </tr>
+              <tr>
+                <td>Copilot</td>
+                <td>copilot.html, js/copilot.js</td>
+                <td>/api/copilot/ask</td>
+                <td>Mounted route uses OpenAI/fallback response; no dedicated Copilot model in current flow</td>
+              </tr>
+              <tr>
+                <td>Billing</td>
+                <td>pricing.html, js/pricing.js, js/api/billingApi.js</td>
+                <td>/api/billing/status, checkout, verify, cancel, webhook</td>
+                <td>Subscription, Payment, Organization</td>
+              </tr>
+              <tr>
+                <td>Admin</td>
+                <td>admin-panel.html, js/admin.js, js/api/adminApi.js</td>
+                <td>/api/admin/*, /api/report-requests admin routes</td>
+                <td>User, Buyer, Product, Inquiry, AiReport, KycDocument, Contact</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="flow-section" aria-labelledby="technicalFlow">
+          <div class="flow-section-header">
+            <h2 id="technicalFlow">Technical Data Flow</h2>
+            <p>The same pattern powers most product screens.</p>
+          </div>
+          <div class="flow-map">
+            <span class="flow-code">Frontend page
+-> js/config.js chooses API base URL
+-> js/api.js attaches JSON headers and Authorization token
+-> feature API helper calls /api route
+-> backend/server.js mounts route
+-> middleware validates auth and request data
+-> controller runs business logic
+-> service calls AI, uploads, trade data or matching if needed
+-> Mongoose model reads/writes MongoDB
+-> JSON response returns to frontend
+-> page script renders success, empty, fallback or error state</span>
+          </div>
+        </section>
+
+        <section class="flow-section" aria-labelledby="limitations">
+          <div class="flow-section-header">
+            <h2 id="limitations">Known Limitations and Future Enhancements</h2>
+            <p>These notes keep the project honest for reviewers and collaborators.</p>
+          </div>
+          <div class="flow-grid two">
+            <article class="flow-card">
+              <h3>Known limitations</h3>
+              <ul>
+                <li>Some dashboards and marketplace views show sample data when live records are empty.</li>
+                <li>Razorpay requires production credentials and final plan rules before full payment launch.</li>
+                <li>Consultant and SME roles currently reuse broader dashboard tools.</li>
+                <li>Copilot quality depends on backend availability and OpenAI configuration.</li>
+              </ul>
+            </article>
+            <article class="flow-card">
+              <h3>Future enhancements</h3>
+              <ul>
+                <li>More role-specific onboarding and dashboard modules.</li>
+                <li>Stronger marketplace verification and review workflows.</li>
+                <li>Plan-based buyer unlocks, report quotas and analytics limits.</li>
+                <li>Admin audit logs, deeper moderation and production auth hardening.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="flow-section" aria-labelledby="finalCta">
+          <div class="flow-note">
+            <strong id="finalCta">Reviewer note:</strong>
+            This page is documentation only. It does not change core frontend, backend, API,
+            database, Copilot, authentication or payment behavior. Demo and scaffolded flows
+            are labeled so TradeAI does not overclaim production readiness.
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-content">
+        <div>
+          <h3>TradeAI</h3>
+          <p>AI-powered export-import intelligence for Indian exporters, importers, SMEs and trade teams.</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <a href="countries.html">Countries</a>
+          <a href="corridors.html">Corridors</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+        </div>
+        <div>
+          <h4>Start</h4>
+          <a href="register.html?source=user-flow-footer&intent=start-exporter">Start as Exporter</a>
+          <a href="register.html?source=user-flow-footer&intent=start-importer">Start as Importer</a>
+          <a href="copilot.html">Try Copilot</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

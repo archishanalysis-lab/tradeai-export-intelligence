@@ -102,6 +102,8 @@ productSchema.index({
 productSchema.index({ organizationId: 1, category: 1, availability: 1 });
 productSchema.index({ approvalStatus: 1 });
 productSchema.index({ organizationId: 1, createdAt: -1 });
+productSchema.index({ organizationId: 1, hsCode: 1, createdAt: -1 });
+productSchema.index({ organizationId: 1, exportCountry: 1, category: 1 });
 productSchema.index({ hsCode: 1, exportCountry: 1 });
 productSchema.index({ isDemo: 1 });
 

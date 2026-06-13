@@ -42,13 +42,14 @@ const paginationQuery = z.object({
     search: z.string().trim().max(120).optional(),
     sort: z.string().trim().max(40).optional(),
 });
+const publicRegistrationRoles = ["explorer", "exporter", "importer", "consultant", "sme"];
 
 const authRegisterSchema = z.object({
     body: z.object({
         name: z.string().trim().min(2).max(80),
         email: z.string().trim().email().max(120),
         company: z.string().trim().max(120).optional().default(""),
-        role: z.enum(["admin", "explorer", "exporter", "importer", "consultant", "sme"]),
+        role: z.enum(publicRegistrationRoles),
         password: z.string().min(8).max(128),
     }),
 });

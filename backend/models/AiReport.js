@@ -110,6 +110,7 @@ const aiReportSchema = new mongoose.Schema(
 );
 
 aiReportSchema.index({ organizationId: 1, createdAt: -1 });
+aiReportSchema.index({ organizationId: 1, status: 1, createdAt: -1 });
 aiReportSchema.index({ reportType: 1, hsCode: 1, targetCountry: 1 });
 aiReportSchema.index({ createdBy: 1, reportType: 1, createdAt: -1 });
 aiReportSchema.index({ isDemo: 1 });

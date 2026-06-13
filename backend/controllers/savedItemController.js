@@ -16,14 +16,17 @@ const getSavedItems = async (req, res, next) => {
         const savedItems = await SavedItem.find(userScopeFilter(req.user, "user"))
             .populate("buyer", "companyName country industry contactEmail products verified tradeVolume")
             .populate("product", "name category hsCode imageUrl")
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
         const [savedCompanies, savedProducts] = await Promise.all([
             SavedCompany.find({ organizationId: req.user.organizationId, user: req.user._id })
                 .populate("companyProfile", "companyName publicSlug roleType industry country city logoUrl verificationStatus ratingAverage")
-                .sort({ createdAt: -1 }),
+                .sort({ createdAt: -1 })
+                .lean(),
             SavedProduct.find({ organizationId: req.user.organizationId, user: req.user._id })
                 .populate("product", "name category hsCode imageUrl price exportCountry")
-                .sort({ createdAt: -1 }),
+                .sort({ createdAt: -1 })
+                .lean(),
         ]);
 
         res.json({

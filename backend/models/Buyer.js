@@ -87,6 +87,8 @@ buyerSchema.index({
     products: "text",
 });
 buyerSchema.index({ organizationId: 1, country: 1, industry: 1 });
+buyerSchema.index({ organizationId: 1, createdAt: -1 });
+buyerSchema.index({ country: 1, industry: 1, verified: 1 });
 buyerSchema.index({ tradeVolume: -1 });
 buyerSchema.index({ isDemo: 1 });
 

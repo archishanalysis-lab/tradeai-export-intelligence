@@ -56,6 +56,7 @@ const kycDocumentSchema = new mongoose.Schema(
 );
 
 kycDocumentSchema.index({ organizationId: 1, status: 1 });
+kycDocumentSchema.index({ status: 1, createdAt: -1 });
 kycDocumentSchema.index({ companyProfile: 1, documentType: 1 });
 
 const KycDocument = mongoose.model("KycDocument", kycDocumentSchema);
