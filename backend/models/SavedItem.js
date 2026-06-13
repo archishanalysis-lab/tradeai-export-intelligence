@@ -42,6 +42,7 @@ const savedItemSchema = new mongoose.Schema(
 );
 
 savedItemSchema.index({ organizationId: 1, itemType: 1, createdAt: -1 });
+savedItemSchema.index({ organizationId: 1, user: 1, createdAt: -1 });
 savedItemSchema.index({ organizationId: 1, buyer: 1 }, { unique: true, sparse: true });
 
 const SavedItem = mongoose.model("SavedItem", savedItemSchema);

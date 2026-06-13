@@ -102,7 +102,7 @@ const getProductMatches = async (product, limit = 8) => {
           }
         : {};
 
-    const buyers = await Buyer.find(query).limit(60);
+    const buyers = await Buyer.find(query).limit(60).lean();
 
     return buyers
         .map((buyer) => scoreBuyerForProduct(buyer, product))

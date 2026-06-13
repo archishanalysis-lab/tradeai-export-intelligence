@@ -33,7 +33,8 @@ const getDeals = async (req, res, next) => {
                 .populate("inquiry", "status")
                 .sort({ updatedAt: -1 })
                 .skip(skip)
-                .limit(limit),
+                .limit(limit)
+                .lean(),
             Deal.countDocuments(query),
             Deal.aggregate([
                 { $match: userScopeFilter(req.user) },
@@ -71,7 +72,8 @@ const getDealById = async (req, res, next) => {
         })
             .populate("buyer", "companyName country industry contactEmail")
             .populate("product", "name category hsCode")
-            .populate("inquiry", "status negotiationMessages");
+            .populate("inquiry", "status negotiationMessages")
+            .lean();
 
         if (!deal) {
             res.status(404);

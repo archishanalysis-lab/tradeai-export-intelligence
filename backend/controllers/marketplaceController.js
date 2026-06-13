@@ -36,7 +36,8 @@ const getCompanies = async (req, res, next) => {
                 .select(publicProfileSelect)
                 .sort({ isFeatured: -1, verificationStatus: -1, profileCompletion: -1, createdAt: -1 })
                 .skip(skip)
-                .limit(limit),
+                .limit(limit)
+                .lean(),
             CompanyProfile.countDocuments(query),
         ]);
 
@@ -84,7 +85,8 @@ const getMarketplaceProducts = async (req, res, next) => {
                 .populate("createdBy", "name company")
                 .sort({ createdAt: -1 })
                 .skip(skip)
-                .limit(limit),
+                .limit(limit)
+                .lean(),
             Product.countDocuments(query),
         ]);
 
@@ -103,7 +105,8 @@ const getCompanyBySlug = async (req, res, next) => {
     try {
         const company = await CompanyProfile.findOne({ publicSlug: req.params.slug })
             .select(publicProfileSelect)
-            .populate("organizationId", "name slug plan");
+            .populate("organizationId", "name slug plan")
+            .lean();
 
         if (!company) {
             res.status(404);
@@ -113,11 +116,13 @@ const getCompanyBySlug = async (req, res, next) => {
         const [featuredProducts, reviews] = await Promise.all([
             Product.find({ organizationId: company.organizationId?._id || company.organizationId })
                 .sort({ createdAt: -1 })
-                .limit(6),
+                .limit(6)
+                .lean(),
             CompanyReview.find({ companyProfile: company._id, status: "approved" })
                 .populate("reviewer", "name company")
                 .sort({ createdAt: -1 })
-                .limit(8),
+                .limit(8)
+                .lean(),
         ]);
 
         res.json({ company, featuredProducts, reviews });
@@ -128,7 +133,7 @@ const getCompanyBySlug = async (req, res, next) => {
 
 const createCompanyReview = async (req, res, next) => {
     try {
-        const company = await CompanyProfile.findOne({ publicSlug: req.params.slug });
+        const company = await CompanyProfile.findOne({ publicSlug: req.params.slug }).lean();
 
         if (!company) {
             res.status(404);

@@ -261,6 +261,8 @@ const companyProfileSchema = new mongoose.Schema(
 
 companyProfileSchema.index({ roleType: 1, verificationStatus: 1 });
 companyProfileSchema.index({ isFeatured: 1, roleType: 1 });
+companyProfileSchema.index({ roleType: 1, country: 1, industry: 1 });
+companyProfileSchema.index({ verificationStatus: 1, updatedAt: -1 });
 companyProfileSchema.index({
     companyName: "text",
     country: "text",

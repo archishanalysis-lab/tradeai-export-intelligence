@@ -14,7 +14,8 @@ const getInquiries = async (req, res, next) => {
         const inquiries = await Inquiry.find(query)
             .populate("buyer", "companyName country industry contactEmail")
             .populate("product", "name category hsCode imageUrl")
-            .sort({ updatedAt: -1 });
+            .sort({ updatedAt: -1 })
+            .lean();
 
         res.json({ inquiries, total: inquiries.length });
     } catch (error) {
@@ -24,7 +25,7 @@ const getInquiries = async (req, res, next) => {
 
 const createInquiry = async (req, res, next) => {
     try {
-        const product = await Product.findById(req.body.product);
+        const product = await Product.findById(req.body.product).lean();
 
         if (!product) {
             res.status(404);
@@ -65,7 +66,8 @@ const getInquiryById = async (req, res, next) => {
             ...userScopeFilter(req.user, "exporter"),
         })
             .populate("buyer", "companyName country industry contactEmail")
-            .populate("product", "name category hsCode imageUrl");
+            .populate("product", "name category hsCode imageUrl")
+            .lean();
 
         if (!inquiry) {
             res.status(404);

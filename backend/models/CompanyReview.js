@@ -41,6 +41,7 @@ const companyReviewSchema = new mongoose.Schema(
 
 companyReviewSchema.index({ companyProfile: 1, reviewer: 1 }, { unique: true });
 companyReviewSchema.index({ companyProfile: 1, status: 1 });
+companyReviewSchema.index({ organizationId: 1, status: 1, createdAt: -1 });
 
 const CompanyReview = mongoose.model("CompanyReview", companyReviewSchema);
 

@@ -12,7 +12,7 @@ const calculateCompanyReputation = async (companyProfile) => {
             "negotiationMessages.1": { $exists: true },
         }),
         Inquiry.countDocuments({ organizationId, status: "completed" }),
-        CompanyReview.find({ companyProfile: companyProfile._id, status: "approved" }).select("rating"),
+        CompanyReview.find({ companyProfile: companyProfile._id, status: "approved" }).select("rating").lean(),
     ]);
 
     const ratingAverage = reviews.length

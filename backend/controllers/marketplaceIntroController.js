@@ -38,7 +38,8 @@ const getMarketplaceIntroRequests = async (req, res, next) => {
                 .populate("reviewedBy", "name email")
                 .sort({ createdAt: -1 })
                 .skip(skip)
-                .limit(numericLimit),
+                .limit(numericLimit)
+                .lean(),
             MarketplaceIntroRequest.countDocuments(query),
         ]);
 

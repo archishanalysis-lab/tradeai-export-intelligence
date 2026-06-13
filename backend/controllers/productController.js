@@ -80,7 +80,8 @@ const getProducts = async (req, res, next) => {
                 .populate("createdBy", "name email company")
                 .sort(sort)
                 .skip(skip)
-                .limit(limit),
+                .limit(limit)
+                .lean(),
             Product.countDocuments(query),
         ]);
 
@@ -135,7 +136,9 @@ const getProductById = async (req, res, next) => {
         const product = await Product.findOne({
             _id: req.params.id,
             ...userScopeFilter(req.user),
-        }).populate("createdBy", "name email company");
+        })
+            .populate("createdBy", "name email company")
+            .lean();
 
         if (!product) {
             res.status(404);
@@ -226,7 +229,7 @@ const getProductAnalytics = async (req, res, next) => {
     try {
         const products = await Product.find(
             userScopeFilter(req.user),
-        );
+        ).lean();
         const activeProducts = products.filter((item) => item.availability === "available").length;
         const totalValue = products.reduce(
             (sum, item) => sum + (Number(item.price?.amount) || 0),

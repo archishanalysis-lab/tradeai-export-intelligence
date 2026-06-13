@@ -45,7 +45,9 @@ const getBuyers = async (req, res, next) => {
 
             .skip(skip)
 
-            .limit(limit),
+            .limit(limit)
+
+            .lean(),
 
             Buyer.countDocuments(keyword),
         ]);
@@ -152,7 +154,9 @@ const getBuyerById = async (req, res, next) => {
             ...userScopeFilter(req.user),
         })
 
-            .populate("createdBy", "name email");
+            .populate("createdBy", "name email")
+
+            .lean();
 
         if (!buyer) {
 

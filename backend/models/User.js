@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             minlength: 8,
+            select: false,
         },
     },
     {
@@ -56,6 +57,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.index({ organizationId: 1, role: 1 });
 userSchema.index({ status: 1 });
+userSchema.index({ role: 1, status: 1, createdAt: -1 });
 userSchema.index({ isDemo: 1 });
 
 userSchema.pre("save", async function hashPassword() {

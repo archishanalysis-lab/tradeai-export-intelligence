@@ -82,6 +82,8 @@ const inquirySchema = new mongoose.Schema(
 
 inquirySchema.index({ exporter: 1, status: 1, updatedAt: -1 });
 inquirySchema.index({ organizationId: 1, status: 1 });
+inquirySchema.index({ organizationId: 1, updatedAt: -1 });
+inquirySchema.index({ createdBy: 1, status: 1, createdAt: -1 });
 inquirySchema.index({ product: 1, createdAt: -1 });
 inquirySchema.index({ isDemo: 1 });
 

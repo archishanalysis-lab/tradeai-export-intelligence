@@ -29,6 +29,7 @@ const savedProductSchema = new mongoose.Schema(
 );
 
 savedProductSchema.index({ organizationId: 1, product: 1 }, { unique: true });
+savedProductSchema.index({ organizationId: 1, user: 1, createdAt: -1 });
 
 const SavedProduct = mongoose.model("SavedProduct", savedProductSchema);
 
