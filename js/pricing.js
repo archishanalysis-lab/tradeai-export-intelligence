@@ -3,14 +3,17 @@
   const billingApi = window.TradeAI?.api?.billing;
   const validPlans = new Set([
     "free",
+    "growth",
+    "pro",
     "premium_exporter",
     "verified_supplier",
+    "ai_insights",
     "ai_pro",
     "enterprise",
   ]);
 
   function getPlanFromButton(button) {
-    const plan = button.dataset.plan;
+    const plan = String(button.dataset.plan || "").toLowerCase();
 
     if (!plan || !validPlans.has(plan)) {
       throw new Error("This pricing button is missing a valid plan.");

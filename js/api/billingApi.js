@@ -2,8 +2,11 @@
   const validBillingCycles = new Set(["monthly", "annual"]);
   const validPlans = new Set([
     "free",
+    "growth",
+    "pro",
     "premium_exporter",
     "verified_supplier",
+    "ai_insights",
     "ai_pro",
     "enterprise",
   ]);
@@ -17,7 +20,7 @@
   }
 
   function assertPlan(plan) {
-    if (!validPlans.has(plan)) {
+    if (!validPlans.has(String(plan || "").toLowerCase())) {
       throw new Error("Invalid billing plan.");
     }
   }

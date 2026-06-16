@@ -22,6 +22,16 @@ const reportSchema = new mongoose.Schema({
         trim: true,
         default: "",
     },
+    originCountry: {
+        type: String,
+        trim: true,
+        default: "India",
+    },
+    organizationId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Organization",
+        index: true,
+    },
     businessType: {
         type: String,
         trim: true,
@@ -43,6 +53,7 @@ const reportSchema = new mongoose.Schema({
 
 reportSchema.index({ userId: 1, createdAt: -1 });
 reportSchema.index({ userId: 1, hsCode: 1, createdAt: -1 });
+reportSchema.index({ organizationId: 1, createdAt: -1 });
 
 const Report = mongoose.model("Report", reportSchema);
 

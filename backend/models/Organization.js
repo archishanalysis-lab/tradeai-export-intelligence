@@ -16,7 +16,16 @@ const organizationSchema = new mongoose.Schema(
         },
         plan: {
             type: String,
-            enum: ["free", "premium_exporter", "verified_supplier", "ai_insights"],
+            enum: [
+                "free",
+                "growth",
+                "pro",
+                "enterprise",
+                "premium_exporter",
+                "verified_supplier",
+                "ai_insights",
+                "ai_pro",
+            ],
             default: "free",
         },
         owner: {

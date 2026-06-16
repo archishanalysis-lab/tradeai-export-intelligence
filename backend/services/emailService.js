@@ -4,7 +4,9 @@ const sendEmail = async ({ to, subject, message }) => {
     }
 
     // Provider integration belongs here later: SMTP, SendGrid, Resend, etc.
-    console.log(`[email:queued] ${subject} -> ${to}`);
+    if (process.env.NODE_ENV !== "production") {
+        console.log(`[email:queued] ${subject} -> ${to}`);
+    }
 
     return {
         queued: true,

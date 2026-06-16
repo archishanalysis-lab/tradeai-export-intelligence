@@ -94,6 +94,36 @@ html.light-theme {
   margin-top: 12px;
 }
 
+.protected-app-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin: 24px 0 18px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.74);
+}
+
+.protected-app-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.protected-app-nav a:hover,
+.protected-app-nav a[aria-current="page"] {
+  color: var(--text-primary);
+  background: rgba(37, 99, 235, 0.16);
+}
+
 /* =========================================================
    SIDEBAR MENU
 ========================================================= */
@@ -1594,6 +1624,74 @@ html.light-theme .unlock-network-card {
 
 .copilot-response-panel {
   min-height: 100%;
+}
+
+.copilot-inline-result {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.96);
+  color: #f8fafc;
+}
+
+.copilot-inline-result[hidden] {
+  display: none;
+}
+
+.copilot-inline-result strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #ffffff;
+}
+
+.copilot-inline-result p,
+.copilot-inline-result li {
+  color: #dbeafe;
+  line-height: 1.6;
+}
+
+.copilot-inline-result ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.copilot-inline-provider,
+.copilot-inline-disclaimer {
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+html.light-theme .protected-app-nav {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+html.light-theme .protected-app-nav a:hover,
+html.light-theme .protected-app-nav a[aria-current="page"] {
+  color: #0f172a;
+  background: rgba(37, 99, 235, 0.1);
+}
+
+html.light-theme .copilot-inline-result {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+}
+
+html.light-theme .copilot-inline-result strong {
+  color: #0f172a;
+}
+
+html.light-theme .copilot-inline-result p,
+html.light-theme .copilot-inline-result li {
+  color: #334155;
+}
+
+html.light-theme .copilot-inline-provider,
+html.light-theme .copilot-inline-disclaimer {
+  color: #64748b;
 }
 
 .copilot-state {

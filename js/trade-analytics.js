@@ -168,13 +168,29 @@
     if (!lastAnalyticsData) return;
 
     const summary = lastAnalyticsData.analytics || {};
+    const topCountries = Array.isArray(summary.topCountries) ? summary.topCountries : [];
+    const insightItems = Array.isArray(lastAnalyticsData.insights) ? lastAnalyticsData.insights : [];
     const rows = [
-      ["Metric", "Value"],
-      ["HS Code", hsCodeInput.value.trim()],
-      ["Reporter Code", reporterInput.value.trim() || "All"],
-      ["Total Trade Value", summary.totalTradeValue || 0],
-      ["Record Count", summary.recordCount || 0],
-      ["Top Country", summary.topCountries?.[0]?.country || "-"],
+      ["Section", "Name", "Value", "Detail", "Source"],
+      ["Query", "HS Code", hsCodeInput.value.trim(), "", lastAnalyticsData.sourceLabel || lastAnalyticsData.source || "Backend/sample data"],
+      ["Query", "Reporter Code", reporterInput.value.trim() || "All", "", lastAnalyticsData.period || ""],
+      ["Summary", "Total Trade Value", summary.totalTradeValue || 0, "", lastAnalyticsData.sourceLabel || lastAnalyticsData.source || ""],
+      ["Summary", "Record Count", summary.recordCount || 0, "", lastAnalyticsData.sourceLabel || lastAnalyticsData.source || ""],
+      ["Summary", "Top Country", summary.topCountries?.[0]?.country || "-", "", lastAnalyticsData.sourceLabel || lastAnalyticsData.source || ""],
+      ...topCountries.slice(0, 10).map((item, index) => [
+        "Top Country",
+        `${index + 1}. ${item.country || "-"}`,
+        item.value || 0,
+        "Trade value",
+        lastAnalyticsData.sourceLabel || lastAnalyticsData.source || "",
+      ]),
+      ...insightItems.map((item) => [
+        "AI Insight",
+        item.title || "",
+        item.confidence ? `${item.confidence}% confidence` : "",
+        item.summary || "",
+        item.type || "",
+      ]),
     ];
 
     const csv = rows

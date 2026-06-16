@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "seed": "node seeders/seed.js"
+    "seed": "node seeders/seed.js",
+    "seed:demo": "node seeders/seed.js"
   },
   "keywords": [],
   "author": "TradeAI Team <support@tradeai.com>",

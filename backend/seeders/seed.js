@@ -4,14 +4,49 @@ import mongoose from "mongoose";
 import connectDB from "../config/db.js";
 import AiReport from "../models/AiReport.js";
 import Buyer from "../models/Buyer.js";
+import CopilotMessage from "../models/CopilotMessage.js";
 import DemoIntelligence from "../models/DemoIntelligence.js";
 import Inquiry from "../models/Inquiry.js";
 import Organization from "../models/Organization.js";
 import Product from "../models/Product.js";
+import Report from "../models/Report.js";
 import ReportRequest from "../models/ReportRequest.js";
 import User from "../models/User.js";
+import { buildCopilotIntelligence, buildOpportunityIntelligence } from "../services/tradeIntelligenceService.js";
 
 dotenv.config();
+
+const isProduction = process.env.NODE_ENV === "production";
+const allowDemoSeed = process.env.ALLOW_DEMO_SEED === "true";
+const allowSharedDemoPassword =
+    process.env.ALLOW_SHARED_DEMO_PASSWORD === "true" && !isProduction;
+const allowDemoAdmin =
+    process.env.ALLOW_DEMO_ADMIN === "true" && !isProduction;
+
+// Safety guard: this seed deletes and recreates demo data. Never run it against
+// a production database or any database that contains real customer data.
+if (!allowDemoSeed || isProduction) {
+    console.error(
+        "Demo seed blocked. Set ALLOW_DEMO_SEED=true in a non-production environment only.",
+    );
+    process.exit(1);
+}
+
+const getDemoPassword = (key, label) => {
+    const password = process.env[key] || (allowSharedDemoPassword ? process.env.DEMO_SHARED_PASSWORD : "");
+
+    if (!password) {
+        throw new Error(
+            `${label} password is required. Set ${key}, or set DEMO_SHARED_PASSWORD with ALLOW_SHARED_DEMO_PASSWORD=true for local-only demos.`,
+        );
+    }
+
+    if (password.length < 12) {
+        throw new Error(`${label} password must be at least 12 characters.`);
+    }
+
+    return password;
+};
 
 const seed = async () => {
     await connectDB();
@@ -39,6 +74,8 @@ const seed = async () => {
                 { name: /Organic Coffee Beans|Cotton T-Shirts|Turmeric Powder|Basmati Rice/i },
             ],
         }),
+        Report.deleteMany({ isDemo: true }),
+        CopilotMessage.deleteMany({ providerLabel: /TradeAI Demo Seed/i }),
         ReportRequest.deleteMany({ isDemo: true }),
         User.deleteMany({ email: /tradeai.test$/ }),
         Organization.deleteMany({ $or: [{ isDemo: true }, { slug: "demo-exporters" }] }),
@@ -51,40 +88,50 @@ const seed = async () => {
         isDemo: true,
     });
 
-    const users = await User.create([
-        {
-            name: "Demo Admin",
-            email: "admin@tradeai.test",
-            company: "TradeAI",
-            role: "admin",
-            password: "Password@123",
-            organizationId: organization._id,
-            isDemo: true,
-        },
+    const demoUsers = [
         {
             name: "Demo Exporter",
-            email: "exporter@tradeai.test",
+            email: process.env.DEMO_EXPORTER_EMAIL || "exporter@tradeai.test",
             company: "TradeAI Exports",
             role: "exporter",
-            password: "Password@123",
+            password: getDemoPassword("DEMO_EXPORTER_PASSWORD", "Demo exporter"),
             organizationId: organization._id,
             isDemo: true,
         },
         {
             name: "Demo Importer",
-            email: "importer@tradeai.test",
+            email: process.env.DEMO_IMPORTER_EMAIL || "importer@tradeai.test",
             company: "Global Import House",
             role: "importer",
-            password: "Password@123",
+            password: getDemoPassword("DEMO_IMPORTER_PASSWORD", "Demo importer"),
             organizationId: organization._id,
             isDemo: true,
         },
-    ]);
+    ];
+
+    if (allowDemoAdmin) {
+        if (!process.env.DEMO_ADMIN_EMAIL) {
+            throw new Error("DEMO_ADMIN_EMAIL is required when ALLOW_DEMO_ADMIN=true.");
+        }
+
+        demoUsers.push({
+            name: "Demo Admin",
+            email: process.env.DEMO_ADMIN_EMAIL,
+            company: "TradeAI",
+            role: "admin",
+            password: getDemoPassword("DEMO_ADMIN_PASSWORD", "Demo admin"),
+            organizationId: organization._id,
+            isDemo: true,
+        });
+    }
+
+    const users = await User.create(demoUsers);
 
     organization.owner = users[0]._id;
     await organization.save();
 
-    const exporter = users[1];
+    const exporter = users.find((user) => user.role === "exporter");
+    const importer = users.find((user) => user.role === "importer");
 
     const buyers = await Buyer.create([
         {
@@ -348,7 +395,7 @@ const seed = async () => {
                 { sender: "buyer", message: "Please share sample pricing and packaging options for turmeric powder." },
             ],
             organizationId: organization._id,
-            createdBy: users[2]._id,
+            createdBy: importer._id,
             isDemo: true,
         },
         {
@@ -364,7 +411,7 @@ const seed = async () => {
                 { sender: "buyer", message: "Need sample pack details for organic coffee and specialty grocery sourcing." },
             ],
             organizationId: organization._id,
-            createdBy: users[2]._id,
+            createdBy: importer._id,
             isDemo: true,
         },
     ]);
@@ -571,9 +618,80 @@ const seed = async () => {
         isDemo: true,
     });
 
+    const demoReportInputs = [
+        {
+            productName: "Turmeric Powder",
+            hsCode: "0910",
+            originCountry: "India",
+            targetCountry: "Kenya",
+            businessType: "SME exporter",
+            certifications: ["FSSAI", "Organic"],
+        },
+        {
+            productName: "Cotton T-Shirts",
+            hsCode: "6109",
+            originCountry: "India",
+            targetCountry: "UAE",
+            businessType: "SME exporter",
+            certifications: ["ISO"],
+        },
+    ];
+
+    const savedReports = await Report.create(
+        demoReportInputs.map((input) => {
+            const intelligence = buildOpportunityIntelligence(input);
+
+            return {
+                userId: exporter._id,
+                organizationId: organization._id,
+                productName: input.productName,
+                hsCode: input.hsCode,
+                targetCountry: input.targetCountry,
+                originCountry: input.originCountry,
+                businessType: input.businessType,
+                reportData: {
+                    ...intelligence,
+                    sourceCountry: input.originCountry,
+                    providerLabel: "TradeAI Demo Seed",
+                    generatedDate: new Date().toISOString(),
+                },
+                isDemo: true,
+            };
+        }),
+    );
+
+    await CopilotMessage.create([
+        {
+            userId: exporter._id,
+            organizationId: organization._id,
+            question: "How should I approach Kenya buyers for turmeric?",
+            response: buildCopilotIntelligence({
+                question: "How should I approach Kenya buyers for turmeric?",
+                productName: "Turmeric Powder",
+                targetCountry: "Kenya",
+                hsCode: "0910",
+                savedReport: savedReports[0],
+            }),
+            providerLabel: "TradeAI Demo Seed",
+        },
+        {
+            userId: exporter._id,
+            organizationId: organization._id,
+            question: "What should I validate before selling cotton t-shirts in UAE?",
+            response: buildCopilotIntelligence({
+                question: "What should I validate before selling cotton t-shirts in UAE?",
+                productName: "Cotton T-Shirts",
+                targetCountry: "UAE",
+                hsCode: "6109",
+                savedReport: savedReports[1],
+            }),
+            providerLabel: "TradeAI Demo Seed",
+        },
+    ]);
+
     console.log("Seed complete");
     console.log("Demo records are marked with isDemo: true and sample buyers are not verified real companies.");
-    console.log("Login: exporter@tradeai.test / Password@123");
+    console.log("Demo user emails are configured by environment. Passwords are never printed.");
     await mongoose.connection.close();
 };
 

@@ -48,26 +48,34 @@ const protect = async (req, res, next) => {
             algorithms: ["HS256"],
         });
 
-        let user = buildUserFromToken(decoded);
+        const tokenUser = buildUserFromToken(decoded);
+        const tokenUserId = decoded.id || decoded._id || decoded.userId;
 
-        // Backward compatibility for older tokens that only contain an id.
-        if (!user.role || !user.organizationId || !user.status) {
-            const dbUser = await User.findById(decoded.id || decoded._id || decoded.userId).select("-password");
-
-            if (!dbUser) {
-                next(createAuthError("Not authorized, user not found", 401));
-                return;
-            }
-
-            user = dbUser;
+        if (!tokenUserId) {
+            next(createAuthError("Not authorized, token failed", 401));
+            return;
         }
 
-        if (user.status === "suspended") {
+        const dbUser = await User.findById(tokenUserId)
+            .select("_id name email company role status organizationId")
+            .lean();
+
+        if (!dbUser) {
+            next(createAuthError("Not authorized, user not found", 401));
+            return;
+        }
+
+        if (dbUser.status === "suspended") {
             next(createAuthError("This account has been suspended", 403));
             return;
         }
 
-        req.user = user;
+        req.user = {
+            ...tokenUser,
+            ...dbUser,
+            id: String(dbUser._id),
+            userId: String(dbUser._id),
+        };
         next();
     } catch (error) {
         next(
@@ -79,6 +87,17 @@ const protect = async (req, res, next) => {
             ),
         );
     }
+};
+
+const optionalProtect = async (req, res, next) => {
+    const token = getBearerToken(req) || getCookieToken(req);
+
+    if (!token) {
+        next();
+        return;
+    }
+
+    return protect(req, res, next);
 };
 
 const authorizeRoles =
@@ -94,4 +113,4 @@ const authorizeRoles =
 
 const adminOnly = authorizeRoles("admin");
 
-export { adminOnly, authorizeRoles, protect };
+export { adminOnly, authorizeRoles, optionalProtect, protect };

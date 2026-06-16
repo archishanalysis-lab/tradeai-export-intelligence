@@ -2,12 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
+import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
 
 import connectDB from "./config/db.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import { apiRateLimit, sanitizeRequest, securityHeaders } from "./middleware/securityMiddleware.js";
+import { warnIfCloudinaryMissingInProduction } from "./services/uploadService.js";
 
 /* ROUTES */
 
@@ -24,6 +26,7 @@ import marketplaceIntroRoutes from "./routes/marketplaceIntroRoutes.js";
 import marketplaceRoutes from "./routes/marketplaceRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import userPreferenceRoutes from "./routes/userPreferenceRoutes.js";
 import reportRequestRoutes from "./routes/reportRequestRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import savedItemRoutes from "./routes/savedItemRoutes.js";
@@ -39,12 +42,21 @@ dotenv.config({ path: path.join(__dirname, ".env") });
 /* DATABASE CONNECTION */
 
 connectDB();
+warnIfCloudinaryMissingInProduction();
 
 const app = express();
 
 /* MIDDLEWARE */
 
-app.use(express.json());
+app.use(
+    express.json({
+        verify: (req, res, buffer) => {
+            if (req.originalUrl === "/api/billing/webhook/razorpay") {
+                req.rawBody = buffer;
+            }
+        },
+    }),
+);
 app.use(express.urlencoded({ extended: true }));
 
 const configuredOrigins = (process.env.FRONTEND_URL || "")
@@ -84,6 +96,19 @@ app.get("/", (req, res) => {
   res.send("TradeAI API Running...");
 });
 
+app.get("/health", (req, res) => {
+    const databaseState = mongoose.connection.readyState === 1 ? "connected" : "not_connected";
+
+    res.set("Cache-Control", "no-store");
+    res.json({
+        status: "ok",
+        service: "TradeAI API",
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || "local",
+        database: databaseState,
+    });
+});
+
 /* AUTH ROUTES */
 
 app.use("/api/auth", authRoutes);
@@ -94,6 +119,7 @@ app.use("/api/billing", billingRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/deals", dealRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/preferences", userPreferenceRoutes);
 app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/marketplace-intros", marketplaceIntroRoutes);
 app.use("/api/marketplace", marketplaceRoutes);

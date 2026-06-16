@@ -1,11 +1,12 @@
-import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import OpenAI from "openai";
 
 import AiReport from "../models/AiReport.js";
 import Report from "../models/Report.js";
 import Subscription from "../models/Subscription.js";
+import { buildOpportunityIntelligence } from "../services/tradeIntelligenceService.js";
 import { answerTradeQuestion } from "../services/tradeCopilotService.js";
+import { consumeUsageLimit, getPlanLimits, normalizePlanName } from "../services/usageLimitService.js";
 
 const buildReportPrompt = ({ reportType, product, hsCode, targetCountry, prompt }) => {
     const reportLabel = {
@@ -142,24 +143,9 @@ const getCountryProfile = (targetCountry = "") => {
     };
 };
 
-const getOptionalUserId = (req) => {
-    const bodyToken = req.body?.token;
-    const authHeader = req.headers.authorization || "";
-    const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-    const token = bodyToken || bearerToken;
-
-    if (!token || !process.env.JWT_SECRET) {
-        return null;
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET, {
-            algorithms: ["HS256"],
-        });
-
-        return decoded.id || decoded._id || decoded.userId || null;
-    } catch (error) {
-        return null;
+const logNonProductionError = (message, error) => {
+    if (process.env.NODE_ENV !== "production") {
+        console.error(message, error.message);
     }
 };
 
@@ -168,27 +154,143 @@ const getAuthenticatedUserId = (req) => req.user?._id || req.user?.id || req.use
 const isValidObjectId = (value) =>
     Boolean(value) && mongoose.Types.ObjectId.isValid(String(value));
 
-const saveGeneratedReportForUser = async ({ userId, requestBody, report, providerLabel }) => {
+const getReportData = (report = {}) => report.reportData || {};
+
+const formatSavedReportText = (report = {}) => {
+    const data = getReportData(report);
+    if (data.reportTitle) {
+        return [
+            data.reportTitle,
+            "",
+            `Product: ${data.productName || report.productName || "Not provided"}`,
+            `Country: ${data.country || report.targetCountry || "Not provided"}`,
+            `Direction: ${toTitleCase(data.direction || report.businessType || "")}`,
+            `HS Code / Category: ${data.hsCodeOrCategory || report.hsCode || "Not provided"}`,
+            `Generated Date: ${data.createdAt ? new Date(data.createdAt).toISOString().slice(0, 10) : new Date(report.createdAt || Date.now()).toISOString().slice(0, 10)}`,
+            `Source Type: ${data.sourceType || "rule-engine"}`,
+            "",
+            "Opportunity / Process Summary",
+            data.opportunitySummary || "Not provided.",
+            "",
+            "Checklist",
+            normalizeList(data.checklist).map((item) => `- ${item}`).join("\n"),
+            "",
+            "Documents",
+            normalizeList(data.documents).map((item) => `- ${item}`).join("\n"),
+            "",
+            "Compliance Notes",
+            normalizeList(data.complianceNotes).map((item) => `- ${item}`).join("\n"),
+            "",
+            `Payment Risk: ${data.paymentRisk || "Not provided."}`,
+            `Incoterms Guidance: ${data.incotermsGuidance || "Not provided."}`,
+            `Logistics Notes: ${data.logisticsNotes || "Not provided."}`,
+            `Risk Level: ${data.riskLevel || "Medium"}`,
+            "",
+            "Customs Clearance Steps",
+            normalizeList(data.customsSteps).map((item) => `- ${item}`).join("\n"),
+            "",
+            "Recommendations",
+            normalizeList(data.recommendations).map((item) => `- ${item}`).join("\n"),
+            "",
+            `Disclaimer: ${data.disclaimer || TRADE_READINESS_DISCLAIMER}`,
+        ].join("\n");
+    }
+
+    const actions = Array.isArray(data.suggestedNextActions) ? data.suggestedNextActions : [];
+    const generatedDate = report.createdAt
+        ? new Date(report.createdAt).toISOString().slice(0, 10)
+        : new Date().toISOString().slice(0, 10);
+    const sourceLabel = data.providerLabel || data.dataSourceLabel || "Demo intelligence - sample data - coverage expanding";
+    const complianceNotes = Array.isArray(data.complianceNotes)
+        ? data.complianceNotes.join("; ")
+        : String(data.complianceNotes || "Validate HS code, destination documentation and buyer requirements.");
+
+    return [
+        "TradeAI Export Opportunity Report",
+        "",
+        `Product: ${report.productName || data.productName || "Not provided"}`,
+        `HS Code: ${report.hsCode || data.hsCode || "Not provided"}`,
+        `Source Country: ${report.originCountry || data.sourceCountry || "India"}`,
+        `Target Country: ${report.targetCountry || data.targetCountry || "Not provided"}`,
+        `Generated Date: ${generatedDate}`,
+        `Data Label: ${sourceLabel}`,
+        report.isDemo ? "Important: Demo intelligence, sample data, coverage expanding. Not live verified trade data." : null,
+        "",
+        `Opportunity Score: ${Number.isFinite(Number(data.opportunityScore)) ? `${data.opportunityScore}/100` : "Not scored"}`,
+        "",
+        "Demand Summary",
+        data.demandReason || data.marketPotential || "Demand summary unavailable.",
+        "",
+        "Buyer / Distributor Guidance",
+        data.buyerType || "Importer, distributor and category buyer guidance unavailable.",
+        "",
+        "Compliance Notes",
+        complianceNotes,
+        "",
+        "Suggested Next Actions",
+        actions.length ? actions.map((item) => `- ${item}`).join("\n") : "- Validate buyer, documents and landed cost before action.",
+    ]
+        .filter((line) => line !== null)
+        .join("\n");
+};
+
+const saveGeneratedReportForUser = async ({ userId, organizationId, requestBody, report, providerLabel }) => {
     if (!isValidObjectId(userId)) {
-        return;
+        return null;
     }
 
     try {
-        await Report.create({
+        return await Report.create({
             userId,
+            organizationId: isValidObjectId(organizationId) ? organizationId : undefined,
             productName: String(requestBody.productName || requestBody.product || "").trim(),
             hsCode: String(requestBody.hsCode || "").trim(),
             targetCountry: String(requestBody.targetCountry || requestBody.country || "").trim(),
+            originCountry: String(requestBody.originCountry || requestBody.sourceCountry || "India").trim(),
             businessType: String(requestBody.businessType || "").trim(),
             reportData: {
                 ...report,
                 providerLabel,
+                sourceCountry: String(requestBody.originCountry || requestBody.sourceCountry || "India").trim(),
+                targetCountry: String(requestBody.targetCountry || requestBody.country || "").trim(),
+                productName: String(requestBody.productName || requestBody.product || "").trim(),
+                hsCode: String(requestBody.hsCode || "").trim(),
             },
             isDemo: Boolean(report.isDemo),
         });
     } catch (error) {
-        console.error("Generated report save failed:", error.message);
+        logNonProductionError("Generated report save failed:", error);
+        return null;
     }
+};
+
+const enforceSavedReportLimit = async (req, userId) => {
+    if (req.user?.role === "admin" || !isValidObjectId(userId)) {
+        return;
+    }
+
+    const subscription = await Subscription.findOne({ organizationId: req.user.organizationId }).lean();
+    const plan = normalizePlanName(subscription?.plan || "free");
+    const limit = getPlanLimits(plan).savedReports;
+
+    if (limit === -1) {
+        return;
+    }
+
+    const used = await Report.countDocuments({ userId });
+
+    if (used < limit) {
+        return;
+    }
+
+    const error = new Error(`${getPlanLimits(plan).name} saved report limit reached. Delete an old report or upgrade required.`);
+    error.status = 429;
+    error.code = "SAVED_REPORT_LIMIT_REACHED";
+    error.plan = plan;
+    error.feature = "savedReports";
+    error.limit = limit;
+    error.used = used;
+    throw error;
 };
 
 const normalizeGeneratedReport = (value = {}) => ({
@@ -209,36 +311,246 @@ const normalizeGeneratedReport = (value = {}) => ({
     isDemo: Boolean(value.isDemo),
 });
 
-const buildRuleBasedGeneratedReport = ({ productName, product, targetCountry, country, businessType }) => {
+const TRADE_READINESS_DISCLAIMER =
+    "TradeAI provides directional trade guidance, not legal, customs, tax or financial advice. Verify final HS code with a CHA/customs expert and verify duty, tariff, compliance and payment decisions with official authorities or qualified professionals.";
+
+const normalizeDirection = (value = "") => {
+    const normalized = String(value || "").toLowerCase();
+
+    return normalized.includes("import") ? "import_into_india" : "export_from_india";
+};
+
+const toTitleCase = (value = "") =>
+    String(value || "")
+        .replace(/[-_]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .replace(/\b\w/g, (character) => character.toUpperCase());
+
+const normalizeTradeReadinessReport = (value = {}, fallback = {}) => {
+    const productName = String(value.productName || fallback.productName || "Selected product").trim();
+    const country = String(value.country || fallback.country || "Selected country").trim();
+    const direction = normalizeDirection(value.direction || fallback.direction);
+    const hsCodeOrCategory = String(value.hsCodeOrCategory || fallback.hsCodeOrCategory || "Category guidance required").trim();
+    const sourceType = String(value.sourceType || fallback.sourceType || "rule-engine").trim();
+
+    return {
+        reportTitle: String(value.reportTitle || `${productName} Trade Readiness Report: ${toTitleCase(direction)} ${country ? `- ${country}` : ""}`).trim(),
+        productName,
+        country,
+        direction,
+        hsCodeOrCategory,
+        opportunitySummary: String(value.opportunitySummary || "This product-country workflow needs HS code validation, document readiness, landed-cost checks and buyer/supplier verification before commercial action.").trim(),
+        checklist: normalizeList(value.checklist).length
+            ? normalizeList(value.checklist)
+            : [
+                  "Confirm exact product specification and intended use.",
+                  "Validate HS code/category before pricing or shipment.",
+                  "Check buyer/supplier credibility and documentation readiness.",
+                  "Estimate landed cost, duty, freight and payment risk before commitment.",
+              ],
+        documents: normalizeList(value.documents).length
+            ? normalizeList(value.documents)
+            : [
+                  "Commercial invoice",
+                  "Packing list",
+                  "Certificate of origin",
+                  "IEC/GST and product specification sheet",
+                  "Bill of lading or airway bill",
+              ],
+        complianceNotes: normalizeList(value.complianceNotes).length
+            ? normalizeList(value.complianceNotes)
+            : [
+                  "Verify final HS code and documentation with a CHA/customs expert.",
+                  "Verify destination or India import compliance with official authorities.",
+                  "Duty/tariff estimate is not official in this preview unless an official API source is connected.",
+              ],
+        paymentRisk: String(value.paymentRisk || "For new counterparties, prefer advance payment, letter of credit, escrow or low-risk staged terms. Avoid open-account terms until trust is established.").trim(),
+        incotermsGuidance: String(value.incotermsGuidance || (direction === "import_into_india"
+            ? "For imports into India, compare FOB/CFR/CIF carefully and calculate landed cost before confirming supplier terms."
+            : "For exports from India, use FOB for controlled first shipments or CIF/CFR only after freight and insurance costs are validated.")).trim(),
+        logisticsNotes: String(value.logisticsNotes || "Confirm port/airport route, packaging, transit time, insurance, temperature/shelf-life needs and last-mile handling before quoting.").trim(),
+        customsSteps: normalizeList(value.customsSteps).length
+            ? normalizeList(value.customsSteps)
+            : [
+                  "Confirm HS code and duty/tariff treatment.",
+                  "Prepare invoice, packing list and origin/supporting certificates.",
+                  "Coordinate with CHA/freight forwarder before shipment booking.",
+                  "Verify restricted/prohibited goods, labelling and inspection requirements.",
+              ],
+        riskLevel: String(value.riskLevel || "Medium").trim(),
+        recommendations: normalizeList(value.recommendations).length
+            ? normalizeList(value.recommendations)
+            : [
+                  "Validate HS code and duty with official sources.",
+                  "Prepare a buyer/supplier-ready product sheet.",
+                  "Ask Trade Copilot to explain this report before outreach.",
+                  "Save/download the report after login; upgrade when limits are reached.",
+              ],
+        sourceType,
+        disclaimer: String(value.disclaimer || TRADE_READINESS_DISCLAIMER).trim(),
+        createdAt: value.createdAt || new Date().toISOString(),
+    };
+};
+
+const buildRuleBasedTradeReadinessReport = (payload = {}) => {
+    const productName = String(payload.productName || payload.product || "").trim();
+    const country = String(payload.country || payload.targetCountry || "").trim();
+    const direction = normalizeDirection(payload.direction);
+    const hsCodeOrCategory = String(payload.hsCode || payload.hsCodeOrCategory || "HS category to verify").trim();
+    const experienceLevel = String(payload.experienceLevel || "beginner").toLowerCase();
+    const isImport = direction === "import_into_india";
+    const beginnerNote = experienceLevel.includes("beginner")
+        ? "Start with a simple checklist and verify each step with a CHA/freight forwarder before quoting."
+        : "Use this as an operating checklist and validate assumptions before commercial commitment.";
+
+    return normalizeTradeReadinessReport(
+        {
+            reportTitle: `${productName || "Product"} Trade Readiness Report`,
+            productName,
+            country,
+            direction,
+            hsCodeOrCategory,
+            opportunitySummary: isImport
+                ? `${productName || "This product"} import into India from ${country || "the selected country"} should start with supplier verification, HS classification, landed-cost calculation, import documentation and customs clearance planning. ${beginnerNote}`
+                : `${productName || "This product"} export from India to ${country || "the selected country"} should start with product-country fit, HS classification, document readiness, buyer verification, payment protection and logistics planning. ${beginnerNote}`,
+            checklist: [
+                "Confirm exact product/category and intended use.",
+                "Validate HS code/category before duty or compliance assumptions.",
+                isImport ? "Verify overseas supplier, quality documents and India import requirements." : "Verify buyer, destination compliance and product labelling requirements.",
+                "Estimate freight, insurance, duty/tariff and local handling costs.",
+                "Choose safer payment and Incoterms before issuing PI/PO.",
+            ],
+            documents: isImport
+                ? [
+                      "Proforma invoice",
+                      "Commercial invoice",
+                      "Packing list",
+                      "Bill of lading or airway bill",
+                      "Certificate of origin",
+                      "Import license or product certificate where applicable",
+                  ]
+                : [
+                      "Commercial invoice",
+                      "Packing list",
+                      "Certificate of origin",
+                      "IEC/GST documents",
+                      "Bill of lading or airway bill",
+                      "Product certificate, health certificate or inspection document where applicable",
+                  ],
+            complianceNotes: [
+                `Verify ${hsCodeOrCategory} classification with a CHA/customs expert.`,
+                isImport
+                    ? "Verify India import restrictions, standards, BIS/FSSAI/other product rules where applicable."
+                    : `Verify ${country || "destination"} labelling, certification, customs and buyer-specific compliance requirements.`,
+                "Duty/tariff warning: exact rate is not shown unless official API data is connected; verify with official authority.",
+            ],
+            paymentRisk: isImport
+                ? "For a new supplier, avoid full advance without inspection. Prefer sample order, escrow, LC, inspection-linked milestone or limited advance with balance against documents."
+                : "For a new buyer, avoid open-account terms. Prefer advance, LC at sight, escrow or partial advance with balance before document release.",
+            incotermsGuidance: isImport
+                ? "Compare FOB, CFR and CIF. FOB gives more freight control; CIF/CFR can be convenient but must be checked against landed-cost and insurance quality."
+                : "FOB India port is usually simpler for first-time exporters. CIF/CFR can be offered after freight, insurance and destination responsibility are clearly priced.",
+            logisticsNotes: isImport
+                ? "Check supplier pickup point, origin port, transit time, Indian port clearance, demurrage risk, insurance and inland delivery."
+                : "Check Indian port/airport route, packaging, shelf-life or handling needs, freight quote validity, insurance and destination delivery responsibility.",
+            customsSteps: [
+                "Confirm HS code and product restrictions.",
+                "Prepare invoice, packing list and origin/supporting documents.",
+                "Share documents with CHA/freight forwarder before shipment.",
+                "Verify duty/tariff, inspection, labelling and certificate requirements.",
+                "Track shipment and keep proof of payment, transport and customs records.",
+            ],
+            riskLevel: experienceLevel.includes("beginner") ? "Medium-high" : "Medium",
+            recommendations: [
+                "Ask Copilot to explain this report in plain language.",
+                "Verify HS code, duty and compliance with official sources.",
+                "Prepare a one-page product sheet and document folder.",
+                "Save/download this report after login; upgrade later for deeper exports and history.",
+            ],
+            sourceType: "rule-engine",
+            disclaimer: TRADE_READINESS_DISCLAIMER,
+        },
+        { productName, country, direction, hsCodeOrCategory, sourceType: "rule-engine" },
+    );
+};
+
+const generateTradeReadinessWithOpenAI = async (payload) => {
+    if (!process.env.OPENAI_API_KEY) {
+        return null;
+    }
+
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const completion = await client.chat.completions.create({
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        messages: [
+            {
+                role: "system",
+                content:
+                    "You are TradeAI, a practical import-export readiness assistant for Indian SMEs. Return only valid JSON with exactly these keys: reportTitle, productName, country, direction, hsCodeOrCategory, opportunitySummary, checklist, documents, complianceNotes, paymentRisk, incotermsGuidance, logisticsNotes, customsSteps, riskLevel, recommendations, sourceType, disclaimer. Arrays must be arrays of short strings. Do not claim official duty, tariff or legal accuracy. Include clear verification disclaimers.",
+            },
+            {
+                role: "user",
+                content: JSON.stringify({
+                    productName: payload.productName || payload.product,
+                    country: payload.country || payload.targetCountry,
+                    direction: normalizeDirection(payload.direction),
+                    hsCodeOrCategory: payload.hsCode || payload.hsCodeOrCategory,
+                    experienceLevel: payload.experienceLevel,
+                }),
+            },
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.2,
+        max_tokens: 1000,
+    });
+
+    return normalizeTradeReadinessReport(
+        {
+            ...JSON.parse(completion.choices[0]?.message?.content || "{}"),
+            sourceType: "AI",
+            createdAt: new Date().toISOString(),
+        },
+        {
+            productName: payload.productName || payload.product,
+            country: payload.country || payload.targetCountry,
+            direction: payload.direction,
+            hsCodeOrCategory: payload.hsCode || payload.hsCodeOrCategory,
+            sourceType: "AI",
+        },
+    );
+};
+
+const buildRuleBasedGeneratedReport = ({ productName, product, hsCode, targetCountry, country, businessType, certifications }) => {
     const normalizedTarget = String(targetCountry || country || "").trim();
     const normalizedBusinessType = String(businessType || "").trim();
     const normalizedProduct = String(productName || product || "selected product").trim();
-    const profile = getCountryProfile(normalizedTarget);
+    const intelligence = buildOpportunityIntelligence({
+        productName: normalizedProduct,
+        hsCode,
+        targetCountry: normalizedTarget,
+        businessType: normalizedBusinessType,
+        certifications,
+    });
     const type = normalizedBusinessType.toLowerCase();
     const isImporter = type.includes("importer");
     const isConsultant = type.includes("consultant");
 
     return {
-        opportunityScore: isImporter ? Math.max(profile.opportunityScore - 6, 50) : profile.opportunityScore,
-        marketPotential: `${profile.marketPotential} This preview is tailored for ${normalizedBusinessType || "SME"} evaluation of ${normalizedProduct}.`,
-        demandReason: profile.demandReason,
+        ...intelligence,
+        opportunityScore: intelligence.opportunityScore,
+        marketPotential: `${intelligence.marketPotential} This preview is tailored for ${normalizedBusinessType || "SME"} evaluation.`,
+        demandReason: intelligence.demandReason,
         buyerType: isImporter
             ? "Supplier comparison, sourcing agents and verified manufacturers should be prioritized."
             : isConsultant
                 ? "Importer, distributor and category-buyer segments are suitable for client opportunity validation."
-                : profile.buyerType,
-        riskLevel: profile.riskLevel,
+                : intelligence.buyerType,
         complianceNotes: [
-            ...profile.complianceNotes,
-            "Validate HS classification, product standards and destination documentation before commercial action.",
+            ...intelligence.complianceNotes,
+            "Validate product standards and destination documentation before commercial action.",
         ].join(" "),
-        suggestedNextActions: [
-            "Validate HS code and product specification details.",
-            "Compare buyer or supplier segments before outreach.",
-            "Check destination compliance and documentation requirements.",
-            "Prepare capacity, price range, certification and MOQ details.",
-        ],
-        dataSourceLabel: "Rule Engine Preview",
+        dataSourceLabel: intelligence.dataSourceLabel,
         isDemo: true,
     };
 };
@@ -294,10 +606,18 @@ const buildOpportunityReport = ({
     priceRange,
     certifications,
 }) => {
-    const profile = getCountryProfile(targetCountry);
     const certList = normalizeList(certifications);
+    const structuredReport = buildOpportunityIntelligence({
+        productName,
+        hsCode,
+        targetCountry,
+        businessType,
+        certifications,
+    });
+    const profile = {
+        label: structuredReport.targetCountry,
+    };
     const hasCertifications = certList.length > 0;
-    const scoreAdjustment = hasCertifications ? 4 : 0;
     const capacityNote = monthlyCapacity
         ? `Declared monthly capacity: ${monthlyCapacity}.`
         : "Monthly capacity not supplied; buyer matching will be more accurate after capacity is added.";
@@ -305,27 +625,12 @@ const buildOpportunityReport = ({
         ? `Indicative price range: ${priceRange}.`
         : "Price range not supplied; landed-cost validation is still required.";
 
-    const structuredReport = {
-        marketPotential: profile.marketPotential,
-        opportunityScore: Math.min(profile.opportunityScore + scoreAdjustment, 92),
-        demandReason: profile.demandReason,
-        buyerType: profile.buyerType,
-        riskLevel: profile.riskLevel,
-        complianceNotes: [
-            ...profile.complianceNotes,
-            hsCode ? `Use HS code ${hsCode} as a working classification and validate before quoting.` : "Add a working HS code before buyer outreach.",
-            hasCertifications
-                ? `Available certifications noted: ${certList.join(", ")}.`
-                : "Add available certifications such as FSSAI, organic, ISO, halal or phytosanitary documents if applicable.",
-        ],
-        suggestedNextActions: [
-            "Validate HS code and destination documentation before sending commercial quotes.",
-            "Shortlist buyer segments before asking for introductions.",
-            "Prepare product specification, packaging, MOQ, capacity and certification notes.",
-            "Use TradeAI buyer discovery or admin review to qualify contacts before outreach.",
-        ],
-        dataSourceLabel: "TradeAI MVP rule-based report using seeded corridor intelligence and submitted exporter inputs. Not live verified trade data.",
-    };
+    structuredReport.complianceNotes = [
+        ...structuredReport.complianceNotes,
+        hasCertifications
+            ? `Available certifications noted: ${certList.join(", ")}.`
+            : "Add available certifications such as FSSAI, organic, ISO, halal or phytosanitary documents if applicable.",
+    ];
 
     const answer = [
         `${productName || "Selected product"} export opportunity report`,
@@ -353,6 +658,8 @@ const buildOpportunityReport = ({
 
 const createAiReport = async (req, res, next) => {
     try {
+        await consumeUsageLimit(req, "reports");
+
         const subscription = await Subscription.findOne({ organizationId: req.user.organizationId });
 
         if ((subscription?.aiCredits ?? 10) <= 0) {
@@ -418,6 +725,8 @@ const createOpportunityReport = async (req, res, next) => {
             throw new Error("Product name and target country are required.");
         }
 
+        await consumeUsageLimit(req, "reports");
+
         const subscription = await Subscription.findOne({ organizationId: req.user.organizationId });
 
         if ((subscription?.aiCredits ?? 10) <= 0) {
@@ -479,6 +788,14 @@ const generateSampleReport = async (req, res, next) => {
             throw new Error("Product, target country and business type are required.");
         }
 
+        const authContext = {
+            userId: getAuthenticatedUserId(req),
+            organizationId: req.user?.organizationId,
+        };
+
+        await enforceSavedReportLimit(req, authContext.userId);
+        await consumeUsageLimit(req, "reports");
+
         let report;
         let providerLabel = "Rule Engine Preview";
 
@@ -490,7 +807,7 @@ const generateSampleReport = async (req, res, next) => {
                 providerLabel = "AI-Generated";
             }
         } catch (error) {
-            console.error("Report OpenAI generation failed:", error.message);
+            logNonProductionError("Report OpenAI generation failed:", error);
         }
 
         if (!report) {
@@ -503,10 +820,9 @@ const generateSampleReport = async (req, res, next) => {
             isDemo: providerLabel !== "AI-Generated",
         });
 
-        const userId = getOptionalUserId(req);
-
-        await saveGeneratedReportForUser({
-            userId,
+        const savedReport = await saveGeneratedReportForUser({
+            userId: authContext.userId,
+            organizationId: authContext.organizationId,
             requestBody: {
                 ...req.body,
                 productName,
@@ -520,6 +836,83 @@ const generateSampleReport = async (req, res, next) => {
         res.status(201).json({
             ...report,
             providerLabel,
+            savedReportId: savedReport?._id || null,
+            saved: Boolean(savedReport),
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const createTradeReadinessReport = async (req, res, next) => {
+    try {
+        const productName = String(req.body.productName || req.body.product || "").trim();
+        const country = String(req.body.targetCountry || req.body.country || "").trim();
+        const direction = normalizeDirection(req.body.direction);
+        const hsCodeOrCategory = String(req.body.hsCode || req.body.hsCodeOrCategory || "").trim();
+        const experienceLevel = String(req.body.experienceLevel || "beginner").trim();
+        const userId = getAuthenticatedUserId(req);
+        const isAuthenticated = isValidObjectId(userId);
+
+        if (!productName || !country) {
+            res.status(400);
+            throw new Error("Product/category and country are required.");
+        }
+
+        if (isAuthenticated) {
+            await enforceSavedReportLimit(req, userId);
+            await consumeUsageLimit(req, "reports");
+        }
+
+        let report = null;
+
+        try {
+            report = await generateTradeReadinessWithOpenAI({
+                productName,
+                country,
+                direction,
+                hsCodeOrCategory,
+                experienceLevel,
+            });
+        } catch (error) {
+            logNonProductionError("Trade readiness OpenAI generation failed:", error);
+        }
+
+        if (!report) {
+            report = buildRuleBasedTradeReadinessReport({
+                productName,
+                country,
+                direction,
+                hsCodeOrCategory,
+                experienceLevel,
+            });
+        }
+
+        const savedReport = isAuthenticated
+            ? await saveGeneratedReportForUser({
+                  userId,
+                  organizationId: req.user?.organizationId,
+                  requestBody: {
+                      productName,
+                      targetCountry: country,
+                      country,
+                      originCountry: direction === "import_into_india" ? country : "India",
+                      businessType: direction === "import_into_india" ? "Importer" : "Exporter",
+                      hsCode: hsCodeOrCategory,
+                  },
+                  report,
+                  providerLabel: report.sourceType,
+              })
+            : null;
+
+        res.status(201).json({
+            report,
+            saved: Boolean(savedReport),
+            savedReportId: savedReport?._id || null,
+            access: isAuthenticated ? "authenticated" : "guest-preview",
+            upgradePrompt: isAuthenticated
+                ? "Upgrade later to unlock more reports, detailed PDF/Excel export, saved history and advanced comparison."
+                : "Register to save/download this report. Upgrade later for detailed exports and more report history.",
         });
     } catch (error) {
         next(error);
@@ -528,12 +921,7 @@ const generateSampleReport = async (req, res, next) => {
 
 const getMyReports = async (req, res, next) => {
     try {
-        console.log("[reports/my-reports] called");
-        console.log("[reports/my-reports] user present:", Boolean(req.user));
-
         const userId = getAuthenticatedUserId(req);
-
-        console.log("[reports/my-reports] userId present:", Boolean(userId));
 
         if (!isValidObjectId(userId)) {
             return res.status(401).json({
@@ -543,23 +931,16 @@ const getMyReports = async (req, res, next) => {
         }
 
         const reports = await Report.find({ userId })
-            .select("_id productName targetCountry createdAt isDemo")
+            .select("_id productName hsCode originCountry targetCountry createdAt isDemo reportData")
             .sort({ createdAt: -1 })
             .limit(20)
             .lean();
-
-        console.log("[reports/my-reports] reports count:", reports.length);
 
         return res.status(200).json({
             success: true,
             reports,
         });
     } catch (error) {
-        console.error("[reports/my-reports] failed:", {
-            userPresent: Boolean(req.user),
-            userIdType: typeof getAuthenticatedUserId(req),
-            message: error.message,
-        });
         next(error);
     }
 };
@@ -575,6 +956,13 @@ const getMyReportById = async (req, res, next) => {
             });
         }
 
+        if (!isValidObjectId(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid report id.",
+            });
+        }
+
         const report = await Report.findOne({
             _id: req.params.id,
             userId,
@@ -587,11 +975,82 @@ const getMyReportById = async (req, res, next) => {
 
         res.json(report);
     } catch (error) {
-        console.error("My report detail fetch failed:", {
-            userPresent: Boolean(req.user),
-            userIdType: typeof getAuthenticatedUserId(req),
-            message: error.message,
-        });
+        next(error);
+    }
+};
+
+const deleteMyReportById = async (req, res, next) => {
+    try {
+        const userId = getAuthenticatedUserId(req);
+
+        if (!isValidObjectId(userId)) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication required to delete reports.",
+            });
+        }
+
+        if (!isValidObjectId(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid report id.",
+            });
+        }
+
+        const deleted = await Report.findOneAndDelete({
+            _id: req.params.id,
+            userId,
+        }).lean();
+
+        if (!deleted) {
+            res.status(404);
+            throw new Error("Report not found");
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const exportMyReportById = async (req, res, next) => {
+    try {
+        const userId = getAuthenticatedUserId(req);
+
+        if (!isValidObjectId(userId)) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication required to download reports.",
+            });
+        }
+
+        if (!isValidObjectId(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid report id.",
+            });
+        }
+
+        const report = await Report.findOne({
+            _id: req.params.id,
+            userId,
+        }).lean();
+
+        if (!report) {
+            res.status(404);
+            throw new Error("Report not found");
+        }
+
+        const filenameBase = `${report.productName || "tradeai-report"}-${report.targetCountry || "market"}`
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "")
+            .slice(0, 80) || "tradeai-report";
+
+        res.setHeader("Content-Type", "text/plain; charset=utf-8");
+        res.setHeader("Content-Disposition", `attachment; filename="${filenameBase}.txt"`);
+        res.send(formatSavedReportText(report));
+    } catch (error) {
         next(error);
     }
 };
@@ -612,6 +1071,13 @@ const getAiReports = async (req, res, next) => {
 
 const getAiReportById = async (req, res, next) => {
     try {
+        if (!isValidObjectId(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid report id.",
+            });
+        }
+
         const report = await AiReport.findOne({
             _id: req.params.id,
             organizationId: req.user.organizationId,
@@ -623,6 +1089,31 @@ const getAiReportById = async (req, res, next) => {
         }
 
         res.json(report);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const deleteAiReportById = async (req, res, next) => {
+    try {
+        if (!isValidObjectId(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid report id.",
+            });
+        }
+
+        const report = await AiReport.findOneAndDelete({
+            _id: req.params.id,
+            organizationId: req.user.organizationId,
+        }).lean();
+
+        if (!report) {
+            res.status(404);
+            throw new Error("AI report not found");
+        }
+
+        res.json({ success: true });
     } catch (error) {
         next(error);
     }
@@ -660,7 +1151,11 @@ const exportAiReport = async (req, res, next) => {
 export {
     createAiReport,
     createOpportunityReport,
+    createTradeReadinessReport,
+    deleteAiReportById,
+    deleteMyReportById,
     exportAiReport,
+    exportMyReportById,
     generateSampleReport,
     getAiReportById,
     getAiReports,

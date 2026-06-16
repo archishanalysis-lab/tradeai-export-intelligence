@@ -156,6 +156,65 @@
         margin-top: 24px;
       }
 
+      .report-explainer-panel {
+        margin-top: 28px;
+        padding: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+      }
+
+      .report-explainer-panel h2 {
+        margin: 0 0 10px;
+        font-size: 24px;
+        line-height: 1.2;
+      }
+
+      .report-explainer-panel p {
+        margin: 0 0 18px;
+        font-size: 15px;
+      }
+
+      .report-benefit-list {
+        display: grid;
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .report-benefit-list li {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+        align-items: start;
+        padding: 12px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.88);
+        line-height: 1.5;
+      }
+
+      .report-benefit-list i {
+        color: var(--ta-gold);
+        margin-top: 3px;
+      }
+
+      .report-mode-note {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(216, 164, 65, 0.14);
+        color: #ffe6a7;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .report-save-actions {
+        margin-top: 18px;
+      }
+
       .hero {
         background:
           radial-gradient(
@@ -580,23 +639,41 @@
             <span class="eyebrow">MVP Preview</span>
             <h1>Export Opportunity Report</h1>
             <p>
-              AI-assisted report preview for identifying promising export
-              markets, trade corridors, buyer signals, compliance risks and
-              practical next actions.
+              Enter one product and target country to receive an export
+              opportunity report with an opportunity score, buyer/supplier
+              guidance, HS/document checklist, risk notes and next actions.
             </p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#report-demo-form">Generate Sample Report</a>
+              <a class="btn btn-primary" href="#report-demo-form">Generate Export Opportunity Report</a>
               <a class="btn btn-secondary" href="contact.html?interest=walkthrough&source=export-opportunity-report">Request MVP Walkthrough</a>
               <a class="btn btn-outline" href="contact.html?interest=feedback&source=export-opportunity-report">Share Feedback</a>
             </div>
+            <article class="report-explainer-panel">
+              <h2>What TradeAI gives you</h2>
+              <p>
+                The report turns one product and target corridor into a clear
+                decision snapshot for exporters, importers and advisors.
+              </p>
+              <ul class="report-benefit-list">
+                <li><i class="fa-solid fa-route" aria-hidden="true"></i><span>Corridor opportunity and product-country fit.</span></li>
+                <li><i class="fa-solid fa-users" aria-hidden="true"></i><span>Buyer segment guidance for outreach planning.</span></li>
+                <li><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>Risk level, compliance notes and documents needed.</span></li>
+                <li><i class="fa-solid fa-list-check" aria-hidden="true"></i><span>Next actions you can take after the preview.</span></li>
+              </ul>
+              <div class="report-mode-note">
+                Login is required to generate, save, view, download or delete reports.
+                Logged-out visitors can review the sample preview and then sign in.
+                SAMPLE DATA, DEMO INTELLIGENCE or Rule Engine Preview labels mean the output is not live verified trade data.
+              </div>
+            </article>
           </div>
 
           <form class="report-form-card" id="reportRequestForm">
-            <h2 id="report-demo-form">Generate sample report</h2>
+            <h2 id="report-demo-form">Generate saved export opportunity report</h2>
             <p>
-              This MVP demo creates a labeled sample output for stakeholder
-              review. If the backend is available, TradeAI also stores your
-              report request for founder follow-up.
+              Logged-in users receive a labeled TradeAI report and save it to
+              My Reports for viewing, download and deletion. If you are not
+              logged in, TradeAI will send you to login before generation.
             </p>
 
             <div class="field">
@@ -660,7 +737,7 @@
             </div>
 
             <div class="field">
-              <label for="reportCountry">Target country / corridor</label>
+              <label for="reportCountry">Country / corridor</label>
               <select id="reportCountry" name="country" required>
                 <option value="uae">India to UAE</option>
                 <option value="kenya">India to Kenya</option>
@@ -672,6 +749,23 @@
                 <option value="oman">India to Oman</option>
                 <option value="qatar">India to Qatar</option>
                 <option value="china">India-China sourcing</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="reportDirection">Direction</label>
+              <select id="reportDirection" name="direction" required>
+                <option value="export_from_india">Export from India</option>
+                <option value="import_into_india">Import into India</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="experienceLevel">Experience level</label>
+              <select id="experienceLevel" name="experienceLevel" required>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="experienced">Experienced</option>
               </select>
             </div>
 
@@ -728,8 +822,12 @@
             </div>
 
             <div class="form-actions">
-              <button type="submit" class="btn btn-primary" id="generateReportButton">Generate Sample Report</button>
+              <button type="submit" class="btn btn-primary" id="generateReportButton">Generate Trade Readiness Report</button>
               <a class="btn btn-outline" href="contact.html?interest=feedback&source=report-form">Share Feedback</a>
+            </div>
+            <div class="form-actions report-save-actions" id="reportSaveActions" hidden>
+              <a class="btn btn-secondary" href="dashboard.html#reports">View My Reports</a>
+              <a class="btn btn-secondary" href="copilot.html?source=trade-readiness">Ask Copilot about this report</a>
             </div>
             <p id="reportRequestStatus" aria-live="polite"></p>
           </form>
@@ -740,10 +838,11 @@
         <div class="section-head">
           <span class="preview-pill" id="reportOutputLabel">Sample MVP Output</span>
           <span class="preview-pill" id="reportProviderLabel">Rule Engine Preview</span>
-          <h2>What TradeAI gives after report generation</h2>
+          <h2>Sample report preview: what you receive</h2>
           <p id="reportOutputIntro">
-            The sample output below is static demo guidance for MVP review. It
-            is not live verified trade, legal, customs or pricing advice.
+            Each report returns opportunity score, demand reason, buyer/supplier guidance,
+            HS/document checklist notes, risk level and recommended next actions. Labels
+            show whether the answer is AI-generated, Rule Engine Preview or demo/sample intelligence.
           </p>
           <p>Last updated: June 2026</p>
         </div>
@@ -799,6 +898,11 @@
             <li>Shortlist potential buyers or suppliers.</li>
             <li>Prepare an export-ready product profile.</li>
           </ol>
+          <div class="report-mode-note" id="tradeReadinessDetails"></div>
+          <div class="report-mode-note">
+            Save/download is available only for logged-in generated reports. Verify HS code,
+            customs, tariff and compliance decisions with official authorities or a qualified CHA.
+          </div>
         </article>
       </section>
 
@@ -1053,9 +1157,12 @@
         var buyerInsight = document.getElementById("sampleBuyerInsight");
         var hsNote = document.getElementById("sampleHsNote");
         var nextActions = document.getElementById("sampleNextActions");
+        var details = document.getElementById("tradeReadinessDetails");
         var requestStatus = document.getElementById("reportRequestStatus");
         var submitButton = document.getElementById("generateReportButton");
-        var defaultButtonText = submitButton ? submitButton.textContent : "Generate Sample Report";
+        var reportSaveActions = document.getElementById("reportSaveActions");
+        var defaultButtonText = submitButton ? submitButton.textContent : "Generate Trade Readiness Report";
+        var guestPreviewKey = "tradeai_guest_trade_readiness_preview_used";
 
         if (!form) {
           return;
@@ -1088,12 +1195,8 @@
           return countryMap[value] || label || value;
         }
 
-        function getLocalToken() {
-          try {
-            return localStorage.getItem("tradeai_token") || "";
-          } catch (error) {
-            return "";
-          }
+        function hasAuthenticatedSession() {
+          return Boolean(window.TradeAI?.auth?.getToken?.());
         }
 
         function escapeHtml(value) {
@@ -1133,31 +1236,41 @@
         function buildGeneratePayload() {
           var country = getValue("reportCountry");
           var target = getSelectedLabel("reportCountry");
-          var businessType = getSelectedLabel("businessType");
 
           return {
             name: getValue("requesterName"),
             email: getValue("requesterEmail"),
             company: getValue("requesterCompany"),
             productName: getValue("reportProduct"),
-            hsCode: getValue("reportHsCode"),
+            hsCodeOrCategory: getValue("reportHsCode"),
             originCountry: getSelectedLabel("reportOrigin"),
             targetCountry: getTargetCountryName(country, target),
             country: country,
-            businessType: businessType,
+            direction: getValue("reportDirection"),
+            experienceLevel: getValue("experienceLevel"),
+            businessType: getSelectedLabel("businessType"),
             monthlyCapacity: getValue("monthlyCapacity"),
             priceRange: getValue("priceRange"),
             certifications: getValue("certifications"),
             objective: getSelectedLabel("reportObjective"),
             source: "export-opportunity-report",
-            token: getLocalToken(),
           };
         }
 
-        function renderReport(payload, report) {
-          var provider = report.providerLabel || report.dataSourceLabel || "Rule Engine Preview";
-          var scoreValue = Number(report.opportunityScore || 0);
-          var scoreText = scoreValue ? scoreValue + "/100" : "Pending";
+        function formatList(title, items) {
+          var safeItems = Array.isArray(items) ? items : [];
+
+          if (!safeItems.length) return "";
+
+          return "<h4>" + escapeHtml(title) + "</h4><ul>" + safeItems.map(function (item) {
+            return "<li>" + escapeHtml(item) + "</li>";
+          }).join("") + "</ul>";
+        }
+
+        function renderReport(payload, response) {
+          var report = response.report || response;
+          var provider = report.sourceType || report.providerLabel || report.dataSourceLabel || "Rule Engine Preview";
+          var riskText = report.riskLevel || "Medium";
 
           if (outputLabel) outputLabel.textContent = "Generated Report Output";
           if (providerLabel) providerLabel.textContent = provider;
@@ -1167,26 +1280,38 @@
             outputIntro.textContent =
               "This section now shows the structured report returned by TradeAI for the submitted form.";
           }
-          if (title) title.textContent = payload.productName + " opportunity report";
+          if (title) title.textContent = report.reportTitle || payload.productName + " trade readiness report";
           if (summary) {
-            summary.textContent =
-              payload.originCountry +
-              " to " +
-              payload.targetCountry +
-              " report for " +
-              payload.businessType +
-              ". Provider: " +
-              provider +
-              ".";
+            summary.textContent = report.opportunitySummary || "Trade readiness guidance generated.";
           }
-          if (score) score.textContent = scoreText;
-          if (demand) demand.textContent = report.marketPotential || "Market potential unavailable.";
-          if (competition) competition.textContent = report.demandReason || "Demand reason unavailable.";
+          if (score) score.textContent = riskText;
+          if (demand) demand.textContent = report.opportunitySummary || "Process summary unavailable.";
+          if (competition) competition.textContent = report.paymentRisk || "Payment guidance unavailable.";
           if (risk) risk.textContent = report.riskLevel || "Risk level unavailable.";
-          if (corridor) corridor.textContent = payload.originCountry + " to " + payload.targetCountry;
-          if (buyerInsight) buyerInsight.textContent = report.buyerType || "Buyer type unavailable.";
-          if (hsNote) hsNote.textContent = report.complianceNotes || "Compliance notes unavailable.";
-          renderActionList(report.suggestedNextActions);
+          if (corridor) corridor.textContent = payload.direction === "import_into_india" ? payload.targetCountry + " to India" : "India to " + payload.targetCountry;
+          if (buyerInsight) buyerInsight.textContent = report.incotermsGuidance || "Incoterms guidance unavailable.";
+          if (hsNote) hsNote.textContent = report.hsCodeOrCategory || "Verify HS category with CHA/customs expert.";
+          renderActionList(report.recommendations);
+          if (details) {
+            details.innerHTML =
+              formatList("Checklist", report.checklist) +
+              formatList("Documents", report.documents) +
+              formatList("Compliance notes", report.complianceNotes) +
+              "<h4>Logistics / shipping note</h4><p>" + escapeHtml(report.logisticsNotes || "") + "</p>" +
+              formatList("Customs clearance checklist", report.customsSteps) +
+              "<p><strong>Disclaimer:</strong> " + escapeHtml(report.disclaimer || "") + "</p>";
+          }
+          if (reportSaveActions) reportSaveActions.hidden = !response.saved;
+
+          try {
+            localStorage.setItem("tradeai_selected_product", report.productName || payload.productName);
+            localStorage.setItem("tradeai_selected_country", report.country || payload.targetCountry);
+            localStorage.setItem("tradeai_selected_hsCode", report.hsCodeOrCategory || payload.hsCodeOrCategory);
+            localStorage.setItem(
+              "tradeai_latest_report_prompt",
+              "Explain this TradeAI report: " + (report.reportTitle || "") + ". " + (report.opportunitySummary || "")
+            );
+          } catch (error) {}
 
           output.hidden = false;
           output.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1197,6 +1322,13 @@
 
           var payload = buildGeneratePayload();
 
+          if (!hasAuthenticatedSession() && localStorage.getItem(guestPreviewKey) === "true") {
+            if (requestStatus) {
+              requestStatus.textContent = "Guest preview already used. Register to save/download reports and generate more previews.";
+            }
+            return;
+          }
+
           if (requestStatus) {
             requestStatus.textContent = "Generating report preview...";
           }
@@ -1204,21 +1336,25 @@
           setLoading(true);
 
           try {
-            var report = await window.TradeAI.api.reports.generate(payload);
-            renderReport(payload, report);
+            var response = await window.TradeAI.api.reports.tradeReadiness(payload);
+            renderReport(payload, response);
+
+            if (!hasAuthenticatedSession()) {
+              localStorage.setItem(guestPreviewKey, "true");
+            }
 
             if (requestStatus) {
-              requestStatus.textContent = report.isDemo
-                ? "Rule engine preview generated and saved as a guest/sample report."
-                : "AI-generated report created and saved.";
+              requestStatus.textContent = response.saved
+                ? "Report generated and saved. Open My Reports to download or review it."
+                : "Guest preview generated. Register to save/download this report.";
             }
           } catch (error) {
             if (requestStatus) {
               requestStatus.textContent =
-                "Sorry, TradeAI could not generate this report right now. Please check the form and try again.";
+                error.message || "Sorry, TradeAI could not generate this report right now. Please check the form and try again.";
             }
 
-            window.TradeAI?.toast?.("Report generation failed. Please try again.", "error");
+            window.TradeAI?.toast?.(error.message || "Report generation failed. Please try again.", "error");
           } finally {
             setLoading(false);
           }

@@ -3,26 +3,41 @@ import express from "express";
 import {
     createAiReport,
     createOpportunityReport,
+    createTradeReadinessReport,
+    deleteAiReportById,
+    deleteMyReportById,
     exportAiReport,
+    exportMyReportById,
     generateSampleReport,
     getAiReportById,
     getAiReports,
     getMyReportById,
     getMyReports,
 } from "../controllers/reportController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { optionalProtect, protect } from "../middleware/authMiddleware.js";
+import { apiRateLimit } from "../middleware/securityMiddleware.js";
 
 const router = express.Router();
+const reportGenerationLimiter = apiRateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+});
+const publicTradeReadinessLimiter = apiRateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 10,
+});
 
-router.post("/generate", generateSampleReport);
+router.post("/trade-readiness", publicTradeReadinessLimiter, optionalProtect, createTradeReadinessReport);
 
 router.use(protect);
 
+router.post("/generate", reportGenerationLimiter, generateSampleReport);
 router.get("/my-reports", getMyReports);
-router.get("/my-reports/:id", getMyReportById);
-router.route("/").get(getAiReports).post(createAiReport);
-router.post("/opportunity", createOpportunityReport);
-router.get("/:id", getAiReportById);
+router.get("/my-reports/:id/export", exportMyReportById);
+router.route("/my-reports/:id").get(getMyReportById).delete(deleteMyReportById);
+router.route("/").get(getAiReports).post(reportGenerationLimiter, createAiReport);
+router.post("/opportunity", reportGenerationLimiter, createOpportunityReport);
+router.route("/:id").get(getAiReportById).delete(deleteAiReportById);
 router.get("/:id/export", exportAiReport);
 
 export default router;

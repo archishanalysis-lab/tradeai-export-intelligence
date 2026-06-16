@@ -20,6 +20,16 @@
   const API_BASE_URL = window.TradeAI?.config?.API_URL || `${apiBaseUrl}/api`;
   const MVP_PREVIEW_MESSAGE =
     "This feature is currently running in MVP preview mode. Live backend data will appear here after deployment. Please continue reviewing the UI flow and sample experience.";
+  const SESSION_EXPIRED_MESSAGE = "Session expired, please log in again.";
+  const FORBIDDEN_MESSAGE = "You do not have permission to access this resource.";
+  const BACKEND_UNAVAILABLE_MESSAGE =
+    "TradeAI backend is unavailable right now. Please try again after the service is back online.";
+  const CONNECTING_MESSAGE = "Connecting to TradeAI server...";
+  const HEALTH_CACHE_KEY = "tradeai_backend_health";
+  const HEALTH_CACHE_MS = 2 * 60 * 1000;
+  const HEALTH_FAILURE_CACHE_MS = 15 * 1000;
+  let backendHealthPromise = null;
+  let backendHealthToastAt = 0;
   const auth =
     window.TradeAI?.state?.auth || {
       isLoggedIn() {
@@ -55,13 +65,37 @@
       },
       requireAuth() {
         if (!this.isLoggedIn()) {
-          toast("Please login first.", "error");
-          window.location.href = this.getLoginPath();
+          redirectToLogin("login-required");
           return false;
         }
         return true;
       },
     };
+
+  function getCurrentPath() {
+    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  }
+
+  function redirectToLogin(reason = "session-expired") {
+    auth.clearSession();
+    toast(reason === "login-required" ? "Please login first." : SESSION_EXPIRED_MESSAGE, "error");
+
+    const redirect = encodeURIComponent(getCurrentPath());
+    const separator = auth.getLoginPath().includes("?") ? "&" : "?";
+    window.location.href = `${auth.getLoginPath()}${separator}reason=${encodeURIComponent(reason)}&redirect=${redirect}`;
+  }
+
+  function dispatchAuthError(error) {
+    window.dispatchEvent(
+      new CustomEvent("tradeai:auth-error", {
+        detail: {
+          status: error.status,
+          message: error.message,
+          reason: error.reason || "",
+        },
+      }),
+    );
+  }
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -77,11 +111,125 @@
     return { message: await response.text().catch(() => "") };
   }
 
+  function readBackendHealthCache() {
+    try {
+      return JSON.parse(window.sessionStorage.getItem(HEALTH_CACHE_KEY) || "null");
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeBackendHealthCache(payload) {
+    try {
+      window.sessionStorage.setItem(
+        HEALTH_CACHE_KEY,
+        JSON.stringify({
+          ...payload,
+          checkedAt: Date.now(),
+        }),
+      );
+    } catch (error) {
+      // Health cache is only a cold-start optimization.
+    }
+  }
+
+  function getCachedBackendHealth() {
+    const cached = readBackendHealthCache();
+
+    if (!cached?.checkedAt) return null;
+
+    const maxAge = cached.ok ? HEALTH_CACHE_MS : HEALTH_FAILURE_CACHE_MS;
+
+    return Date.now() - cached.checkedAt < maxAge ? cached : null;
+  }
+
+  function showConnectingMessage() {
+    const now = Date.now();
+
+    if (now - backendHealthToastAt < 10000) return;
+
+    backendHealthToastAt = now;
+    toast(CONNECTING_MESSAGE, "info");
+  }
+
+  async function checkBackendHealth(options = {}) {
+    const { force = false, showStatus = false, timeoutMs = 65000 } = options;
+    const cached = !force ? getCachedBackendHealth() : null;
+
+    if (cached?.ok) {
+      return cached.data || cached;
+    }
+
+    if (cached && !cached.ok && !force) {
+      const cachedError = new Error(BACKEND_UNAVAILABLE_MESSAGE);
+      cachedError.code = "BACKEND_UNAVAILABLE";
+      cachedError.retryable = true;
+      throw cachedError;
+    }
+
+    if (backendHealthPromise) {
+      return backendHealthPromise;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+    const statusTimer = showStatus
+      ? window.setTimeout(showConnectingMessage, 650)
+      : null;
+
+    backendHealthPromise = fetch(`${apiBaseUrl}/health`, {
+      method: "GET",
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        const data = await parseResponse(response);
+
+        if (!response.ok) {
+          throw new Error(data.message || BACKEND_UNAVAILABLE_MESSAGE);
+        }
+
+        writeBackendHealthCache({ ok: true, data });
+        return data;
+      })
+      .catch((error) => {
+        writeBackendHealthCache({ ok: false, message: error.message });
+
+        const backendError = new Error(BACKEND_UNAVAILABLE_MESSAGE);
+        backendError.code = "BACKEND_UNAVAILABLE";
+        backendError.retryable = true;
+        throw backendError;
+      })
+      .finally(() => {
+        window.clearTimeout(timeoutId);
+        if (statusTimer) window.clearTimeout(statusTimer);
+        backendHealthPromise = null;
+      });
+
+    return backendHealthPromise;
+  }
+
+  async function ensureBackendReady(options = {}) {
+    try {
+      return await checkBackendHealth({
+        showStatus: true,
+        ...options,
+      });
+    } catch (error) {
+      toast("Server is temporarily unavailable. Please try again.", "error");
+      throw error;
+    }
+  }
+
   async function request(path, options = {}) {
     const retries = options.retries ?? 1;
     const retryDelay = options.retryDelay ?? 450;
     const token = auth.getToken();
     let lastError;
+
+    if (options.skipHealthCheck !== true) {
+      await ensureBackendReady();
+    }
 
     for (let attempt = 0; attempt <= retries; attempt += 1) {
       try {
@@ -97,10 +245,23 @@
         const data = await parseResponse(response);
 
         if (response.status === 401) {
-          auth.clearSession();
-          toast("Your session expired. Please login again.", "error");
-          window.location.href = auth.getLoginPath();
-          throw new Error("Session expired. Please login again.");
+          const error = new Error(SESSION_EXPIRED_MESSAGE);
+          error.status = 401;
+          error.reason = "session-expired";
+          error.retryable = false;
+          dispatchAuthError(error);
+          redirectToLogin(error.reason);
+          throw error;
+        }
+
+        if (response.status === 403) {
+          const error = new Error(data.message || FORBIDDEN_MESSAGE);
+          error.status = 403;
+          error.reason = "forbidden";
+          error.retryable = false;
+          dispatchAuthError(error);
+          toast(error.message, "error");
+          throw error;
         }
 
         if (!response.ok) {
@@ -110,6 +271,12 @@
               : data.message || "This request could not be completed. Please try again.",
           );
           error.status = response.status;
+          error.code = data.code || data.errorCode || "";
+          error.plan = data.plan || "";
+          error.feature = data.feature || "";
+          error.limit = data.limit;
+          error.used = data.used;
+          error.resetAt = data.resetAt || "";
           error.retryable = response.status < 400 || response.status >= 500;
           throw error;
         }
@@ -132,9 +299,10 @@
     }
 
     if (lastError instanceof TypeError) {
-      const previewError = new Error(MVP_PREVIEW_MESSAGE);
-      previewError.code = "MVP_PREVIEW_BACKEND_UNAVAILABLE";
-      throw previewError;
+      const backendError = new Error(BACKEND_UNAVAILABLE_MESSAGE);
+      backendError.code = "BACKEND_UNAVAILABLE";
+      backendError.retryable = true;
+      throw backendError;
     }
 
     throw lastError;
@@ -145,6 +313,7 @@
 
     return (
       error?.code === "MVP_PREVIEW_BACKEND_UNAVAILABLE" ||
+      error?.code === "BACKEND_UNAVAILABLE" ||
       message.includes("MVP preview mode") ||
       /failed to fetch|backend is running|port 5000|server error/i.test(message)
     );
@@ -262,6 +431,11 @@
     request,
     toast,
     confirmDialog,
+    checkBackendHealth,
+    ensureBackendReady,
+    redirectToLogin,
+    SESSION_EXPIRED_MESSAGE,
+    BACKEND_UNAVAILABLE_MESSAGE,
     MVP_PREVIEW_MESSAGE,
     isPreviewApiError,
     getPreviewMessage,

@@ -31,6 +31,8 @@
           <a href="inquiry-dashboard.html">Inquiries</a>
           <a href="analytics-dashboard.html">Analytics</a>
           <a href="copilot.html" class="active">Copilot</a>
+          <a href="dashboard.html#reports">Reports & My Reports</a>
+          <a href="dashboard.html">Dashboard</a>
         </nav>
         <button id="themeToggle" class="theme-btn" type="button" aria-label="Toggle theme">
           <i class="fa-solid fa-moon" aria-hidden="true"></i>
@@ -52,17 +54,27 @@
       <a href="inquiry-dashboard.html">Inquiries</a>
       <a href="analytics-dashboard.html">Analytics</a>
       <a href="copilot.html">Copilot</a>
+      <a href="dashboard.html#reports">Reports & My Reports</a>
+      <a href="dashboard.html">Dashboard</a>
     </div>
     <main class="dashboard-main no-sidebar">
       <div class="container">
+        <nav class="protected-app-nav" aria-label="TradeAI workspace navigation">
+          <a href="product-dashboard.html">Products</a>
+          <a href="inquiry-dashboard.html">Inquiries</a>
+          <a href="analytics-dashboard.html">Analytics</a>
+          <a href="copilot.html" aria-current="page">Copilot</a>
+          <a href="dashboard.html#reports">Reports & My Reports</a>
+          <a href="dashboard.html">Dashboard</a>
+        </nav>
         <section class="dashboard-hero">
           <div>
             <span class="section-kicker">AI assistant</span>
             <h1>AI Trade Copilot</h1>
             <p>
-              Ask market, buyer discovery, HS-code and export planning
-              questions. Backend answers appear when connected; MVP fallback
-              guidance is clearly labeled.
+              Ask market, buyer discovery, HS-code, document and export planning
+              questions. Every answer shows whether it came from AI or the
+              TradeAI Rule Engine Preview.
             </p>
           </div>
         </section>
@@ -86,26 +98,26 @@
                   maxlength="800"
                   required
                   aria-describedby="copilotPromptHint"
-                  placeholder="best markets for turmeric from India"
+                  placeholder="Which country should I choose for spices export?"
                 ></textarea>
                 <p class="table-subtext" id="copilotPromptHint">
                   Ask about target markets, buyer segments, HS-code direction,
-                  compliance risks or next actions.
+                  documents, payment terms, compliance risks or next actions.
                 </p>
               </div>
 
               <div class="copilot-chip-group" aria-label="Sample prompts">
-                <button type="button" class="secondary copilot-chip" data-prompt="best markets for turmeric from India">
-                  Turmeric markets
+                <button type="button" class="secondary copilot-chip" data-prompt="Which country should I choose for spices export?">
+                  Spices country choice
                 </button>
-                <button type="button" class="secondary copilot-chip" data-prompt="Find UAE buyers for Indian spices">
-                  UAE spice buyers
+                <button type="button" class="secondary copilot-chip" data-prompt="What documents are needed for export to UAE?">
+                  UAE documents
                 </button>
-                <button type="button" class="secondary copilot-chip" data-prompt="Recommend HS codes for cotton T-shirts">
-                  HS code help
+                <button type="button" class="secondary copilot-chip" data-prompt="What payment term is safer for a new buyer?">
+                  Safer payment term
                 </button>
-                <button type="button" class="secondary copilot-chip" data-prompt="Create a buyer outreach plan for Kenya">
-                  Kenya outreach
+                <button type="button" class="secondary copilot-chip" data-prompt="What HS code category should I check for textile products?">
+                  Textile HS category
                 </button>
               </div>
 
@@ -120,35 +132,31 @@
                   Analyzing your query...
                 </div>
 
-                <div id="copilot-response"
-                     style="display:none;margin-top:1.5rem;padding:1.5rem;
-                            border:1px solid #e0e0e0;border-radius:8px;
-                            background:#f9f9f9;">
-                  <div style="font-size:0.75rem;color:#888;margin-bottom:1rem;">
+                <div id="copilot-response" class="copilot-inline-result" hidden>
+                  <div class="copilot-inline-provider">
                     <span id="copilot-provider-label"></span>
                   </div>
-                  <div style="margin-bottom:0.75rem;">
+                  <div>
                     <strong>Market Opportunity</strong>
                     <p id="copilot-market-opportunity"></p>
                   </div>
-                  <div style="margin-bottom:0.75rem;">
+                  <div>
                     <strong>Buyer Type</strong>
                     <p id="copilot-buyer-type"></p>
                   </div>
-                  <div style="margin-bottom:0.75rem;">
+                  <div>
                     <strong>Risk Level</strong>
                     <p id="copilot-risk-level"></p>
                   </div>
-                  <div style="margin-bottom:0.75rem;">
+                  <div>
                     <strong>Documents Needed</strong>
                     <ul id="copilot-documents"></ul>
                   </div>
-                  <div style="margin-bottom:0.75rem;">
+                  <div>
                     <strong>Next Actions</strong>
                     <ul id="copilot-next-actions"></ul>
                   </div>
-                  <p id="copilot-disclaimer"
-                     style="font-size:0.75rem;color:#999;margin-top:1rem;">
+                  <p id="copilot-disclaimer" class="copilot-inline-disclaimer">
                   </p>
                 </div>
 
@@ -189,7 +197,7 @@
             >
               <h3>Copilot is in fallback mode</h3>
               <p id="copilotErrorMessage">
-                Backend AI is unavailable. Showing demo guidance for MVP preview.
+                Backend AI is unavailable or limited. Showing Rule Engine Preview guidance.
               </p>
             </div>
 
@@ -202,8 +210,8 @@
               <article class="activity-card">
                 <h4>Ask a trade question</h4>
                 <p>
-                  Your Copilot response will appear here with suggested next
-                  actions and a short market-readiness checklist.
+                  Your Copilot response will appear here with provider label,
+                  suggested next actions and a short market-readiness checklist.
                 </p>
               </article>
             </section>
@@ -214,12 +222,12 @@
           <div class="section-heading">
             <span class="section-kicker">History</span>
             <h2>Response history</h2>
-            <p>Recent prompts from this page session appear here.</p>
+            <p>Recent prompts for this signed-in user appear here after authenticated Copilot requests. Verify trade, customs and payment guidance before action.</p>
           </div>
           <div id="copilotHistory" class="activity-grid">
             <article class="activity-card">
               <h4>No Copilot history yet</h4>
-              <p>Ask your first question to build a short review trail.</p>
+              <p>No recent Copilot history yet. Ask your first trade question.</p>
             </article>
           </div>
         </section>

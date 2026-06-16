@@ -69,7 +69,7 @@
       <a href="dashboard.html#buyers">Buyer Discovery</a>
       <a href="dashboard.html#markets">Market Analysis</a>
       <a href="dashboard.html#hs-codes">HS Codes</a>
-      <a href="dashboard.html#reports">AI Reports</a>
+      <a href="dashboard.html#reports">Reports & My Reports</a>
       <a href="dashboard.html#saved">Saved Searches</a>
       <a href="dashboard.html#settings">Settings</a>
     </div>
@@ -89,7 +89,7 @@
           <i class="fa-solid fa-barcode" aria-hidden="true"></i> HS Codes
         </a>
         <a href="#reports" data-dashboard-tab="reports">
-          <i class="fa-solid fa-file-lines" aria-hidden="true"></i> AI Reports
+          <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Reports & My Reports
         </a>
         <a href="#saved" data-dashboard-tab="saved">
           <i class="fa-solid fa-bookmark" aria-hidden="true"></i> Saved Searches
@@ -132,17 +132,57 @@
             </div>
             <div class="quick-actions">
               <a class="quick-action" href="#reports">
-                <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Create export report
+                <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Generate export opportunity report
               </a>
-              <a class="quick-action" href="export-opportunity-report.html">
-                <i class="fa-solid fa-chart-line" aria-hidden="true"></i> Open public report flow
+              <a class="quick-action" href="#reports">
+                <i class="fa-solid fa-folder-open" aria-hidden="true"></i> Save/download report
+              </a>
+              <a class="quick-action" href="copilot.html">
+                <i class="fa-solid fa-robot" aria-hidden="true"></i> Ask Trade Copilot
               </a>
               <a class="quick-action" href="#buyers">
-                <i class="fa-solid fa-users" aria-hidden="true"></i> Review buyer samples
+                <i class="fa-solid fa-users" aria-hidden="true"></i> Explore buyer/supplier marketplace
               </a>
             </div>
             <div id="dashboardRecentReports" class="activity-grid">
               <article class="activity-card"><h4>Loading recent reports...</h4><p>Your saved export reports will appear here.</p></article>
+            </div>
+            <div class="section-heading">
+              <span class="section-kicker">Start Here</span>
+              <h2>Get one useful TradeAI result in five steps</h2>
+              <p>Select a product-country pair, generate a checklist/report, ask Copilot, then save or download the result.</p>
+            </div>
+            <div class="activity-grid" aria-label="Start Here checklist">
+              <article class="activity-card">
+                <span class="status-badge status-active">Getting started</span>
+                <h4>Step 1: Select product and country</h4>
+                <p>Enter your product, target country and HS code if available.</p>
+                <a class="secondary" href="#reports">Open report form</a>
+              </article>
+              <article class="activity-card">
+                <span class="status-badge status-pending">Next</span>
+                <h4>Step 2: Generate checklist/report</h4>
+                <p>Get opportunity score, demand reason, risk notes, document checklist and next actions.</p>
+                <a class="secondary" href="#reports">Generate report</a>
+              </article>
+              <article class="activity-card">
+                <span class="status-badge status-pending">Next</span>
+                <h4>Step 3: Ask Copilot for guidance</h4>
+                <p>Ask follow-up questions about documents, safer payment terms, buyer outreach or HS-code direction.</p>
+                <a class="secondary" href="copilot.html">Ask Copilot</a>
+              </article>
+              <article class="activity-card">
+                <span class="status-badge status-pending">Next</span>
+                <h4>Step 4: Save/download result</h4>
+                <p>Open My Reports to view, print or download saved export opportunity reports.</p>
+                <a class="secondary" href="#reports">My Reports</a>
+              </article>
+              <article class="activity-card">
+                <span class="status-badge status-pending">Upgrade later</span>
+                <h4>Step 5: Upgrade when limits are reached</h4>
+                <p>Use free output first. Upgrade later for more reports, saved results, Copilot usage and buyer/supplier discovery.</p>
+                <a class="secondary" href="pricing.html">View limits</a>
+              </article>
             </div>
           </section>
 
@@ -296,7 +336,7 @@
                 <p><strong>HS code:</strong> Example range 0904-0910</p>
                 <p><strong>Source label:</strong> MVP sample market note</p>
                 <p class="table-subtext">Last updated: June 2026</p>
-                <a class="secondary" href="export-opportunity-report.html">Download sample report</a>
+                <a class="secondary" href="export-opportunity-report.html">Generate sample report</a>
               </article>
               <article class="insight-card">
                 <span class="status-badge status-pending">Demo data</span>
@@ -305,7 +345,7 @@
                 <p><strong>HS code:</strong> 2106 if applicable by product</p>
                 <p><strong>Source label:</strong> Sample GCC corridor brief</p>
                 <p class="table-subtext">Last updated: June 2026</p>
-                <a class="secondary" href="register.html?source=dashboard&intent=sample-report">Register for sample report</a>
+                <a class="secondary" href="export-opportunity-report.html">Generate sample report</a>
               </article>
             </div>
           </section>
@@ -352,30 +392,31 @@
         <section id="reports" class="dashboard-tab-panel" data-dashboard-panel="reports" hidden>
           <section class="dashboard-section two-column-layout">
             <article class="dashboard-panel">
-              <h2>Create export opportunity report</h2>
+              <h2>Create Trade Readiness Report</h2>
               <form class="settings-form" id="reportForm">
                 <div class="form-row">
-                  <div class="input-group"><label for="reportProduct">Product name</label><input id="reportProduct" required placeholder="Turmeric powder" /></div>
-                  <div class="input-group"><label for="reportHsCode">HS code optional</label><input id="reportHsCode" placeholder="0910" /></div>
+                  <div class="input-group"><label for="reportProduct">Product / category</label><input id="reportProduct" required placeholder="Turmeric powder" /></div>
+                  <div class="input-group"><label for="reportHsCode">HS code optional</label><input id="reportHsCode" placeholder="0910 or spices category" /></div>
                 </div>
                 <div class="form-row">
-                  <div class="input-group"><label for="reportOriginCountry">Origin country</label><input id="reportOriginCountry" value="India" readonly /></div>
-                  <div class="input-group"><label for="reportCountry">Target country</label><select id="reportCountry" required><option value="Kenya">Kenya</option><option value="Tanzania">Tanzania</option><option value="Uganda">Uganda</option><option value="Rwanda">Rwanda</option><option value="UAE">UAE</option><option value="Saudi Arabia">Saudi Arabia</option><option value="Oman">Oman</option><option value="Qatar">Qatar</option><option value="China">China</option></select></div>
+                  <div class="input-group"><label for="reportDirection">Direction</label><select id="reportDirection" required><option value="export_from_india">Export from India</option><option value="import_into_india">Import into India</option></select></div>
+                  <div class="input-group"><label for="reportCountry">Country</label><select id="reportCountry" required><option value="Kenya">Kenya</option><option value="Tanzania">Tanzania</option><option value="Uganda">Uganda</option><option value="Rwanda">Rwanda</option><option value="UAE">UAE</option><option value="Saudi Arabia">Saudi Arabia</option><option value="Oman">Oman</option><option value="Qatar">Qatar</option><option value="China">China</option></select></div>
                 </div>
                 <div class="form-row">
-                  <div class="input-group"><label for="reportBusinessType">Business type</label><select id="reportBusinessType"><option value="SME exporter">SME exporter</option><option value="Manufacturer exporter">Manufacturer exporter</option><option value="Merchant exporter">Merchant exporter</option><option value="Consultant">Consultant</option><option value="Importer">Importer</option></select></div>
-                  <div class="input-group"><label for="reportMonthlyCapacity">Monthly capacity</label><input id="reportMonthlyCapacity" placeholder="Example: 2 tons/month" /></div>
+                  <div class="input-group"><label for="reportExperienceLevel">Experience level</label><select id="reportExperienceLevel"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="experienced">Experienced</option></select></div>
+                  <div class="input-group"><label for="reportMonthlyCapacity">Monthly capacity later</label><input id="reportMonthlyCapacity" placeholder="Optional for future buyer matching" /></div>
                 </div>
                 <div class="form-row">
                   <div class="input-group"><label for="reportPriceRange">Price range</label><input id="reportPriceRange" placeholder="Example: USD 2.1-2.5/kg FOB" /></div>
                   <div class="input-group"><label for="reportCertifications">Certifications</label><input id="reportCertifications" placeholder="FSSAI, organic, ISO, halal" /></div>
                 </div>
-                <button class="primary" type="submit">Generate and Save Report</button>
+                <p class="table-subtext">Output: process summary, HS/category guidance, document checklist, compliance notes, duty/tariff warning, Incoterms, payment risk, logistics, customs steps and next actions. Logged-in reports can be saved and downloaded.</p>
+                <button class="primary" type="submit">Generate Trade Readiness Report</button>
               </form>
             </article>
             <article class="dashboard-panel">
               <h2>Report output</h2>
-              <div id="reportOutput" class="activity-card"><h4>No report selected</h4><p>Generated intelligence will appear here.</p></div>
+              <div id="reportOutput" class="activity-card"><h4>No report selected</h4><p>Generate one practical report, then copy it, ask Copilot, save/download, or upgrade when limits are reached.</p></div>
             </article>
           </section>
           <section class="dashboard-section">
@@ -386,7 +427,8 @@
           </section>
           <section class="dashboard-section" id="reports-tab-my-reports-section">
             <article class="dashboard-panel">
-              <h2>My Reports</h2>
+              <h2>Reports & My Reports</h2>
+              <p class="table-subtext">Saved reports from logged-in generation appear here. Select View to expand, Download for a text export, or Print for a pitch-ready copy.</p>
               <ul id="reports-tab-my-reports-list"></ul>
             </article>
           </section>
@@ -412,10 +454,10 @@
             <div class="settings-grid">
               <article class="settings-card">
                 <div class="settings-header"><h2>Profile Settings</h2><i class="fa-solid fa-user"></i></div>
-                <form class="settings-form">
-                  <div class="input-group"><label>Full Name</label><input type="text" placeholder="Enter full name" value="TradeAI User" /></div>
-                  <div class="input-group"><label>Email Address</label><input type="email" placeholder="Enter email" value="user@tradeai.com" /></div>
-                  <div class="input-group"><label>Company Name</label><input type="text" placeholder="Company" value="TradeAI Global" /></div>
+                <form class="settings-form" id="profilePreferencesForm">
+                  <div class="input-group"><label for="preferenceFullName">Full Name</label><input id="preferenceFullName" name="fullName" type="text" placeholder="Enter full name" value="TradeAI User" /></div>
+                  <div class="input-group"><label for="preferenceEmail">Email Address</label><input id="preferenceEmail" name="email" type="email" placeholder="Enter email" value="user@tradeai.com" /></div>
+                  <div class="input-group"><label for="preferenceCompany">Company Name</label><input id="preferenceCompany" name="company" type="text" placeholder="Company" value="TradeAI Global" /></div>
                   <button type="submit" class="primary">Save Changes</button>
                 </form>
               </article>
@@ -425,15 +467,15 @@
                   <div class="input-group"><label>Current Password</label><input type="password" placeholder="Current password" /></div>
                   <div class="input-group"><label>New Password</label><input type="password" placeholder="New password" /></div>
                   <div class="input-group"><label>Confirm Password</label><input type="password" placeholder="Confirm password" /></div>
-                  <button type="submit" class="primary">Update Password</button>
+                  <button type="button" class="secondary" disabled>Password update unavailable in MVP</button>
                 </form>
               </article>
               <article class="settings-card">
                 <div class="settings-header"><h2>Notifications</h2><i class="fa-solid fa-bell"></i></div>
                 <div class="settings-options">
-                  <label class="settings-toggle"><span>Email Notifications</span><input type="checkbox" checked /></label>
-                  <label class="settings-toggle"><span>AI Market Alerts</span><input type="checkbox" checked /></label>
-                  <label class="settings-toggle"><span>Buyer Updates</span><input type="checkbox" /></label>
+                  <label class="settings-toggle"><span>Email Notifications</span><input id="preferenceEmailNotifications" type="checkbox" checked /></label>
+                  <label class="settings-toggle"><span>AI Market Alerts</span><input id="preferenceAiMarketAlerts" type="checkbox" checked /></label>
+                  <label class="settings-toggle"><span>Buyer Updates</span><input id="preferenceBuyerUpdates" type="checkbox" /></label>
                 </div>
               </article>
               <article class="settings-card">
@@ -456,12 +498,14 @@
     <script src="../js/state/authState.js" defer></script>
     <script src="../js/state/appState.js" defer></script>
     <script src="../js/state/notificationState.js" defer></script>
+    <script src="../js/config.js" defer></script>
     <script src="../js/api.js" defer></script>
     <script src="../js/auth.js" defer></script>
     <script src="../js/api/billingApi.js" defer></script>
     <script src="../js/access-control.js" defer></script>
     <script src="../js/api/savedItemApi.js" defer></script>
     <script src="../js/api/reportApi.js" defer></script>
+    <script src="../js/api/preferencesApi.js" defer></script>
     <script src="../js/navbar.js" defer></script>
     <script src="../js/theme.js" defer></script>
     <script src="../js/dashboard-tabs.js" defer></script>

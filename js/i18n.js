@@ -650,7 +650,7 @@
       productSearchPlaceholder: "Example: turmeric, textiles, machinery, electronics",
       targetCountry: "Target Country",
       selectCountry: "Select country",
-      generatePreview: "Generate Preview",
+      generatePreview: "Generate report preview",
       productCountryRequired:
         "Please enter a product or HS code and select a target country.",
       productRequired: "Please enter a product or HS code.",

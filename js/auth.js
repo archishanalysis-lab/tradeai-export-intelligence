@@ -15,7 +15,12 @@ const backendBaseUrl = normalizeBackendBaseUrl(
 );
 const API_BASE_URL = window.TradeAI?.config?.API_URL || `${backendBaseUrl}/api`;
 const AUTH_BACKEND_UNAVAILABLE_MESSAGE =
-  "Cannot connect to the TradeAI backend. Start the backend on http://localhost:5000 and try again.";
+  "Server is temporarily unavailable. Please try again.";
+const AUTH_HEALTH_CACHE_KEY = "tradeai_backend_health";
+const AUTH_HEALTH_CACHE_MS = 2 * 60 * 1000;
+const AUTH_HEALTH_FAILURE_CACHE_MS = 15 * 1000;
+let authHealthPromise = null;
+let authHealthNoticeAt = 0;
 
 const AUTH_KEY = "tradeai_logged_in";
 const USER_KEY = "tradeai_user";
@@ -58,6 +63,94 @@ const storage = window.TradeAI?.storage || {
   },
 };
 
+function readAuthHealthCache() {
+  try {
+    return JSON.parse(sessionStorage.getItem(AUTH_HEALTH_CACHE_KEY) || "null");
+  } catch (error) {
+    return null;
+  }
+}
+
+function writeAuthHealthCache(payload) {
+  try {
+    sessionStorage.setItem(
+      AUTH_HEALTH_CACHE_KEY,
+      JSON.stringify({
+        ...payload,
+        checkedAt: Date.now(),
+      }),
+    );
+  } catch (error) {
+    // Health cache is optional.
+  }
+}
+
+function getAuthHealthCache() {
+  const cached = readAuthHealthCache();
+
+  if (!cached?.checkedAt) return null;
+
+  const maxAge = cached.ok ? AUTH_HEALTH_CACHE_MS : AUTH_HEALTH_FAILURE_CACHE_MS;
+  return Date.now() - cached.checkedAt < maxAge ? cached : null;
+}
+
+function showAuthConnectingNotice() {
+  const now = Date.now();
+
+  if (now - authHealthNoticeAt < 10000) return;
+
+  authHealthNoticeAt = now;
+  showToast("Connecting to TradeAI server...");
+}
+
+async function ensureAuthBackendReady() {
+  if (window.TradeAI?.ensureBackendReady) {
+    return window.TradeAI.ensureBackendReady();
+  }
+
+  const cached = getAuthHealthCache();
+
+  if (cached?.ok) return cached.data || cached;
+
+  if (cached && !cached.ok) {
+    throw new Error(AUTH_BACKEND_UNAVAILABLE_MESSAGE);
+  }
+
+  if (authHealthPromise) {
+    return authHealthPromise;
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 65000);
+  const statusTimer = setTimeout(showAuthConnectingNotice, 650);
+
+  authHealthPromise = fetch(`${backendBaseUrl}/health`, {
+    method: "GET",
+    cache: "no-store",
+    signal: controller.signal,
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(AUTH_BACKEND_UNAVAILABLE_MESSAGE);
+      }
+
+      const data = await response.json().catch(() => ({}));
+      writeAuthHealthCache({ ok: true, data });
+      return data;
+    })
+    .catch(() => {
+      writeAuthHealthCache({ ok: false });
+      throw new Error(AUTH_BACKEND_UNAVAILABLE_MESSAGE);
+    })
+    .finally(() => {
+      clearTimeout(timeoutId);
+      clearTimeout(statusTimer);
+      authHealthPromise = null;
+    });
+
+  return authHealthPromise;
+}
+
 const DASHBOARD_PATHS = {
   explorer: "explorer-dashboard.html",
   exporter: "export-dash.html",
@@ -78,6 +171,9 @@ const protectedPages = [
   "saved-search",
   "notification",
   "market-analysis",
+  "dashboard",
+  "buyer-detail",
+  "company-profile",
   "buyer-dashboard",
   "add-buyer",
   "product-upload",
@@ -213,6 +309,18 @@ function getLoginPath() {
     : "pages/login.html";
 }
 
+function getCurrentPath() {
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+}
+
+function redirectToLogin(reason = "login-required") {
+  const loginPath = getLoginPath();
+  const separator = loginPath.includes("?") ? "&" : "?";
+
+  window.location.href =
+    `${loginPath}${separator}reason=${encodeURIComponent(reason)}&redirect=${encodeURIComponent(getCurrentPath())}`;
+}
+
 function getPagePath(page) {
   return window.location.pathname.includes("/pages/") ? page : `pages/${page}`;
 }
@@ -232,7 +340,7 @@ function requireAuth() {
   }
 
   window.TradeAI?.toast?.("Please login first.", "error");
-  window.location.href = getLoginPath();
+  redirectToLogin("login-required");
   return false;
 }
 
@@ -255,8 +363,23 @@ async function verifyServerSession() {
       status: user.status || currentUser.status,
     });
   } catch (error) {
-    clearSession();
-    window.location.href = getLoginPath();
+    if (error?.status === 401) {
+      clearSession();
+      redirectToLogin("session-expired");
+      return;
+    }
+
+    if (error?.status === 403) {
+      clearSession();
+      redirectToLogin("forbidden");
+      return;
+    }
+
+    window.TradeAI?.toast?.(
+      window.TradeAI?.BACKEND_UNAVAILABLE_MESSAGE ||
+        "TradeAI backend is unavailable right now. Please try again after the service is back online.",
+      "error",
+    );
   }
 }
 
@@ -326,6 +449,10 @@ async function apiRequest(path, options = {}) {
   let response;
 
   try {
+    if (options.skipHealthCheck !== true) {
+      await ensureAuthBackendReady();
+    }
+
     response = await fetch(`${API_BASE_URL}${path}`, {
       credentials: "include",
       headers: {
@@ -358,6 +485,17 @@ async function apiRequest(path, options = {}) {
 
 function getAuthFriendlyError(error) {
   return error?.message || "Authentication could not be completed. Please try again.";
+}
+
+function getLoginReasonMessage(reason) {
+  const messages = {
+    "login-required": "Please login to continue.",
+    "session-expired": "Session expired, please log in again.",
+    "invalid-session": "Your saved session is invalid. Please log in again.",
+    forbidden: "Please login with an account that has access to that area.",
+  };
+
+  return messages[reason] || "";
 }
 
 function setSubmitState(form, isSubmitting) {
@@ -405,6 +543,28 @@ function clearFormMessage(form) {
 
   messageElement.textContent = "";
   messageElement.hidden = true;
+}
+
+function renderAuthRedirectReason() {
+  if (!authPages.includes(currentPage)) {
+    return;
+  }
+
+  const reason = new URLSearchParams(window.location.search).get("reason");
+  const message = getLoginReasonMessage(reason);
+
+  if (!message) {
+    return;
+  }
+
+  const form = getAuthPageForm();
+
+  if (form) {
+    setFormMessage(form, message, "error");
+    return;
+  }
+
+  window.TradeAI?.toast?.(message, "error");
 }
 
 function getAuthPageForm() {
@@ -666,11 +826,12 @@ if (storage.get(AUTH_KEY) === "true" && getToken() && isTokenExpired(getToken())
 }
 
 renderSignedInAuthPanel();
+renderAuthRedirectReason();
 window.addEventListener("tradeai:language-change", renderSignedInAuthPanel);
 
 if (protectedPages.includes(currentPage) && !isLoggedIn()) {
   window.TradeAI?.toast?.("Please login first.", "error");
-  window.location.href = getLoginPath();
+  redirectToLogin("login-required");
 }
 
 if (isLoggedIn() && roleGuardMap[currentPage]) {

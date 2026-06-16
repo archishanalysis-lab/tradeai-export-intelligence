@@ -41,4 +41,18 @@ const buildUploadedAsset = (file = {}, fallbackUrl = "") => ({
 
 const parseUploadUrl = (value = "") => value.toString().trim();
 
-export { buildUploadedAsset, isCloudinaryConfigured, parseUploadUrl, uploadToCloudinary };
+const warnIfCloudinaryMissingInProduction = () => {
+    if (process.env.NODE_ENV === "production" && !isCloudinaryConfigured()) {
+        console.warn(
+            "Cloudinary is not configured in production. Uploads will use local disk and may not persist across deploys or restarts.",
+        );
+    }
+};
+
+export {
+    buildUploadedAsset,
+    isCloudinaryConfigured,
+    parseUploadUrl,
+    uploadToCloudinary,
+    warnIfCloudinaryMissingInProduction,
+};

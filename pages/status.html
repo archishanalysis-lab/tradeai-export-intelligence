@@ -55,8 +55,8 @@
         <div class="container">
           <div class="pricing-hero-content">
             <div class="pricing-badge">Operational Transparency</div>
-            <h1>TradeAI System Status</h1>
-            <p>Track platform availability before running buyer discovery, product uploads or inquiry workflows.</p>
+            <h1>Platform Status</h1>
+            <p>MVP systems status for TradeAI frontend, backend API, database-backed workflows, AI/Copilot and reports.</p>
           </div>
         </div>
       </section>
@@ -67,17 +67,32 @@
             <article class="trust-card">
               <i class="fa-solid fa-circle-check"></i>
               <h3>Frontend App</h3>
-              <p>Operational. Static pages and dashboard UI are available locally and ready for Vercel deployment.</p>
+              <p>Operational. The Vercel frontend is available for the current MVP demo flow.</p>
             </article>
             <article class="trust-card">
-              <i class="fa-solid fa-circle-check"></i>
+              <i id="backendStatusIcon" class="fa-solid fa-spinner fa-spin"></i>
               <h3>Backend API</h3>
-              <p>Operational when the Express server is running on port 5000 with valid environment variables.</p>
+              <p><strong id="backendStatusText">Checking...</strong> <span id="backendStatusDetail">Verifying the TradeAI API health endpoint.</span></p>
             </article>
             <article class="trust-card">
               <i class="fa-solid fa-circle-check"></i>
               <h3>MongoDB Atlas</h3>
-              <p>Connected. Buyers, products, inquiries, profiles and users are stored in the TradeAI database.</p>
+              <p><strong id="databaseStatusText">Monitored via backend</strong> <span id="databaseStatusDetail">Database status is reported through the API health check when available.</span></p>
+            </article>
+            <article class="trust-card">
+              <i class="fa-solid fa-circle-check"></i>
+              <h3>AI / Copilot</h3>
+              <p>MVP active with limited/demo corridor coverage. Responses are backend-proxied and may use sample intelligence.</p>
+            </article>
+            <article class="trust-card">
+              <i class="fa-solid fa-circle-check"></i>
+              <h3>Reports</h3>
+              <p>Operational for authenticated MVP report generation, saved reports and printable/downloadable report views.</p>
+            </article>
+            <article class="trust-card">
+              <i class="fa-solid fa-clock"></i>
+              <h3>Last Checked</h3>
+              <p id="statusLastChecked">Checking backend status now...</p>
             </article>
           </div>
         </div>
@@ -90,9 +105,53 @@
       </div>
     </footer>
     <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
     <script src="../js/navbar.js" defer></script>
     <script src="../js/theme.js" defer></script>
     <script src="../js/analytics.js" defer></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", async () => {
+        const backendStatusText = document.getElementById("backendStatusText");
+        const backendStatusDetail = document.getElementById("backendStatusDetail");
+        const backendStatusIcon = document.getElementById("backendStatusIcon");
+        const databaseStatusText = document.getElementById("databaseStatusText");
+        const databaseStatusDetail = document.getElementById("databaseStatusDetail");
+        const statusLastChecked = document.getElementById("statusLastChecked");
+        const apiBaseUrl = window.TradeAI?.config?.API_BASE_URL || window.TRADEAI_API_URL;
+        const showDegraded = () => {
+          backendStatusText.textContent = "Degraded.";
+          backendStatusDetail.textContent = "The API is unavailable or waking up. Please retry shortly.";
+          backendStatusIcon.className = "fa-solid fa-triangle-exclamation";
+          databaseStatusText.textContent = "Monitored via backend.";
+          databaseStatusDetail.textContent = "Database status cannot be confirmed until the API health check responds.";
+          statusLastChecked.textContent = new Date().toLocaleString();
+        };
+
+        try {
+          if (!apiBaseUrl) {
+            throw new Error("API base URL is not configured");
+          }
+
+          const response = await fetch(`${apiBaseUrl}/health`, { cache: "no-store" });
+          const health = await response.json().catch(() => ({}));
+
+          if (!response.ok || health.status !== "ok") {
+            throw new Error(health.message || "Health check failed");
+          }
+
+          backendStatusText.textContent = "Operational.";
+          backendStatusDetail.textContent = `${health.service || "TradeAI API"} responded successfully.`;
+          backendStatusIcon.className = "fa-solid fa-circle-check";
+          databaseStatusText.textContent = health.database === "connected" ? "Connected." : "Monitored via backend.";
+          databaseStatusDetail.textContent = health.database === "connected"
+            ? "MongoDB Atlas is connected through the backend."
+            : "Database state is not reporting connected from the current health response.";
+          statusLastChecked.textContent = new Date(health.timestamp || Date.now()).toLocaleString();
+        } catch (error) {
+          showDegraded();
+        }
+      });
+    </script>
       <script src="../js/i18n.js" defer></script>
 </body>
 </html>

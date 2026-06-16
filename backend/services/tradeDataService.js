@@ -115,6 +115,22 @@ const fallbackPartners = [
     ["156", "China", 1180000],
 ];
 
+const fallbackHsProfiles = [
+    { match: /^0910|^0904/, label: "spices and turmeric category", multiplier: 1.12 },
+    { match: /^1006/, label: "rice and staple food category", multiplier: 1.05 },
+    { match: /^0901|^0902/, label: "tea and coffee category", multiplier: 1.08 },
+    { match: /^6109|^6205|^52/, label: "textiles and garments category", multiplier: 1.1 },
+    { match: /^3003|^3004/, label: "pharma and healthcare category", multiplier: 0.92 },
+    { match: /^2106|^1905/, label: "packaged food category", multiplier: 1.14 },
+    { match: /^7318|^84/, label: "engineering and machinery category", multiplier: 0.98 },
+];
+
+const getFallbackHsProfile = (hsCode = "") =>
+    fallbackHsProfiles.find((profile) => profile.match.test(String(hsCode))) || {
+        label: hsCode ? `HS ${hsCode} opportunity category` : "export opportunity category",
+        multiplier: 1,
+    };
+
 const buildFallbackRecords = ({
     hsCode,
     reporterCode = "356",
@@ -124,9 +140,8 @@ const buildFallbackRecords = ({
     limit = 100,
 } = {}) => {
     const resolvedPeriod = period || String(new Date().getFullYear() - 1);
-    const productLabel = hsCode
-        ? `Sample HS ${hsCode} opportunity category`
-        : "Sample export opportunity category";
+    const hsProfile = getFallbackHsProfile(hsCode);
+    const productLabel = `Sample ${hsProfile.label}`;
     const partners =
         partnerCode && partnerCode !== "0"
             ? fallbackPartners.filter(([code]) => code === String(partnerCode))
@@ -141,7 +156,7 @@ const buildFallbackRecords = ({
         hsCode: hsCode || "0910",
         product: productLabel,
         tradeFlow: flowCode,
-        tradeValue: value + index * 37500,
+        tradeValue: Math.round((value + index * 37500) * hsProfile.multiplier),
         quantity: 0,
         source: "MVP sample trade-data fallback",
     }));

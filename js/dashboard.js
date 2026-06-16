@@ -941,11 +941,21 @@ async function renderAccountSummary() {
     if (planSummary) {
       const planName =
         billing?.planDetails?.name || billing?.plan || "Free";
-      const credits =
-        billing?.planDetails?.aiCredits;
+      const copilotUsage =
+        billing?.usage?.copilot;
+      const reportUsage =
+        billing?.usage?.reports;
+      const formatUsage =
+        (item) => item
+          ? `${item.used || 0}/${item.limit === -1 ? "unlimited" : item.limit}`
+          : "";
+      const usageText = [
+        copilotUsage ? `Copilot ${formatUsage(copilotUsage)} today` : "",
+        reportUsage ? `reports ${formatUsage(reportUsage)} this month` : "",
+      ].filter(Boolean).join(", ");
 
       planSummary.textContent =
-        `${planName} plan${Number.isFinite(credits) ? ` - ${credits} report credits available in this plan` : ""}.`;
+        `${planName} plan${usageText ? ` - ${usageText}` : ""}.`;
     }
 
     if (recentReports) {
@@ -1006,14 +1016,54 @@ function renderSavedReportFields(report) {
 
   const data =
     report?.reportData || {};
+
+  if (data.reportTitle) {
+    const listBlock = (title, items) => {
+      const safeItems =
+        Array.isArray(items) ? items.filter(Boolean) : [];
+
+      return safeItems.length
+        ? `<p><strong>${escapeDashboardHtml(title)}:</strong></p><ul>${safeItems.map((item) => `<li>${escapeDashboardHtml(item)}</li>`).join("")}</ul>`
+        : "";
+    };
+
+    return `
+      <div class="activity-card saved-report-detail">
+        <h4>${escapeDashboardHtml(data.reportTitle)}</h4>
+        <p><strong>Product:</strong> ${escapeDashboardHtml(data.productName || report?.productName || "")}</p>
+        <p><strong>Country:</strong> ${escapeDashboardHtml(data.country || report?.targetCountry || "")}</p>
+        <p><strong>Direction:</strong> ${escapeDashboardHtml(String(data.direction || "").replace(/_/g, " "))}</p>
+        <p><strong>HS code/category:</strong> ${escapeDashboardHtml(data.hsCodeOrCategory || report?.hsCode || "Verify with CHA/customs expert")}</p>
+        <p><strong>Summary:</strong> ${escapeDashboardHtml(data.opportunitySummary)}</p>
+        ${listBlock("Checklist", data.checklist)}
+        ${listBlock("Documents", data.documents)}
+        ${listBlock("Compliance notes", data.complianceNotes)}
+        <p><strong>Payment risk:</strong> ${escapeDashboardHtml(data.paymentRisk)}</p>
+        <p><strong>Incoterms guidance:</strong> ${escapeDashboardHtml(data.incotermsGuidance)}</p>
+        <p><strong>Logistics notes:</strong> ${escapeDashboardHtml(data.logisticsNotes)}</p>
+        ${listBlock("Customs clearance steps", data.customsSteps)}
+        ${listBlock("Recommendations", data.recommendations)}
+        <p><strong>Source:</strong> ${escapeDashboardHtml(data.sourceType || "rule-engine")}</p>
+        <p class="table-subtext">${escapeDashboardHtml(data.disclaimer || "Verify final HS code, duty and compliance with official authority.")}</p>
+      </div>
+    `;
+  }
+
   const actions =
     Array.isArray(data.suggestedNextActions) ? data.suggestedNextActions : [];
+  const dataLabel =
+    data.providerLabel || data.dataSourceLabel || (report?.isDemo ? "Demo intelligence - sample data - coverage expanding" : "TradeAI report");
   const fields = [
-    ["Provider", data.providerLabel || data.dataSourceLabel],
+    ["Product", report?.productName || data.productName],
+    ["HS Code", report?.hsCode || data.hsCode || "Not provided"],
+    ["Source Country", report?.originCountry || data.sourceCountry || "India"],
+    ["Target Country", report?.targetCountry || data.targetCountry],
+    ["Generated Date", formatReportDate(report?.createdAt)],
+    ["Data Label", dataLabel],
     ["Opportunity Score", Number.isFinite(Number(data.opportunityScore)) ? `${data.opportunityScore}/100` : ""],
     ["Market Potential", data.marketPotential],
     ["Demand Reason", data.demandReason],
-    ["Buyer Type", data.buyerType],
+    ["Buyer / Distributor Guidance", data.buyerType],
     ["Risk Level", data.riskLevel],
     ["Compliance Notes", data.complianceNotes],
   ];
@@ -1051,22 +1101,211 @@ function renderMyReportsList(list, reports) {
 
   list.innerHTML =
     reports
-      .map((report) => `
+      .map((report) => {
+        const data = report.reportData || {};
+        const score = data.reportTitle
+          ? escapeDashboardHtml(data.riskLevel || "Trade readiness")
+          : Number.isFinite(Number(data.opportunityScore)) ? `${data.opportunityScore}/100` : "Pending";
+        const label = data.sourceType || data.providerLabel || data.dataSourceLabel || (report.isDemo ? "Demo intelligence" : "TradeAI report");
+
+        return `
         <li>
-          <span>${escapeDashboardHtml(report.productName || "Export report")}</span>
+          <span>${escapeDashboardHtml(data.reportTitle || report.productName || "Trade report")}</span>
           &mdash;
+          <span>${escapeDashboardHtml(report.originCountry || "India")}</span>
+          to
           <span>${escapeDashboardHtml(report.targetCountry || "Target market")}</span>
           ${report.isDemo ? '<span class="status-badge status-pending">Sample</span>' : ""}
+          <span>${escapeDashboardHtml(score)}</span>
+          <span>${escapeDashboardHtml(label)}</span>
           <span>${escapeDashboardHtml(formatReportDate(report.createdAt))}</span>
           <a href="#" data-report-id="${escapeDashboardHtml(report._id)}">View</a>
+          <button class="secondary" type="button" data-report-download-id="${escapeDashboardHtml(report._id)}">Download</button>
+          <button class="secondary" type="button" data-report-print-id="${escapeDashboardHtml(report._id)}">Print</button>
+          <button class="secondary" type="button" data-report-delete-id="${escapeDashboardHtml(report._id)}">Delete</button>
           <div class="saved-report-detail-container" hidden></div>
         </li>
-      `)
+      `;
+      })
       .join("");
 
 }
 
-async function handleMyReportView(event) {
+async function downloadMyReport(reportId) {
+
+  if (!window.TradeAI?.api?.reports?.downloadMyReport) {
+    window.TradeAI?.toast?.("Report download is not available yet.", "error");
+    return;
+  }
+
+  const { blob, filename } =
+    await window.TradeAI.api.reports.downloadMyReport(reportId);
+  const url =
+    URL.createObjectURL(blob);
+  const link =
+    document.createElement("a");
+
+  link.href =
+    url;
+  link.download =
+    filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+
+}
+
+function printSavedReport(report) {
+
+  const printWindow =
+    window.open("", "_blank", "width=900,height=700");
+
+  if (!printWindow) {
+    window.print();
+    return;
+  }
+
+  printWindow.document.write(`
+    <!doctype html>
+    <html>
+      <head>
+        <title>TradeAI Report</title>
+        <style>
+          body { font-family: Arial, sans-serif; color: #111827; line-height: 1.55; padding: 32px; }
+          h1 { font-size: 24px; margin-bottom: 8px; }
+          .meta { color: #475569; margin-bottom: 24px; }
+          p { margin: 8px 0; }
+          ul { margin-top: 8px; }
+        </style>
+      </head>
+      <body>
+        <h1>TradeAI Export Opportunity Report</h1>
+        <div class="meta">Generated ${escapeDashboardHtml(formatReportDate(report?.createdAt))}</div>
+        ${renderSavedReportFields(report)}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+
+}
+
+async function handleMyReportDelete(event) {
+
+  const button =
+    event.target.closest("[data-report-delete-id]");
+
+  if (!button)
+    return false;
+
+  event.preventDefault();
+
+  if (!window.TradeAI?.api?.reports?.deleteMyReport) {
+    window.TradeAI?.toast?.("Report delete is not available yet.", "error");
+    return true;
+  }
+
+  const confirmed =
+    await window.TradeAI?.confirmDialog?.("Delete this saved report?");
+
+  if (!confirmed)
+    return true;
+
+  button.disabled =
+    true;
+  button.textContent =
+    "Deleting...";
+
+  try {
+    await window.TradeAI.api.reports.deleteMyReport(button.dataset.reportDeleteId);
+    window.TradeAI?.toast?.("Saved report deleted.", "success");
+    await renderMyReports();
+  } catch (error) {
+    button.disabled =
+      false;
+    button.textContent =
+      "Delete";
+    window.TradeAI?.toast?.(error?.message || "Failed to delete report.", "error");
+  }
+
+  return true;
+
+}
+
+async function handleMyReportDownload(event) {
+
+  const button =
+    event.target.closest("[data-report-download-id]");
+
+  if (!button)
+    return false;
+
+  event.preventDefault();
+  button.disabled =
+    true;
+  button.textContent =
+    "Downloading...";
+
+  try {
+    await downloadMyReport(button.dataset.reportDownloadId);
+    window.TradeAI?.toast?.("Report download started.", "success");
+  } catch (error) {
+    window.TradeAI?.toast?.(error?.message || "Report download failed.", "error");
+  } finally {
+    button.disabled =
+      false;
+    button.textContent =
+      "Download";
+  }
+
+  return true;
+
+}
+
+async function handleMyReportPrint(event) {
+
+  const button =
+    event.target.closest("[data-report-print-id]");
+
+  if (!button)
+    return false;
+
+  event.preventDefault();
+  button.disabled =
+    true;
+  button.textContent =
+    "Opening...";
+
+  try {
+    const report =
+      await window.TradeAI?.api?.reports?.getMyReport?.(button.dataset.reportPrintId);
+
+    printSavedReport(report);
+  } catch (error) {
+    window.TradeAI?.toast?.(error?.message || "Report could not be opened for printing.", "error");
+  } finally {
+    button.disabled =
+      false;
+    button.textContent =
+      "Print";
+  }
+
+  return true;
+
+}
+
+async function handleMyReportsClick(event) {
+
+  if (await handleMyReportDelete(event))
+    return;
+
+  if (await handleMyReportDownload(event))
+    return;
+
+  if (await handleMyReportPrint(event))
+    return;
 
   const link =
     event.target.closest("[data-report-id]");
@@ -1119,8 +1358,17 @@ async function renderMyReports() {
     document.getElementById("reports-tab-my-reports-list"),
   ].filter(Boolean);
 
-  if (!lists.length || !window.TradeAI?.auth?.isLoggedIn?.())
+  if (!lists.length)
     return;
+
+  if (!window.TradeAI?.auth?.isLoggedIn?.()) {
+    lists.forEach((list) => {
+      list.innerHTML =
+        "<li>Login required to view reports. Please login again.</li>";
+    });
+    window.TradeAI?.auth?.requireAuth?.();
+    return;
+  }
 
   lists.forEach((list) => {
     list.innerHTML =
@@ -1140,7 +1388,7 @@ async function renderMyReports() {
     const message =
       loginRequired
         ? "Login required to view reports."
-        : "Saved reports could not load right now.";
+        : "Failed to load reports. Saved reports could not load right now.";
 
     lists.forEach((list) => {
       list.innerHTML =
@@ -1150,10 +1398,146 @@ async function renderMyReports() {
 
   lists.forEach((list) => {
     if (!list.dataset.myReportsBound) {
-      list.addEventListener("click", handleMyReportView);
+      list.addEventListener("click", handleMyReportsClick);
       list.dataset.myReportsBound =
         "true";
     }
+  });
+
+}
+
+window.TradeAI = {
+  ...(window.TradeAI || {}),
+  renderMyReports,
+};
+
+/* =========================================================
+   USER PREFERENCES
+========================================================= */
+
+function collectPreferencePayload() {
+
+  return {
+    profile: {
+      fullName:
+        document.getElementById("preferenceFullName")?.value || "",
+      email:
+        document.getElementById("preferenceEmail")?.value || "",
+      company:
+        document.getElementById("preferenceCompany")?.value || "",
+    },
+    notifications: {
+      emailNotifications:
+        Boolean(document.getElementById("preferenceEmailNotifications")?.checked),
+      aiMarketAlerts:
+        Boolean(document.getElementById("preferenceAiMarketAlerts")?.checked),
+      buyerUpdates:
+        Boolean(document.getElementById("preferenceBuyerUpdates")?.checked),
+    },
+  };
+
+}
+
+function applyPreferences(preferences) {
+
+  const profile =
+    preferences?.profile || {};
+  const notifications =
+    preferences?.notifications || {};
+
+  const fullNameInput =
+    document.getElementById("preferenceFullName");
+  const emailInput =
+    document.getElementById("preferenceEmail");
+  const companyInput =
+    document.getElementById("preferenceCompany");
+  const emailNotificationsInput =
+    document.getElementById("preferenceEmailNotifications");
+  const aiMarketAlertsInput =
+    document.getElementById("preferenceAiMarketAlerts");
+  const buyerUpdatesInput =
+    document.getElementById("preferenceBuyerUpdates");
+
+  if (fullNameInput) fullNameInput.value = profile.fullName || fullNameInput.value;
+  if (emailInput) emailInput.value = profile.email || emailInput.value;
+  if (companyInput) companyInput.value = profile.company || companyInput.value;
+
+  if (emailNotificationsInput && typeof notifications.emailNotifications === "boolean") {
+    emailNotificationsInput.checked =
+      notifications.emailNotifications;
+  }
+
+  if (aiMarketAlertsInput && typeof notifications.aiMarketAlerts === "boolean") {
+    aiMarketAlertsInput.checked =
+      notifications.aiMarketAlerts;
+  }
+
+  if (buyerUpdatesInput && typeof notifications.buyerUpdates === "boolean") {
+    buyerUpdatesInput.checked =
+      notifications.buyerUpdates;
+  }
+
+}
+
+async function saveUserPreferences() {
+
+  if (!window.TradeAI?.api?.preferences?.update)
+    return;
+
+  const response =
+    await window.TradeAI.api.preferences.update(
+      collectPreferencePayload(),
+    );
+
+  applyPreferences(response?.preferences);
+  window.TradeAI?.toast?.("Preferences saved.", "success");
+
+}
+
+async function initializeUserPreferences() {
+
+  const form =
+    document.getElementById("profilePreferencesForm");
+  const notificationInputs =
+    [
+      document.getElementById("preferenceEmailNotifications"),
+      document.getElementById("preferenceAiMarketAlerts"),
+      document.getElementById("preferenceBuyerUpdates"),
+    ].filter(Boolean);
+
+  if (!form && !notificationInputs.length)
+    return;
+
+  if (!window.TradeAI?.auth?.isLoggedIn?.())
+    return;
+
+  try {
+    const response =
+      await window.TradeAI?.api?.preferences?.get?.();
+
+    applyPreferences(response?.preferences);
+  } catch (error) {
+    window.TradeAI?.toast?.("Preferences could not load right now.", "error");
+  }
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    try {
+      await saveUserPreferences();
+    } catch (error) {
+      window.TradeAI?.toast?.(error?.message || "Preferences could not be saved.", "error");
+    }
+  });
+
+  notificationInputs.forEach((input) => {
+    input.addEventListener("change", async () => {
+      try {
+        await saveUserPreferences();
+      } catch (error) {
+        window.TradeAI?.toast?.("Notification preferences could not be saved.", "error");
+      }
+    });
   });
 
 }
@@ -1171,6 +1555,8 @@ function initializeDashboard() {
   renderAccountSummary();
 
   renderMyReports();
+
+  initializeUserPreferences();
 
   renderAnalytics();
 

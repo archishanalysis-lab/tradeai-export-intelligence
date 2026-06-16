@@ -156,7 +156,8 @@
       if (!this.isLoggedIn()) {
         storage.set(REDIRECT_KEY, window.location.href);
         window.TradeAI?.toast?.("Please login first.", "error");
-        window.location.href = this.getLoginPath();
+        const separator = this.getLoginPath().includes("?") ? "&" : "?";
+        window.location.href = `${this.getLoginPath()}${separator}reason=login-required&redirect=${encodeURIComponent(window.location.pathname + window.location.search + window.location.hash)}`;
         return false;
       }
       return true;

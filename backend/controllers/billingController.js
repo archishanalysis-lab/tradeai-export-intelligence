@@ -1,6 +1,7 @@
 import Organization from "../models/Organization.js";
 import Payment from "../models/Payment.js";
 import Subscription from "../models/Subscription.js";
+import { getPlanLimits, normalizePlanName, serializeUsage } from "../services/usageLimitService.js";
 import crypto from "crypto";
 
 const planCatalog = {
@@ -8,33 +9,28 @@ const planCatalog = {
         name: "Free",
         buyerUnlocks: 0,
         priceMonthly: 0,
+        priceYearly: 0,
+        productLimit: 5,
+        inquiryLimit: 10,
+        aiCredits: 10,
     },
-    premium_exporter: {
-        name: "Premium Exporter",
-        buyerUnlocks: 50,
+    growth: {
+        name: "Growth",
+        buyerUnlocks: 150,
+        priceMonthly: 14999,
+        priceYearly: 149990,
+        productLimit: -1,
+        inquiryLimit: -1,
+        aiCredits: 500,
+    },
+    pro: {
+        name: "Pro",
+        buyerUnlocks: 300,
         priceMonthly: 4999,
         priceYearly: 49990,
         productLimit: -1,
         inquiryLimit: -1,
         aiCredits: 250,
-    },
-    verified_supplier: {
-        name: "Verified Supplier",
-        buyerUnlocks: 150,
-        priceMonthly: 9999,
-        priceYearly: 99990,
-        productLimit: -1,
-        inquiryLimit: -1,
-        aiCredits: 500,
-    },
-    ai_insights: {
-        name: "AI Insights",
-        buyerUnlocks: 300,
-        priceMonthly: 14999,
-        priceYearly: 149990,
-        productLimit: -1,
-        inquiryLimit: -1,
-        aiCredits: 1500,
     },
     enterprise: {
         name: "Enterprise",
@@ -47,10 +43,20 @@ const planCatalog = {
     },
 };
 
-planCatalog.free.priceYearly = 0;
-planCatalog.free.productLimit = 5;
-planCatalog.free.inquiryLimit = 10;
-planCatalog.free.aiCredits = 10;
+planCatalog.premium_exporter = planCatalog.growth;
+planCatalog.verified_supplier = planCatalog.growth;
+planCatalog.ai_insights = planCatalog.pro;
+planCatalog.ai_pro = planCatalog.pro;
+
+const signaturesMatch = (expected, received = "") => {
+    const expectedBuffer = Buffer.from(expected);
+    const receivedBuffer = Buffer.from(String(received));
+
+    return (
+        expectedBuffer.length === receivedBuffer.length &&
+        crypto.timingSafeEqual(expectedBuffer, receivedBuffer)
+    );
+};
 
 const getBillingStatus = async (req, res, next) => {
     try {
@@ -59,12 +65,23 @@ const getBillingStatus = async (req, res, next) => {
             organizationId: req.user.organizationId,
         });
 
-        const plan = subscription?.plan || organization?.plan || "free";
+        const plan = normalizePlanName(subscription?.plan || organization?.plan || "free");
+        const usageStatus = serializeUsage(subscription || { plan });
 
         res.json({
             plan,
-            planDetails: planCatalog[plan] || planCatalog.free,
-            subscription: subscription || { plan, status: "inactive", provider: "manual" },
+            planDetails: {
+                ...(planCatalog[plan] || planCatalog.free),
+                usageLimits: getPlanLimits(plan),
+            },
+            usage: usageStatus.usage,
+            limits: usageStatus.limits,
+            subscription: subscription || {
+                plan,
+                status: "inactive",
+                billingStatus: plan === "free" ? "not_required" : "pending",
+                provider: "manual",
+            },
             paymentGatewayReady: Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET),
         });
     } catch (error) {
@@ -74,8 +91,8 @@ const getBillingStatus = async (req, res, next) => {
 
 const createCheckoutSession = async (req, res, next) => {
     try {
-        const plan = req.body.plan;
-        const billingCycle = req.body.billingCycle === "yearly" ? "yearly" : "monthly";
+        const plan = normalizePlanName(req.body.plan);
+        const billingCycle = ["yearly", "annual"].includes(req.body.billingCycle) ? "yearly" : "monthly";
 
         if (!planCatalog[plan] || plan === "free") {
             res.status(400);
@@ -125,6 +142,8 @@ const createCheckoutSession = async (req, res, next) => {
             {
                 organizationId: req.user.organizationId,
                 plan,
+                status: "inactive",
+                billingStatus: "pending",
                 billingCycle,
                 provider: "razorpay",
                 latestOrderId: order.id,
@@ -176,11 +195,22 @@ const createCheckoutSession = async (req, res, next) => {
 
 const verifyRazorpayPayment = async (req, res, next) => {
     try {
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature, plan } = req.body;
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+        const plan = normalizePlanName(req.body.plan);
 
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
             res.status(400);
             throw new Error("Missing Razorpay payment verification details");
+        }
+
+        if (!process.env.RAZORPAY_KEY_SECRET) {
+            res.status(501);
+            throw new Error("Razorpay verification is not configured yet");
+        }
+
+        if (!planCatalog[plan] || plan === "free") {
+            res.status(400);
+            throw new Error("Choose a valid paid plan");
         }
 
         const expectedSignature = crypto
@@ -193,7 +223,7 @@ const verifyRazorpayPayment = async (req, res, next) => {
             throw new Error("Payment verification failed");
         }
 
-        const selectedPlan = planCatalog[plan] || planCatalog.premium_exporter;
+        const selectedPlan = planCatalog[plan];
         const currentPeriodEnd = new Date();
         currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
 
@@ -202,6 +232,7 @@ const verifyRazorpayPayment = async (req, res, next) => {
             {
                 plan,
                 status: "active",
+                billingStatus: "paid",
                 provider: "razorpay",
                 currentPeriodEnd,
                 productLimit: selectedPlan.productLimit,
@@ -266,6 +297,7 @@ const cancelSubscription = async (req, res, next) => {
             {
                 plan: "free",
                 status: "cancelled",
+                billingStatus: "cancelled",
                 provider: "manual",
                 currentPeriodEnd: new Date(),
                 productLimit: planCatalog.free.productLimit,
@@ -285,6 +317,29 @@ const cancelSubscription = async (req, res, next) => {
 
 const handleRazorpayWebhook = async (req, res, next) => {
     try {
+        const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+        const receivedSignature = req.headers["x-razorpay-signature"];
+
+        if (!webhookSecret) {
+            res.status(501);
+            throw new Error("Razorpay webhook verification is not configured yet");
+        }
+
+        if (!req.rawBody || !receivedSignature) {
+            res.status(400);
+            throw new Error("Missing Razorpay webhook signature");
+        }
+
+        const expectedSignature = crypto
+            .createHmac("sha256", webhookSecret)
+            .update(req.rawBody)
+            .digest("hex");
+
+        if (!signaturesMatch(expectedSignature, receivedSignature)) {
+            res.status(400);
+            throw new Error("Invalid Razorpay webhook signature");
+        }
+
         const event = req.body?.event;
         const paymentEntity = req.body?.payload?.payment?.entity;
         const orderId = paymentEntity?.order_id;

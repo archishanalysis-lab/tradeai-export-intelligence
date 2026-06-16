@@ -1,20 +1,5 @@
 (function () {
-  const normalizeBackendBaseUrl = (url) => {
-    const cleanUrl = String(url || "").replace(/\/$/, "");
-    return cleanUrl.endsWith("/api") ? cleanUrl.slice(0, -4) : cleanUrl;
-  };
-
-  const configuredApiUrl = window.TradeAI?.config?.API_URL || window.TradeAI?.API_URL;
-  const configuredBackendBaseUrl =
-    window.TradeAI?.config?.API_BASE_URL ||
-    window.TradeAI?.API_BASE_URL ||
-    window.TRADEAI_API_URL ||
-    (["localhost", "127.0.0.1", ""].includes(window.location.hostname)
-      ? "http://localhost:5000"
-      : "https://tradeai-export-intelligence-1.onrender.com");
-  const copilotApiRoot = configuredApiUrl
-    ? configuredApiUrl.replace(/\/$/, "")
-    : `${normalizeBackendBaseUrl(configuredBackendBaseUrl)}/api`;
+  const MAX_HISTORY_ITEMS = 5;
 
   const elements = {
     form: document.getElementById("copilotForm"),
@@ -47,6 +32,175 @@
     if (!element) return;
     element.hidden = !visible;
     element.style.display = visible ? "" : "none";
+  }
+
+  function getStoredUser() {
+    const authUser = window.TradeAI?.auth?.getUser?.() || window.TradeAI?.state?.auth?.getUser?.();
+
+    if (authUser?.id || authUser?._id || authUser?.userId || authUser?.email) {
+      return authUser;
+    }
+
+    try {
+      return JSON.parse(localStorage.getItem("tradeai_user") || "{}");
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function getCurrentUserKey() {
+    const user = getStoredUser();
+    const rawId = user?.id || user?._id || user?.userId || user?.email;
+    const normalizedId = String(rawId || "").trim().toLowerCase();
+
+    return normalizedId ? `tradeai_copilot_history_${normalizedId}` : "";
+  }
+
+  function getStoredContextValue(keys = []) {
+    const params = new URLSearchParams(window.location.search);
+
+    for (const key of keys) {
+      const paramValue = params.get(key);
+
+      if (paramValue) return paramValue;
+    }
+
+    for (const key of keys) {
+      try {
+        const storedValue = localStorage.getItem(`tradeai_selected_${key}`) || localStorage.getItem(`tradeai_${key}`);
+
+        if (storedValue) return storedValue;
+      } catch (error) {
+        // Context is optional; Copilot still works without browser storage.
+      }
+    }
+
+    return "";
+  }
+
+  function buildCopilotContextPayload(question) {
+    return {
+      question,
+      productName: getStoredContextValue(["product", "productName"]),
+      targetCountry: getStoredContextValue(["country", "targetCountry"]),
+      hsCode: getStoredContextValue(["hsCode", "hs_code"]),
+    };
+  }
+
+  function prefillReportPrompt() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("source") !== "trade-readiness" || elements.input.value.trim()) {
+      return;
+    }
+
+    try {
+      const prompt = localStorage.getItem("tradeai_latest_report_prompt") || "";
+
+      if (prompt) {
+        elements.input.value = prompt;
+      }
+    } catch (error) {
+      // Prefill is optional; Copilot remains usable without storage.
+    }
+  }
+
+  function getToken() {
+    return window.TradeAI?.auth?.getToken?.() || "";
+  }
+
+  async function copilotRequest(path, options = {}) {
+    if (!window.TradeAI?.request) {
+      throw new Error("TradeAI API client is unavailable. Please refresh and login again.");
+    }
+
+    return window.TradeAI.request(`/copilot${path}`, options);
+  }
+
+  function readHistory() {
+    const key = getCurrentUserKey();
+    if (!key) return [];
+
+    try {
+      const items = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(items) ? items.slice(0, MAX_HISTORY_ITEMS) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function writeHistory(items) {
+    const key = getCurrentUserKey();
+    if (!key) return;
+
+    try {
+      localStorage.setItem(key, JSON.stringify(items.slice(0, MAX_HISTORY_ITEMS)));
+    } catch (error) {
+      // History is a convenience only; Copilot should still answer if storage is blocked.
+    }
+  }
+
+  function renderHistory(items = readHistory()) {
+    if (!elements.history) return;
+
+    elements.history.innerHTML = "";
+
+    if (!items.length) {
+      const card = document.createElement("article");
+      card.className = "activity-card";
+      const heading = document.createElement("h4");
+      heading.textContent = "No Copilot history yet";
+      const paragraph = document.createElement("p");
+      paragraph.textContent = "No recent Copilot history yet. Ask your first trade question.";
+      card.append(heading, paragraph);
+      elements.history.appendChild(card);
+      return;
+    }
+
+    items.forEach((item) => {
+      elements.history.appendChild(createHistoryCard(item.question, item.response));
+    });
+  }
+
+  function renderHistoryState(title, message) {
+    if (!elements.history) return;
+
+    elements.history.innerHTML = "";
+    const card = document.createElement("article");
+    card.className = "activity-card";
+    const heading = document.createElement("h4");
+    heading.textContent = title;
+    const paragraph = document.createElement("p");
+    paragraph.textContent = message;
+    card.append(heading, paragraph);
+    elements.history.appendChild(card);
+  }
+
+  async function loadServerHistory() {
+    if (!getToken()) {
+      renderHistoryState("Login required", "Please login again to view your saved Copilot history.");
+      window.TradeAI?.auth?.requireAuth?.();
+      return;
+    }
+
+    renderHistoryState("Loading Copilot history", "Fetching your saved Copilot conversations from TradeAI.");
+
+    try {
+      const data = await copilotRequest("/history");
+      const items = (Array.isArray(data.messages) ? data.messages : [])
+        .map((message) => ({
+          id: message._id,
+          question: message.question,
+          response: message.response,
+          createdAt: message.createdAt,
+        }))
+        .slice(0, MAX_HISTORY_ITEMS);
+
+      writeHistory(items);
+      renderHistory(items);
+    } catch (error) {
+      renderHistoryState("Failed to load history", "Your saved Copilot history could not load right now. Please refresh after checking your session.");
+    }
   }
 
   function setLoading(isLoading) {
@@ -106,7 +260,9 @@
 
     setVisible(elements.response, true);
     renderPanelResponse(response);
-    addHistoryItem(response);
+    if (mode === "success") {
+      addHistoryItem(response);
+    }
 
     if (elements.status) {
       elements.status.textContent = mode === "fallback" ? "Fallback" : "Answered";
@@ -137,20 +293,33 @@
     });
   }
 
-  function addHistoryItem(response) {
-    if (!elements.history || !elements.input.value.trim()) return;
-    if (elements.history.querySelector("h4")?.textContent === "No Copilot history yet") {
-      elements.history.innerHTML = "";
-    }
-
+  function createHistoryCard(question, response) {
+    const safeResponse = normalizeResponse(response || {}, "TradeAI Copilot");
     const card = document.createElement("article");
     card.className = "activity-card";
     const heading = document.createElement("h4");
-    heading.textContent = elements.input.value.trim();
+    heading.textContent = question || "TradeAI Copilot prompt";
     const paragraph = document.createElement("p");
-    paragraph.textContent = `${response.providerLabel}: ${response.marketOpportunity}`;
+    paragraph.textContent = `${safeResponse.providerLabel}: ${safeResponse.marketOpportunity}`;
     card.append(heading, paragraph);
-    elements.history.prepend(card);
+    return card;
+  }
+
+  function addHistoryItem(response) {
+    const question = elements.input.value.trim();
+    if (!elements.history || !question) return;
+
+    const nextItems = [
+      {
+        question,
+        response,
+        createdAt: new Date().toISOString(),
+      },
+      ...readHistory().filter((item) => item.question !== question),
+    ].slice(0, MAX_HISTORY_ITEMS);
+
+    writeHistory(nextItems);
+    renderHistory(nextItems);
   }
 
   function showError(message) {
@@ -173,26 +342,18 @@
     setVisible(elements.panelError, false);
 
     try {
-      const token = localStorage.getItem("tradeai_token");
-      const response = await fetch(`${copilotApiRoot}/copilot/ask`, {
+      const data = await copilotRequest("/ask", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ question, token }),
+        body: JSON.stringify(buildCopilotContextPayload(question)),
       });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.message || `Copilot backend returned ${response.status}.`);
-      }
 
       renderResponse(data, "success");
     } catch (error) {
       showError(error.message);
-      renderResponse(getRuleBasedFallback(question), "fallback");
+      if (elements.status) {
+        elements.status.textContent = "Error";
+      }
+      renderHistoryState("Failed to save Copilot answer", "The authenticated Copilot request failed, so no temporary answer was saved to your backend history.");
     } finally {
       setLoading(false);
     }
@@ -208,126 +369,6 @@
     });
   });
 
-  function getRuleBasedFallback(question) {
-    const q = question.toLowerCase();
-    const isGulf = /uae|dubai|saudi|oman|qatar|gulf/.test(q);
-    const isAfrica = /kenya|tanzania|uganda|rwanda|africa/.test(q);
-    const isChina = /china|sourcing|supplier/.test(q);
-    const isPharma = /pharma|medicine|drug|medical|healthcare/.test(q);
-    const isRice = /rice|basmati/.test(q);
-    const isTurmeric = /turmeric|spice|spices/.test(q);
-    const isTextile = /textile|garment|apparel|cotton|fabric/.test(q);
-
-    if (isGulf || isRice || isTurmeric) {
-      return {
-        providerLabel: "TradeAI Rule Engine (offline preview)",
-        marketOpportunity:
-          "Gulf markets, especially UAE, are practical first targets for Indian spices, basmati rice and processed food because of distributor depth, retail demand and re-export channels.",
-        buyerType: "Food importers, supermarket suppliers, HORECA distributors, wholesale traders and re-export buyers.",
-        riskLevel: "Medium: verify labeling, shelf-life, buyer payment terms and destination conformity requirements.",
-        documentsNeeded: [
-          "Commercial invoice",
-          "Packing list",
-          "Certificate of origin",
-          "Health or phytosanitary certificate",
-          "SASO or ECAS documents where applicable",
-        ],
-        nextActions: [
-          "Confirm HS code and destination labeling requirements.",
-          "Prepare buyer-ready product specs with MOQ and shelf life.",
-          "Shortlist UAE importers and distributors by product category.",
-        ],
-        disclaimer:
-          "Rule-based preview. Verify current GCC documentation, buyer credibility and shipment costs before action.",
-      };
-    }
-
-    if (isAfrica || isTextile) {
-      return {
-        providerLabel: "TradeAI Rule Engine (offline preview)",
-        marketOpportunity:
-          "Kenya and nearby East Africa markets can suit Indian textiles and consumer goods through importers, wholesalers and regional distributors.",
-        buyerType: "Importers, wholesale distributors, retail chain suppliers and category trading companies.",
-        riskLevel: "Medium-high: validate buyer creditworthiness, port costs, product standards and first-order payment terms.",
-        documentsNeeded: [
-          "Commercial invoice",
-          "Packing list",
-          "Certificate of origin",
-          "Bill of lading",
-          "PVoC or destination conformity documents where applicable",
-        ],
-        nextActions: [
-          "Check Kenya Bureau of Standards requirements.",
-          "Confirm fabric composition, HS code and labeling details.",
-          "Use LC or protected payment terms for first shipment.",
-        ],
-        disclaimer:
-          "Rule-based preview. Confirm East Africa compliance and buyer details before quoting or shipping.",
-      };
-    }
-
-    if (isPharma) {
-      return {
-        providerLabel: "TradeAI Rule Engine (offline preview)",
-        marketOpportunity:
-          "Pharma exporters from India should prioritize regulated corridors where documentation readiness, distributor licensing and product registration can be validated early.",
-        buyerType: "Licensed pharma importers, hospital procurement teams, distributors and government or institutional buyers.",
-        riskLevel: "High: product registration, destination health authority approval and buyer validation are critical.",
-        documentsNeeded: [
-          "Commercial invoice",
-          "Packing list",
-          "Certificate of origin",
-          "Certificate of analysis",
-          "Pharma product registration or health authority approval",
-        ],
-        nextActions: [
-          "Select one target country and verify product registration pathway.",
-          "Prepare dossier, COA and product specification sheets.",
-          "Validate importer license and payment terms before samples or shipment.",
-        ],
-        disclaimer:
-          "Rule-based preview. Pharma exports require current regulatory review and qualified compliance advice.",
-      };
-    }
-
-    if (isChina) {
-      return {
-        providerLabel: "TradeAI Rule Engine (offline preview)",
-        marketOpportunity:
-          "China is primarily a sourcing intelligence corridor for comparing suppliers, landed cost, quality checks and import dependency risk.",
-        buyerType: "Verified manufacturers, trading companies, OEM suppliers and sourcing agents.",
-        riskLevel: "High: supplier verification, inspection and payment protection are important before placing orders.",
-        documentsNeeded: [
-          "Proforma invoice",
-          "Packing list",
-          "Bill of lading",
-          "Import declaration",
-          "Quality inspection certificate",
-        ],
-        nextActions: [
-          "Compare at least three suppliers by MOQ, certification and delivery terms.",
-          "Request samples or third-party inspection.",
-          "Calculate landed cost including duty, freight and insurance.",
-        ],
-        disclaimer:
-          "Rule-based preview. Independently verify suppliers, product quality and import requirements.",
-      };
-    }
-
-    return {
-      providerLabel: "TradeAI Rule Engine (offline preview)",
-      marketOpportunity:
-        "TradeAI covers East Africa, Gulf and China sourcing corridors. Pick the product and target country, then compare buyer type, documents and landed cost.",
-      buyerType: "Importers, distributors, institutional buyers or sourcing suppliers depending on corridor.",
-      riskLevel: "Medium: main risks are unclear HS code, missing documents, weak buyer validation and untested landed cost.",
-      documentsNeeded: ["Commercial invoice", "Packing list", "Certificate of origin", "Bill of lading", "HS code confirmation"],
-      nextActions: [
-        "Specify target country and product category.",
-        "Confirm HS code and destination documents.",
-        "Prepare a buyer outreach list and export-readiness checklist.",
-      ],
-      disclaimer:
-        "Rule-based preview. Type a target country such as UAE, Kenya or China for more specific guidance.",
-    };
-  }
+  prefillReportPrompt();
+  loadServerHistory();
 })();

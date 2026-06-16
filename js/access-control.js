@@ -7,7 +7,7 @@
   const CHOICE_KEY = "tradeai_access_choice";
   const PROMPT_SEEN_KEY = "tradeai_access_prompt_seen_at";
   const PLAN_KEY = "tradeai_current_plan";
-  const PAID_PLANS = new Set(["premium_exporter", "verified_supplier", "ai_pro", "enterprise"]);
+  const PAID_PLANS = new Set(["growth", "pro", "premium_exporter", "verified_supplier", "ai_insights", "ai_pro", "enterprise"]);
   const PROMPT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
   const GUEST_PREVIEW_PROMPT_MS = 10 * 1000;
   let guestPreviewTimer = null;
