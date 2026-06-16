@@ -37,10 +37,10 @@ cd backend
 npm run seed:demo
 ```
 
-Prepared demo login:
+Prepared demo login values must be set locally or in a safe environment manager before running the seed. Do not commit real demo passwords.
 
-- Email: `exporter@tradeai.test`
-- Password: `Password@123`
+- `DEMO_EXPORTER_EMAIL=<set locally>`
+- `DEMO_EXPORTER_PASSWORD=<set locally, do not commit>`
 
 The seed creates a demo organization, demo exporter user, sample buyers/products/corridor intelligence, two saved reports and two Copilot history messages. Demo records are marked with `isDemo: true` where the model supports it and should not be presented as verified live trade data.
 

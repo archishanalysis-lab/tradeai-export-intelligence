@@ -87,6 +87,18 @@ const subscriptionSchema = new mongoose.Schema(
                 count: { type: Number, min: 0, default: 0 },
                 resetAt: { type: Date },
             },
+            reportDownloads: {
+                count: { type: Number, min: 0, default: 0 },
+                resetAt: { type: Date },
+            },
+            hsCodeSearch: {
+                count: { type: Number, min: 0, default: 0 },
+                resetAt: { type: Date },
+            },
+            countryComparison: {
+                count: { type: Number, min: 0, default: 0 },
+                resetAt: { type: Date },
+            },
             buyerSearch: {
                 count: { type: Number, min: 0, default: 0 },
                 resetAt: { type: Date },
@@ -113,6 +125,9 @@ const subscriptionSchema = new mongoose.Schema(
 subscriptionSchema.index({ plan: 1, status: 1 });
 subscriptionSchema.index({ organizationId: 1, "usage.copilot.resetAt": 1 });
 subscriptionSchema.index({ organizationId: 1, "usage.reports.resetAt": 1 });
+subscriptionSchema.index({ organizationId: 1, "usage.reportDownloads.resetAt": 1 });
+subscriptionSchema.index({ organizationId: 1, "usage.hsCodeSearch.resetAt": 1 });
+subscriptionSchema.index({ organizationId: 1, "usage.countryComparison.resetAt": 1 });
 
 const Subscription = mongoose.model("Subscription", subscriptionSchema);
 

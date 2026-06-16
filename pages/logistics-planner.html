@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logistics Planner | TradeAI</title>
+    <meta
+      name="description"
+      content="Sample logistics and freight forwarding guidance for India trade with East Africa, Gulf and China corridors."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background: #f6f8fb;
+        color: #172033;
+      }
+
+      .logistics-hero {
+        padding: 68px 0 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .logistics-hero h1 {
+        margin: 10px 0 12px;
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .logistics-hero p {
+        max-width: 800px;
+        margin: 0;
+        color: #526070;
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .logistics-badge,
+      .source-pill,
+      .mode-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .logistics-badge,
+      .source-pill {
+        padding: 7px 11px;
+        background: #eef2ff;
+        color: #3730a3;
+      }
+
+      .logistics-layout {
+        padding: 32px 0 58px;
+      }
+
+      .planner-panel,
+      .route-card,
+      .summary-card,
+      .risk-card,
+      .education-card,
+      .download-panel {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 18px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-weight: 800;
+      }
+
+      .field select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      .form-actions,
+      .download-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .primary-action,
+      .secondary-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        border-radius: 8px;
+        padding: 0 14px;
+        font-weight: 800;
+        border: 1px solid #0f6b4f;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .primary-action {
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .secondary-action {
+        background: #ffffff;
+        color: #0f6b4f;
+      }
+
+      .logistics-status {
+        margin: 18px 0;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #dbe3ec;
+        background: #ffffff;
+        color: #526070;
+        font-weight: 700;
+      }
+
+      .logistics-status-success {
+        border-color: #b7e0cf;
+        background: #effaf5;
+        color: #0f6b4f;
+      }
+
+      .logistics-status-error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .result-heading,
+      .card-topline {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .route-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .route-card h3,
+      .result-heading h2,
+      .section-title {
+        margin: 7px 0 0;
+        letter-spacing: 0;
+      }
+
+      .mode-pill {
+        padding: 7px 10px;
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .route-grid,
+      .education-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 14px;
+        margin-top: 14px;
+      }
+
+      .summary-card,
+      .risk-card {
+        margin-top: 14px;
+      }
+
+      .route-card p,
+      .summary-card p,
+      .education-card p,
+      .download-panel p,
+      .disclaimer {
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .route-grid ul,
+      .risk-card ul {
+        margin: 0;
+        padding-left: 19px;
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .section-title {
+        margin-top: 20px;
+        margin-bottom: 12px;
+      }
+
+      .download-panel {
+        margin-top: 14px;
+      }
+
+      .disclaimer {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 8px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+      }
+
+      @media (max-width: 720px) {
+        .logistics-hero {
+          padding-top: 42px;
+        }
+
+        .primary-action,
+        .secondary-action {
+          width: 100%;
+        }
+
+        .result-heading,
+        .card-topline {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="customs-clearance.html">Customs</a>
+          <a href="incoterms-advisor.html">Incoterms</a>
+          <a href="payment-risk.html">Payments</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <div class="auth-buttons">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+        </div>
+        <button class="menu-toggle" aria-label="Open mobile menu">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="customs-clearance.html">Customs</a>
+      <a href="incoterms-advisor.html">Incoterms</a>
+      <a href="payment-risk.html">Payments</a>
+      <a href="export-opportunity-report.html">Reports</a>
+      <a href="pricing.html">Pricing</a>
+    </div>
+
+    <main>
+      <section class="logistics-hero">
+        <div class="container">
+          <span class="logistics-badge">Sample/manual guidance — no live freight rates</span>
+          <h1>Logistics Planner</h1>
+          <p>
+            Plan shipment mode, route documents, FCL/LCL suitability, common
+            charges and freight-forwarder or CHA involvement for India trade
+            with East Africa, Gulf and China corridors.
+          </p>
+        </div>
+      </section>
+
+      <section class="logistics-layout">
+        <div class="container">
+          <form id="logisticsForm" class="planner-panel">
+            <div class="form-grid">
+              <div class="field">
+                <label for="originCountry">Origin Country</label>
+                <select id="originCountry" required>
+                  <option>India</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="destinationCountry">Destination Country</label>
+                <select id="destinationCountry" required>
+                  <option value="">Select destination</option>
+                  <option>Kenya</option>
+                  <option>Tanzania</option>
+                  <option>Uganda</option>
+                  <option>Rwanda</option>
+                  <option>UAE</option>
+                  <option>Saudi Arabia</option>
+                  <option>Oman</option>
+                  <option>Qatar</option>
+                  <option>China</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="mode">Shipment Mode</label>
+                <select id="mode" required>
+                  <option value="">Select mode</option>
+                  <option>any</option>
+                  <option>sea</option>
+                  <option>air</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="shipmentSize">Shipment Size</label>
+                <select id="shipmentSize" required>
+                  <option value="">Select size</option>
+                  <option>sample</option>
+                  <option>LCL</option>
+                  <option>FCL</option>
+                  <option>bulk</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="productCategory">Product Category</label>
+                <select id="productCategory" required>
+                  <option value="">Select category</option>
+                  <option>Food/agri</option>
+                  <option>Textiles</option>
+                  <option>Electronics</option>
+                  <option>Machinery</option>
+                  <option>Chemicals</option>
+                  <option>Pharma</option>
+                  <option>General goods</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary-action">
+                <i class="fa-solid fa-route"></i>
+                Plan Logistics
+              </button>
+              <a href="customs-clearance.html" class="secondary-action">
+                <i class="fa-solid fa-clipboard-check"></i>
+                Customs Checklist
+              </a>
+            </div>
+          </form>
+
+          <div id="logisticsStatus" class="logistics-status">
+            Select route and shipment details to view logistics guidance.
+          </div>
+
+          <section id="logisticsResult" hidden aria-live="polite"></section>
+
+          <section id="downloadPanel" class="download-panel" hidden>
+            <h2>Detailed Route Report</h2>
+            <p>
+              Basic logistics guide is free. Detailed route planning and downloadable
+              reports require login or paid plan later.
+            </p>
+            <div class="download-actions">
+              <button type="button" id="downloadLogisticsReport" class="secondary-action">
+                <i class="fa-solid fa-download"></i>
+                Download Route Report
+              </button>
+              <a href="register.html?source=logistics-planner" class="primary-action">
+                <i class="fa-solid fa-user-plus"></i>
+                Register
+              </a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/api/tradeApi.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/logistics-planner.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

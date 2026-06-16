@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Demo-seed storage only. Do not present these records as live verified trade data.
 const demoIntelligenceSchema = new mongoose.Schema(
     {
         type: {

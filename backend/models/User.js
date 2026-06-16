@@ -39,6 +39,16 @@ const userSchema = new mongoose.Schema(
             enum: ["active", "suspended"],
             default: "active",
         },
+        plan: {
+            type: String,
+            enum: ["guest", "free", "growth", "pro", "enterprise"],
+            default: "free",
+        },
+        subscriptionStatus: {
+            type: String,
+            enum: ["active", "inactive", "trial", "cancelled"],
+            default: "inactive",
+        },
         isDemo: {
             type: Boolean,
             default: false,
@@ -59,6 +69,7 @@ userSchema.index({ organizationId: 1, role: 1 });
 userSchema.index({ status: 1 });
 userSchema.index({ role: 1, status: 1, createdAt: -1 });
 userSchema.index({ isDemo: 1 });
+userSchema.index({ plan: 1, subscriptionStatus: 1 });
 
 userSchema.pre("save", async function hashPassword() {
     if (!this.isModified("password")) {

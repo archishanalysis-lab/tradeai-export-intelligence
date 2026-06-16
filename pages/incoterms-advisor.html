@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Incoterms Advisor | TradeAI</title>
+    <meta
+      name="description"
+      content="Educational Incoterms guidance for Indian exporters and importers comparing freight, insurance, cost and risk responsibilities."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background: #f6f8fb;
+        color: #172033;
+      }
+
+      .incoterms-hero {
+        padding: 68px 0 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .incoterms-hero h1 {
+        margin: 10px 0 12px;
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .incoterms-hero p {
+        max-width: 800px;
+        margin: 0;
+        color: #526070;
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .incoterms-badge,
+      .source-pill,
+      .term-pill,
+      .score-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .incoterms-badge,
+      .source-pill {
+        padding: 7px 11px;
+        background: #eef2ff;
+        color: #3730a3;
+      }
+
+      .incoterms-layout {
+        padding: 32px 0 58px;
+      }
+
+      .advisor-panel,
+      .incoterm-card,
+      .next-links {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 18px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-weight: 800;
+      }
+
+      .field select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      .form-actions,
+      .next-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .primary-action,
+      .secondary-action,
+      .next-links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        border-radius: 8px;
+        padding: 0 14px;
+        font-weight: 800;
+        border: 1px solid #0f6b4f;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .primary-action {
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .secondary-action,
+      .next-links a {
+        background: #ffffff;
+        color: #0f6b4f;
+      }
+
+      .incoterms-status {
+        margin: 18px 0;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #dbe3ec;
+        background: #ffffff;
+        color: #526070;
+        font-weight: 700;
+      }
+
+      .incoterms-status-success {
+        border-color: #b7e0cf;
+        background: #effaf5;
+        color: #0f6b4f;
+      }
+
+      .incoterms-status-error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .result-heading,
+      .card-topline {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .incoterm-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .term-pill {
+        padding: 6px 10px;
+        background: #e8f5ef;
+        color: #0f6b4f;
+      }
+
+      .score-pill {
+        padding: 7px 10px;
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .incoterm-card h3,
+      .result-heading h2 {
+        margin: 7px 0 0;
+        letter-spacing: 0;
+      }
+
+      .incoterm-card p,
+      .incoterm-card dd,
+      .disclaimer {
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .incoterm-card dl {
+        display: grid;
+        grid-template-columns: minmax(170px, 0.45fr) 1fr;
+        gap: 10px 14px;
+        margin: 14px 0;
+      }
+
+      .incoterm-card dt {
+        color: #172033;
+        font-weight: 800;
+      }
+
+      .incoterm-card dd {
+        margin: 0;
+      }
+
+      .warning-box {
+        display: flex;
+        gap: 8px;
+        padding: 12px;
+        border-radius: 8px;
+        background: #fffbeb;
+        color: #744210;
+      }
+
+      .next-links {
+        align-items: center;
+      }
+
+      .next-links h3 {
+        width: 100%;
+        margin: 0;
+      }
+
+      .disclaimer {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 8px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+      }
+
+      @media (max-width: 720px) {
+        .incoterms-hero {
+          padding-top: 42px;
+        }
+
+        .primary-action,
+        .secondary-action,
+        .next-links a {
+          width: 100%;
+        }
+
+        .result-heading,
+        .card-topline,
+        .incoterm-card dl {
+          display: block;
+        }
+
+        .incoterm-card dt {
+          margin-top: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="country-recommendation.html">Country Fit</a>
+          <a href="duty-tariff.html">Tariffs</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <div class="auth-buttons">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+        </div>
+        <button class="menu-toggle" aria-label="Open mobile menu">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="country-recommendation.html">Country Fit</a>
+      <a href="duty-tariff.html">Tariffs</a>
+      <a href="export-opportunity-report.html">Reports</a>
+      <a href="pricing.html">Pricing</a>
+    </div>
+
+    <main>
+      <section class="incoterms-hero">
+        <div class="container">
+          <span class="incoterms-badge">Educational Incoterms guidance</span>
+          <h1>Incoterms Advisor</h1>
+          <p>
+            Compare common Incoterms for export/import shipments and understand
+            who carries freight, insurance, cost, clearance and risk responsibility.
+          </p>
+        </div>
+      </section>
+
+      <section class="incoterms-layout">
+        <div class="container">
+          <form id="incotermsForm" class="advisor-panel">
+            <div class="form-grid">
+              <div class="field">
+                <label for="userRole">Exporter or Importer</label>
+                <select id="userRole" required>
+                  <option value="">Select role</option>
+                  <option>exporter</option>
+                  <option>importer</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="shipmentMode">Shipment Mode</label>
+                <select id="shipmentMode" required>
+                  <option value="">Select mode</option>
+                  <option>any</option>
+                  <option>sea</option>
+                  <option>air</option>
+                  <option>road</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="experienceLevel">Experience Level</label>
+                <select id="experienceLevel" required>
+                  <option value="">Select experience</option>
+                  <option>beginner</option>
+                  <option>intermediate</option>
+                  <option>advanced</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="freightPreference">Who should handle freight?</label>
+                <select id="freightPreference">
+                  <option value="">No preference</option>
+                  <option value="seller">Seller / exporter</option>
+                  <option value="buyer">Buyer / importer</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="insurancePreference">Who should handle insurance?</label>
+                <select id="insurancePreference">
+                  <option value="">No preference</option>
+                  <option value="seller">Seller / exporter</option>
+                  <option value="buyer">Buyer / importer</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary-action">
+                <i class="fa-solid fa-route"></i>
+                Recommend Incoterms
+              </button>
+              <a href="export-opportunity-report.html" class="secondary-action">
+                <i class="fa-solid fa-file-lines"></i>
+                Generate Trade Report
+              </a>
+            </div>
+          </form>
+
+          <div id="incotermsStatus" class="incoterms-status">
+            Select your shipment context to get educational Incoterms guidance.
+          </div>
+
+          <section id="incotermsResult" hidden aria-live="polite"></section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/api/tradeApi.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/incoterms-advisor.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

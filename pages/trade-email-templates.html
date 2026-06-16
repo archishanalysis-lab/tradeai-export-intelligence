@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trade Email Templates | TradeAI</title>
+    <meta
+      name="description"
+      content="Buyer and supplier communication templates for export-import users."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background: #f6f8fb;
+        color: #172033;
+      }
+
+      .templates-hero {
+        padding: 68px 0 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .templates-hero h1 {
+        margin: 10px 0 12px;
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .templates-hero p {
+        max-width: 800px;
+        margin: 0;
+        color: #526070;
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .templates-badge,
+      .source-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        padding: 7px 11px;
+        background: #eef2ff;
+        color: #3730a3;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .templates-layout {
+        padding: 32px 0 58px;
+      }
+
+      .template-panel,
+      .template-preview,
+      .generated-output,
+      .template-list-panel {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 18px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-weight: 800;
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      .form-actions,
+      .message-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .primary-action,
+      .secondary-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        border-radius: 8px;
+        padding: 0 14px;
+        font-weight: 800;
+        border: 1px solid #0f6b4f;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .primary-action {
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .secondary-action {
+        background: #ffffff;
+        color: #0f6b4f;
+      }
+
+      .template-status {
+        margin: 18px 0;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #dbe3ec;
+        background: #ffffff;
+        color: #526070;
+        font-weight: 700;
+      }
+
+      .template-status-success {
+        border-color: #b7e0cf;
+        background: #effaf5;
+        color: #0f6b4f;
+      }
+
+      .template-status-error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: minmax(250px, 0.7fr) minmax(280px, 1.3fr);
+        gap: 14px;
+      }
+
+      .template-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .template-option {
+        display: grid;
+        gap: 5px;
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #f8fafc;
+        color: #172033;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .template-option span,
+      .empty-copy,
+      .disclaimer {
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .template-preview,
+      .generated-output {
+        margin-bottom: 14px;
+      }
+
+      .template-preview pre,
+      .generated-output pre {
+        white-space: pre-wrap;
+        margin: 12px 0 0;
+        padding: 14px;
+        border-radius: 8px;
+        background: #f8fafc;
+        color: #172033;
+        line-height: 1.6;
+      }
+
+      .result-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .disclaimer {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 8px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+      }
+
+      @media (max-width: 860px) {
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .templates-hero {
+          padding-top: 42px;
+        }
+
+        .primary-action,
+        .secondary-action {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="logistics-planner.html">Logistics</a>
+          <a href="payment-risk.html">Payments</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <div class="auth-buttons">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+        </div>
+        <button class="menu-toggle" aria-label="Open mobile menu">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="logistics-planner.html">Logistics</a>
+      <a href="payment-risk.html">Payments</a>
+      <a href="export-opportunity-report.html">Reports</a>
+      <a href="pricing.html">Pricing</a>
+    </div>
+
+    <main>
+      <section class="templates-hero">
+        <div class="container">
+          <span class="templates-badge">Sample templates free · customized messages require login</span>
+          <h1>Trade Email Templates</h1>
+          <p>
+            Generate buyer replies, supplier inquiries, quotation messages,
+            payment follow-ups, shipment updates and verification emails for
+            export-import workflows.
+          </p>
+        </div>
+      </section>
+
+      <section class="templates-layout">
+        <div class="container">
+          <form id="templateForm" class="template-panel">
+            <div class="form-grid">
+              <div class="field">
+                <label for="templateType">Template Type</label>
+                <select id="templateType">
+                  <option value="">Any template</option>
+                  <option value="buyer-inquiry-reply">Buyer inquiry reply</option>
+                  <option value="supplier-inquiry-email">Supplier inquiry email</option>
+                  <option value="product-quotation-email">Product quotation email</option>
+                  <option value="proforma-invoice-message">Proforma invoice message</option>
+                  <option value="payment-follow-up">Payment follow-up</option>
+                  <option value="shipment-update">Shipment update</option>
+                  <option value="document-submission-email">Document submission email</option>
+                  <option value="sample-request-reply">Sample request reply</option>
+                  <option value="negotiation-message">Negotiation message</option>
+                  <option value="delay-notification">Delay notification</option>
+                  <option value="buyer-verification-email">Buyer verification email</option>
+                  <option value="supplier-verification-email">Supplier verification email</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="userRole">User Role</label>
+                <select id="userRole">
+                  <option value="">Any role</option>
+                  <option>exporter</option>
+                  <option>importer</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="tone">Tone</label>
+                <select id="tone">
+                  <option>professional</option>
+                  <option>formal</option>
+                  <option>simple</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="country">Country</label>
+                <select id="country">
+                  <option value="">Any country</option>
+                  <option>Kenya</option>
+                  <option>Tanzania</option>
+                  <option>Uganda</option>
+                  <option>Rwanda</option>
+                  <option>UAE</option>
+                  <option>Saudi Arabia</option>
+                  <option>Oman</option>
+                  <option>Qatar</option>
+                  <option>China</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="productCategory">Product Category</label>
+                <select id="productCategory">
+                  <option value="">Any category</option>
+                  <option>Food/agri</option>
+                  <option>Textiles</option>
+                  <option>Electronics</option>
+                  <option>Machinery</option>
+                  <option>Chemicals</option>
+                  <option>Pharma</option>
+                  <option>General goods</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary-action">
+                <i class="fa-solid fa-envelope-open-text"></i>
+                Load Templates
+              </button>
+            </div>
+          </form>
+
+          <div id="templateStatus" class="template-status">Loading trade email templates...</div>
+
+          <div class="content-grid">
+            <aside class="template-list-panel">
+              <h2>Template Library</h2>
+              <div id="templateList" class="template-list"></div>
+            </aside>
+
+            <section>
+              <article id="templatePreview" class="template-preview" hidden>
+                <h2>Template Preview</h2>
+                <p><strong>Subject:</strong> <span id="templateSubject"></span></p>
+                <pre id="templateBody"></pre>
+                <div class="message-actions">
+                  <button type="button" id="copyMessage" class="secondary-action">
+                    <i class="fa-solid fa-copy"></i>
+                    Copy Message
+                  </button>
+                </div>
+              </article>
+
+              <article class="template-panel">
+                <h2>Customize Message</h2>
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="productName">Product Name</label>
+                    <input id="productName" placeholder="Example: basmati rice" />
+                  </div>
+                  <div class="field">
+                    <label for="buyerOrSupplierName">Buyer/Supplier Name</label>
+                    <input id="buyerOrSupplierName" placeholder="Example: ABC Trading LLC" />
+                  </div>
+                  <div class="field">
+                    <label for="quantity">Quantity</label>
+                    <input id="quantity" placeholder="Example: 1 FCL / 500 kg" />
+                  </div>
+                  <div class="field">
+                    <label for="incoterm">Incoterm</label>
+                    <input id="incoterm" placeholder="Example: FOB Mumbai" />
+                  </div>
+                  <div class="field">
+                    <label for="paymentTerm">Payment Term</label>
+                    <input id="paymentTerm" placeholder="Example: 30% advance, 70% before shipment" />
+                  </div>
+                  <div class="field">
+                    <label for="shipmentMode">Shipment Mode</label>
+                    <input id="shipmentMode" placeholder="Example: sea freight" />
+                  </div>
+                </div>
+                <div class="message-actions">
+                  <button type="button" id="generateMessage" class="primary-action">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    Generate Customized Message
+                  </button>
+                  <button type="button" id="saveMessage" class="secondary-action">
+                    <i class="fa-solid fa-bookmark"></i>
+                    Save Message
+                  </button>
+                  <a href="register.html?source=trade-email-templates" class="secondary-action">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Register
+                  </a>
+                </div>
+              </article>
+
+              <article id="generatedOutput" class="generated-output" hidden></article>
+              <p class="disclaimer">
+                Basic templates are free. Customized AI messages require login.
+                Bulk generation can be a paid-plan feature later.
+              </p>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/api/tradeApi.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/trade-email-templates.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

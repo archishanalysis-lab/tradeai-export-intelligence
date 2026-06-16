@@ -945,6 +945,8 @@ async function renderAccountSummary() {
         billing?.usage?.copilot;
       const reportUsage =
         billing?.usage?.reports;
+      const downloadUsage =
+        billing?.usage?.reportDownloads;
       const formatUsage =
         (item) => item
           ? `${item.used || 0}/${item.limit === -1 ? "unlimited" : item.limit}`
@@ -952,6 +954,7 @@ async function renderAccountSummary() {
       const usageText = [
         copilotUsage ? `Copilot ${formatUsage(copilotUsage)} today` : "",
         reportUsage ? `reports ${formatUsage(reportUsage)} this month` : "",
+        downloadUsage ? `downloads ${formatUsage(downloadUsage)} this month` : "",
       ].filter(Boolean).join(", ");
 
       planSummary.textContent =
@@ -1034,6 +1037,8 @@ function renderSavedReportFields(report) {
         <p><strong>Country:</strong> ${escapeDashboardHtml(data.country || report?.targetCountry || "")}</p>
         <p><strong>Direction:</strong> ${escapeDashboardHtml(String(data.direction || "").replace(/_/g, " "))}</p>
         <p><strong>HS code/category:</strong> ${escapeDashboardHtml(data.hsCodeOrCategory || report?.hsCode || "Verify with CHA/customs expert")}</p>
+        <p><strong>Shipment size:</strong> ${escapeDashboardHtml(data.shipmentSize || "Not provided")}</p>
+        <p><strong>Buyer/supplier status:</strong> ${escapeDashboardHtml(data.partnerStatus || "Not provided")}</p>
         <p><strong>Summary:</strong> ${escapeDashboardHtml(data.opportunitySummary)}</p>
         ${listBlock("Checklist", data.checklist)}
         ${listBlock("Documents", data.documents)}
@@ -1121,6 +1126,7 @@ function renderMyReportsList(list, reports) {
           <span>${escapeDashboardHtml(formatReportDate(report.createdAt))}</span>
           <a href="#" data-report-id="${escapeDashboardHtml(report._id)}">View</a>
           <button class="secondary" type="button" data-report-download-id="${escapeDashboardHtml(report._id)}">Download</button>
+          <button class="secondary" type="button" data-report-csv-id="${escapeDashboardHtml(report._id)}">Download CSV</button>
           <button class="secondary" type="button" data-report-print-id="${escapeDashboardHtml(report._id)}">Print</button>
           <button class="secondary" type="button" data-report-delete-id="${escapeDashboardHtml(report._id)}">Delete</button>
           <div class="saved-report-detail-container" hidden></div>
@@ -1131,15 +1137,10 @@ function renderMyReportsList(list, reports) {
 
 }
 
-async function downloadMyReport(reportId) {
-
-  if (!window.TradeAI?.api?.reports?.downloadMyReport) {
-    window.TradeAI?.toast?.("Report download is not available yet.", "error");
-    return;
-  }
+async function downloadBlobFile(downloadCallback, reportId) {
 
   const { blob, filename } =
-    await window.TradeAI.api.reports.downloadMyReport(reportId);
+    await downloadCallback(reportId);
   const url =
     URL.createObjectURL(blob);
   const link =
@@ -1153,6 +1154,28 @@ async function downloadMyReport(reportId) {
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
+
+}
+
+async function downloadMyReport(reportId) {
+
+  if (!window.TradeAI?.api?.reports?.downloadMyReport) {
+    window.TradeAI?.toast?.("Report download is not available yet.", "error");
+    return;
+  }
+
+  await downloadBlobFile(window.TradeAI.api.reports.downloadMyReport, reportId);
+
+}
+
+async function downloadMyReportCsv(reportId) {
+
+  if (!window.TradeAI?.api?.reports?.downloadMyReportCsv) {
+    window.TradeAI?.toast?.("CSV export is not available yet.", "error");
+    return;
+  }
+
+  await downloadBlobFile(window.TradeAI.api.reports.downloadMyReportCsv.bind(window.TradeAI.api.reports), reportId);
 
 }
 
@@ -1264,6 +1287,36 @@ async function handleMyReportDownload(event) {
 
 }
 
+async function handleMyReportCsvDownload(event) {
+
+  const button =
+    event.target.closest("[data-report-csv-id]");
+
+  if (!button)
+    return false;
+
+  event.preventDefault();
+  button.disabled =
+    true;
+  button.textContent =
+    "CSV...";
+
+  try {
+    await downloadMyReportCsv(button.dataset.reportCsvId);
+    window.TradeAI?.toast?.("CSV download started.", "success");
+  } catch (error) {
+    window.TradeAI?.toast?.(error?.message || "CSV export failed.", "error");
+  } finally {
+    button.disabled =
+      false;
+    button.textContent =
+      "Download CSV";
+  }
+
+  return true;
+
+}
+
 async function handleMyReportPrint(event) {
 
   const button =
@@ -1302,6 +1355,9 @@ async function handleMyReportsClick(event) {
     return;
 
   if (await handleMyReportDownload(event))
+    return;
+
+  if (await handleMyReportCsvDownload(event))
     return;
 
   if (await handleMyReportPrint(event))

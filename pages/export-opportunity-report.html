@@ -770,6 +770,24 @@
             </div>
 
             <div class="field">
+              <label for="shipmentSize">Shipment size</label>
+              <select id="shipmentSize" name="shipmentSize" required>
+                <option value="sample">Sample</option>
+                <option value="small">Small shipment</option>
+                <option value="bulk">Bulk shipment</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="partnerStatus">Buyer/supplier status</label>
+              <select id="partnerStatus" name="partnerStatus" required>
+                <option value="new">New</option>
+                <option value="known">Known</option>
+                <option value="verified">Verified</option>
+              </select>
+            </div>
+
+            <div class="field">
               <label for="businessType">Business type</label>
               <select id="businessType" name="businessType" required>
                 <option value="Exporter">Exporter</option>
@@ -1248,6 +1266,8 @@
             country: country,
             direction: getValue("reportDirection"),
             experienceLevel: getValue("experienceLevel"),
+            shipmentSize: getValue("shipmentSize"),
+            partnerStatus: getValue("partnerStatus"),
             businessType: getSelectedLabel("businessType"),
             monthlyCapacity: getValue("monthlyCapacity"),
             priceRange: getValue("priceRange"),
@@ -1294,6 +1314,8 @@
           renderActionList(report.recommendations);
           if (details) {
             details.innerHTML =
+              "<p><strong>Shipment size:</strong> " + escapeHtml(report.shipmentSize || payload.shipmentSize || "sample") + "</p>" +
+              "<p><strong>Buyer/supplier status:</strong> " + escapeHtml(report.partnerStatus || payload.partnerStatus || "new") + "</p>" +
               formatList("Checklist", report.checklist) +
               formatList("Documents", report.documents) +
               formatList("Compliance notes", report.complianceNotes) +
@@ -1307,9 +1329,11 @@
             localStorage.setItem("tradeai_selected_product", report.productName || payload.productName);
             localStorage.setItem("tradeai_selected_country", report.country || payload.targetCountry);
             localStorage.setItem("tradeai_selected_hsCode", report.hsCodeOrCategory || payload.hsCodeOrCategory);
+            localStorage.setItem("tradeai_selected_shipmentSize", report.shipmentSize || payload.shipmentSize);
+            localStorage.setItem("tradeai_selected_partnerStatus", report.partnerStatus || payload.partnerStatus);
             localStorage.setItem(
               "tradeai_latest_report_prompt",
-              "Explain this TradeAI report: " + (report.reportTitle || "") + ". " + (report.opportunitySummary || "")
+              "Explain this TradeAI report: " + (report.reportTitle || "") + ". Shipment size: " + (report.shipmentSize || payload.shipmentSize) + ". Buyer/supplier status: " + (report.partnerStatus || payload.partnerStatus) + ". " + (report.opportunitySummary || "")
             );
           } catch (error) {}
 

@@ -3,7 +3,9 @@ import OpenAI from "openai";
 
 import AiReport from "../models/AiReport.js";
 import Report from "../models/Report.js";
+import ReportExport from "../models/ReportExport.js";
 import Subscription from "../models/Subscription.js";
+import { buildCsvExport } from "../services/reportExportService.js";
 import { buildOpportunityIntelligence } from "../services/tradeIntelligenceService.js";
 import { answerTradeQuestion } from "../services/tradeCopilotService.js";
 import { consumeUsageLimit, getPlanLimits, normalizePlanName } from "../services/usageLimitService.js";
@@ -166,6 +168,8 @@ const formatSavedReportText = (report = {}) => {
             `Country: ${data.country || report.targetCountry || "Not provided"}`,
             `Direction: ${toTitleCase(data.direction || report.businessType || "")}`,
             `HS Code / Category: ${data.hsCodeOrCategory || report.hsCode || "Not provided"}`,
+            `Shipment Size: ${data.shipmentSize || "Not provided"}`,
+            `Buyer/Supplier Status: ${data.partnerStatus || "Not provided"}`,
             `Generated Date: ${data.createdAt ? new Date(data.createdAt).toISOString().slice(0, 10) : new Date(report.createdAt || Date.now()).toISOString().slice(0, 10)}`,
             `Source Type: ${data.sourceType || "rule-engine"}`,
             "",
@@ -248,6 +252,8 @@ const saveGeneratedReportForUser = async ({ userId, organizationId, requestBody,
             targetCountry: String(requestBody.targetCountry || requestBody.country || "").trim(),
             originCountry: String(requestBody.originCountry || requestBody.sourceCountry || "India").trim(),
             businessType: String(requestBody.businessType || "").trim(),
+            reportType: report.reportTitle ? "trade-readiness" : "export-opportunity",
+            sourceDataType: String(report.sourceType || report.dataSourceLabel || providerLabel || "sample/manual").trim(),
             reportData: {
                 ...report,
                 providerLabel,
@@ -332,6 +338,8 @@ const normalizeTradeReadinessReport = (value = {}, fallback = {}) => {
     const country = String(value.country || fallback.country || "Selected country").trim();
     const direction = normalizeDirection(value.direction || fallback.direction);
     const hsCodeOrCategory = String(value.hsCodeOrCategory || fallback.hsCodeOrCategory || "Category guidance required").trim();
+    const shipmentSize = String(value.shipmentSize || fallback.shipmentSize || "sample").trim();
+    const partnerStatus = String(value.partnerStatus || fallback.partnerStatus || "new").trim();
     const sourceType = String(value.sourceType || fallback.sourceType || "rule-engine").trim();
 
     return {
@@ -340,6 +348,8 @@ const normalizeTradeReadinessReport = (value = {}, fallback = {}) => {
         country,
         direction,
         hsCodeOrCategory,
+        shipmentSize,
+        partnerStatus,
         opportunitySummary: String(value.opportunitySummary || "This product-country workflow needs HS code validation, document readiness, landed-cost checks and buyer/supplier verification before commercial action.").trim(),
         checklist: normalizeList(value.checklist).length
             ? normalizeList(value.checklist)
@@ -399,10 +409,22 @@ const buildRuleBasedTradeReadinessReport = (payload = {}) => {
     const direction = normalizeDirection(payload.direction);
     const hsCodeOrCategory = String(payload.hsCode || payload.hsCodeOrCategory || "HS category to verify").trim();
     const experienceLevel = String(payload.experienceLevel || "beginner").toLowerCase();
+    const shipmentSize = String(payload.shipmentSize || "sample").toLowerCase();
+    const partnerStatus = String(payload.partnerStatus || "new").toLowerCase();
     const isImport = direction === "import_into_india";
     const beginnerNote = experienceLevel.includes("beginner")
         ? "Start with a simple checklist and verify each step with a CHA/freight forwarder before quoting."
         : "Use this as an operating checklist and validate assumptions before commercial commitment.";
+    const shipmentNote = shipmentSize === "bulk"
+        ? "Because this is a bulk shipment, validate capacity, inspection, insurance, port handling, demurrage exposure and working capital before booking."
+        : shipmentSize === "small"
+            ? "For a small shipment, confirm minimum order quantity, freight economics and document cost before scaling."
+            : "For a sample shipment, keep risk low, validate quality/specifications and avoid assuming commercial-scale landed cost.";
+    const partnerNote = partnerStatus === "verified"
+        ? "Partner is marked verified, but documents, authority checks and payment controls should still be reviewed before shipment."
+        : partnerStatus === "known"
+            ? "Partner is known; update credit/payment comfort, recent document checks and shipment performance before expanding volume."
+            : "Partner is new; use stricter verification, safer payment terms and smaller first shipment exposure.";
 
     return normalizeTradeReadinessReport(
         {
@@ -411,13 +433,17 @@ const buildRuleBasedTradeReadinessReport = (payload = {}) => {
             country,
             direction,
             hsCodeOrCategory,
+            shipmentSize,
+            partnerStatus,
             opportunitySummary: isImport
-                ? `${productName || "This product"} import into India from ${country || "the selected country"} should start with supplier verification, HS classification, landed-cost calculation, import documentation and customs clearance planning. ${beginnerNote}`
-                : `${productName || "This product"} export from India to ${country || "the selected country"} should start with product-country fit, HS classification, document readiness, buyer verification, payment protection and logistics planning. ${beginnerNote}`,
+                ? `${productName || "This product"} import into India from ${country || "the selected country"} should start with supplier verification, HS classification, landed-cost calculation, import documentation and customs clearance planning. ${beginnerNote} ${shipmentNote} ${partnerNote}`
+                : `${productName || "This product"} export from India to ${country || "the selected country"} should start with product-country fit, HS classification, document readiness, buyer verification, payment protection and logistics planning. ${beginnerNote} ${shipmentNote} ${partnerNote}`,
             checklist: [
                 "Confirm exact product/category and intended use.",
                 "Validate HS code/category before duty or compliance assumptions.",
                 isImport ? "Verify overseas supplier, quality documents and India import requirements." : "Verify buyer, destination compliance and product labelling requirements.",
+                shipmentNote,
+                partnerNote,
                 "Estimate freight, insurance, duty/tariff and local handling costs.",
                 "Choose safer payment and Incoterms before issuing PI/PO.",
             ],
@@ -446,14 +472,18 @@ const buildRuleBasedTradeReadinessReport = (payload = {}) => {
                 "Duty/tariff warning: exact rate is not shown unless official API data is connected; verify with official authority.",
             ],
             paymentRisk: isImport
-                ? "For a new supplier, avoid full advance without inspection. Prefer sample order, escrow, LC, inspection-linked milestone or limited advance with balance against documents."
-                : "For a new buyer, avoid open-account terms. Prefer advance, LC at sight, escrow or partial advance with balance before document release.",
+                ? partnerStatus === "verified"
+                    ? "For a verified supplier, still tie payment to documents, inspection or shipment milestones. Avoid expanding to bulk without recent quality and compliance checks."
+                    : "For a new supplier, avoid full advance without inspection. Prefer sample order, escrow, LC, inspection-linked milestone or limited advance with balance against documents."
+                : partnerStatus === "verified"
+                    ? "For a verified buyer, limited credit may be considered only after credit checks, written terms and prior performance are reviewed."
+                    : "For a new buyer, avoid open-account terms. Prefer advance, LC at sight, escrow or partial advance with balance before document release.",
             incotermsGuidance: isImport
                 ? "Compare FOB, CFR and CIF. FOB gives more freight control; CIF/CFR can be convenient but must be checked against landed-cost and insurance quality."
                 : "FOB India port is usually simpler for first-time exporters. CIF/CFR can be offered after freight, insurance and destination responsibility are clearly priced.",
             logisticsNotes: isImport
-                ? "Check supplier pickup point, origin port, transit time, Indian port clearance, demurrage risk, insurance and inland delivery."
-                : "Check Indian port/airport route, packaging, shelf-life or handling needs, freight quote validity, insurance and destination delivery responsibility.",
+                ? `Check supplier pickup point, origin port, transit time, Indian port clearance, demurrage risk, insurance and inland delivery. ${shipmentNote}`
+                : `Check Indian port/airport route, packaging, shelf-life or handling needs, freight quote validity, insurance and destination delivery responsibility. ${shipmentNote}`,
             customsSteps: [
                 "Confirm HS code and product restrictions.",
                 "Prepare invoice, packing list and origin/supporting documents.",
@@ -461,7 +491,7 @@ const buildRuleBasedTradeReadinessReport = (payload = {}) => {
                 "Verify duty/tariff, inspection, labelling and certificate requirements.",
                 "Track shipment and keep proof of payment, transport and customs records.",
             ],
-            riskLevel: experienceLevel.includes("beginner") ? "Medium-high" : "Medium",
+            riskLevel: experienceLevel.includes("beginner") || partnerStatus === "new" || shipmentSize === "bulk" ? "Medium-high" : "Medium",
             recommendations: [
                 "Ask Copilot to explain this report in plain language.",
                 "Verify HS code, duty and compliance with official sources.",
@@ -471,8 +501,58 @@ const buildRuleBasedTradeReadinessReport = (payload = {}) => {
             sourceType: "rule-engine",
             disclaimer: TRADE_READINESS_DISCLAIMER,
         },
-        { productName, country, direction, hsCodeOrCategory, sourceType: "rule-engine" },
+        { productName, country, direction, hsCodeOrCategory, shipmentSize, partnerStatus, sourceType: "rule-engine" },
     );
+};
+
+const filenameSafe = (value = "tradeai-report") =>
+    String(value || "tradeai-report")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")
+        .slice(0, 80) || "tradeai-report";
+
+const currentMonthStart = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+};
+
+const getExportPlan = async (req) => {
+    const subscription = await Subscription.findOne({ organizationId: req.user?.organizationId }).lean();
+    const plan = normalizePlanName(subscription?.plan || "free");
+
+    if (plan !== "free" && (subscription?.status !== "active" || subscription?.billingStatus === "past_due")) {
+        return "free";
+    }
+
+    return plan;
+};
+
+const countMonthlyExports = async (userId) =>
+    ReportExport.countDocuments({
+        userId,
+        createdAt: { $gte: currentMonthStart() },
+    });
+
+const recordReportExport = async ({ req, reportType, filters, sourceDataType, reportId }) => {
+    const userId = getAuthenticatedUserId(req);
+
+    if (!isValidObjectId(userId)) {
+        return null;
+    }
+
+    return ReportExport.create({
+        userId,
+        organizationId: isValidObjectId(req.user?.organizationId) ? req.user.organizationId : undefined,
+        reportId: isValidObjectId(reportId) ? reportId : undefined,
+        reportType,
+        country: String(filters.country || "").trim(),
+        productCategory: String(filters.productCategory || "").trim(),
+        hsCode: String(filters.hsCode || "").trim(),
+        sourceDataType,
+        format: "csv",
+        downloadCount: 1,
+    });
 };
 
 const generateTradeReadinessWithOpenAI = async (payload) => {
@@ -487,7 +567,7 @@ const generateTradeReadinessWithOpenAI = async (payload) => {
             {
                 role: "system",
                 content:
-                    "You are TradeAI, a practical import-export readiness assistant for Indian SMEs. Return only valid JSON with exactly these keys: reportTitle, productName, country, direction, hsCodeOrCategory, opportunitySummary, checklist, documents, complianceNotes, paymentRisk, incotermsGuidance, logisticsNotes, customsSteps, riskLevel, recommendations, sourceType, disclaimer. Arrays must be arrays of short strings. Do not claim official duty, tariff or legal accuracy. Include clear verification disclaimers.",
+                    "You are TradeAI, a practical import-export readiness assistant for Indian SMEs. Return only valid JSON with exactly these keys: reportTitle, productName, country, direction, hsCodeOrCategory, shipmentSize, partnerStatus, opportunitySummary, checklist, documents, complianceNotes, paymentRisk, incotermsGuidance, logisticsNotes, customsSteps, riskLevel, recommendations, sourceType, disclaimer. Arrays must be arrays of short strings. Do not claim official duty, tariff or legal accuracy. Include clear verification disclaimers.",
             },
             {
                 role: "user",
@@ -497,6 +577,8 @@ const generateTradeReadinessWithOpenAI = async (payload) => {
                     direction: normalizeDirection(payload.direction),
                     hsCodeOrCategory: payload.hsCode || payload.hsCodeOrCategory,
                     experienceLevel: payload.experienceLevel,
+                    shipmentSize: payload.shipmentSize,
+                    partnerStatus: payload.partnerStatus,
                 }),
             },
         ],
@@ -516,6 +598,8 @@ const generateTradeReadinessWithOpenAI = async (payload) => {
             country: payload.country || payload.targetCountry,
             direction: payload.direction,
             hsCodeOrCategory: payload.hsCode || payload.hsCodeOrCategory,
+            shipmentSize: payload.shipmentSize,
+            partnerStatus: payload.partnerStatus,
             sourceType: "AI",
         },
     );
@@ -851,6 +935,8 @@ const createTradeReadinessReport = async (req, res, next) => {
         const direction = normalizeDirection(req.body.direction);
         const hsCodeOrCategory = String(req.body.hsCode || req.body.hsCodeOrCategory || "").trim();
         const experienceLevel = String(req.body.experienceLevel || "beginner").trim();
+        const shipmentSize = String(req.body.shipmentSize || "sample").trim();
+        const partnerStatus = String(req.body.partnerStatus || "new").trim();
         const userId = getAuthenticatedUserId(req);
         const isAuthenticated = isValidObjectId(userId);
 
@@ -873,6 +959,8 @@ const createTradeReadinessReport = async (req, res, next) => {
                 direction,
                 hsCodeOrCategory,
                 experienceLevel,
+                shipmentSize,
+                partnerStatus,
             });
         } catch (error) {
             logNonProductionError("Trade readiness OpenAI generation failed:", error);
@@ -885,6 +973,8 @@ const createTradeReadinessReport = async (req, res, next) => {
                 direction,
                 hsCodeOrCategory,
                 experienceLevel,
+                shipmentSize,
+                partnerStatus,
             });
         }
 
@@ -1034,22 +1124,104 @@ const exportMyReportById = async (req, res, next) => {
         const report = await Report.findOne({
             _id: req.params.id,
             userId,
-        }).lean();
+        });
 
         if (!report) {
             res.status(404);
             throw new Error("Report not found");
         }
 
-        const filenameBase = `${report.productName || "tradeai-report"}-${report.targetCountry || "market"}`
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-|-$/g, "")
-            .slice(0, 80) || "tradeai-report";
+        await consumeUsageLimit(req, "reportDownload");
+
+        report.downloadCount = Number(report.downloadCount || 0) + 1;
+        await report.save();
+
+        const reportObject = report.toObject();
+        const filenameBase = filenameSafe(`${reportObject.productName || "tradeai-report"}-${reportObject.targetCountry || "market"}`);
 
         res.setHeader("Content-Type", "text/plain; charset=utf-8");
         res.setHeader("Content-Disposition", `attachment; filename="${filenameBase}.txt"`);
-        res.send(formatSavedReportText(report));
+        res.send(formatSavedReportText(reportObject));
+    } catch (error) {
+        next(error);
+    }
+};
+
+const exportReportsCsv = async (req, res, next) => {
+    try {
+        const userId = getAuthenticatedUserId(req);
+
+        if (!isValidObjectId(userId)) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication required to export CSV reports.",
+            });
+        }
+
+        const reportType = String(req.query.reportType || "saved-report").trim();
+        const filters = {
+            country: String(req.query.country || "").trim(),
+            productCategory: String(req.query.productCategory || "").trim(),
+            hsCode: String(req.query.hsCode || "").trim(),
+        };
+        const reportId = req.query.reportId || req.query.id || "";
+        let savedReport = null;
+
+        if (reportId) {
+            if (!isValidObjectId(reportId)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid report id.",
+                });
+            }
+
+            savedReport = await Report.findOne({ _id: reportId, userId });
+
+            if (!savedReport) {
+                res.status(404);
+                throw new Error("Report not found");
+            }
+
+            await consumeUsageLimit(req, "reportDownload");
+
+            savedReport.downloadCount = Number(savedReport.downloadCount || 0) + 1;
+            await savedReport.save();
+        } else {
+            await consumeUsageLimit(req, "reportDownload");
+        }
+
+        const plan = await getExportPlan(req);
+        const monthlyExports = await countMonthlyExports(userId);
+        const freeLimit = 5;
+        const watermark =
+            plan === "free"
+                ? monthlyExports >= freeLimit
+                    ? "Free monthly CSV preview limit reached. Upgrade to unlock more full downloads."
+                    : "Free plan sample CSV. Upgrade for more downloads and detailed reports."
+                : "";
+
+        const exportPayload = buildCsvExport({
+            reportType,
+            filters,
+            savedReport: savedReport?.toObject?.() || savedReport,
+            watermark,
+        });
+
+        await recordReportExport({
+            req,
+            reportType,
+            filters,
+            sourceDataType: exportPayload.sourceDataType,
+            reportId: savedReport?._id,
+        });
+
+        const filename = filenameSafe(`${reportType}-${filters.country || savedReport?.targetCountry || "tradeai"}`);
+
+        res.setHeader("Content-Type", "text/csv; charset=utf-8");
+        res.setHeader("Content-Disposition", `attachment; filename="${filename}.csv"`);
+        res.setHeader("X-TradeAI-Plan", plan);
+        res.setHeader("X-TradeAI-Row-Count", String(exportPayload.rowCount));
+        res.send(exportPayload.csv);
     } catch (error) {
         next(error);
     }
@@ -1156,6 +1328,7 @@ export {
     deleteMyReportById,
     exportAiReport,
     exportMyReportById,
+    exportReportsCsv,
     generateSampleReport,
     getAiReportById,
     getAiReports,

@@ -95,18 +95,14 @@
     },
 
     invoices() {
-      return withBillingErrorContext("Billing invoices", () =>
-        request("/billing/invoices"),
+      return withBillingErrorContext("Billing payments", () =>
+        request("/billing/payments"),
       );
     },
 
-    cancel(subscriptionId) {
-      if (!subscriptionId) {
-        return Promise.reject(new Error("Subscription id is required."));
-      }
-
+    cancel() {
       return withBillingErrorContext("Subscription cancellation", () =>
-        request(`/billing/subscriptions/${encodeURIComponent(subscriptionId)}/cancel`, {
+        request("/billing/cancel", {
           method: "POST",
         }),
       );

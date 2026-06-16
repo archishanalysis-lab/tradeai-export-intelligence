@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Export-Import Starter Guide | TradeAI</title>
+    <meta
+      name="description"
+      content="Beginner-friendly IEC, DGFT and export-import process guide for Indian SMEs, exporters and importers."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background: #f6f8fb;
+        color: #172033;
+      }
+
+      .guide-hero {
+        padding: 74px 0 34px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .guide-hero-content {
+        max-width: 900px;
+      }
+
+      .guide-hero h1 {
+        margin: 12px 0 14px;
+        font-size: clamp(2rem, 4vw, 3.35rem);
+        line-height: 1.04;
+        letter-spacing: 0;
+      }
+
+      .guide-hero p {
+        margin: 0;
+        max-width: 760px;
+        color: #526070;
+        font-size: 1.06rem;
+        line-height: 1.7;
+      }
+
+      .guide-badge,
+      .guide-eyebrow,
+      .source-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .guide-badge {
+        padding: 7px 11px;
+        background: #e8f5ef;
+        color: #0f6b4f;
+      }
+
+      .guide-eyebrow {
+        color: #0f6b4f;
+      }
+
+      .guide-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .guide-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #172033;
+        font-weight: 800;
+      }
+
+      .guide-action.primary {
+        border-color: #0f6b4f;
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .guide-layout {
+        padding: 34px 0 56px;
+      }
+
+      .guide-status {
+        margin-bottom: 18px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #dbe3ec;
+        background: #ffffff;
+        color: #526070;
+        font-weight: 700;
+      }
+
+      .guide-status-success {
+        border-color: #b7e0cf;
+        background: #effaf5;
+        color: #0f6b4f;
+      }
+
+      .guide-status-error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .guide-section {
+        margin-top: 22px;
+      }
+
+      .guide-section-heading {
+        margin-bottom: 14px;
+      }
+
+      .guide-section-heading h2 {
+        margin: 4px 0 0;
+        font-size: 1.45rem;
+        letter-spacing: 0;
+      }
+
+      .guide-grid,
+      .checklist-grid,
+      .department-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 14px;
+      }
+
+      .guide-card,
+      .checklist-item,
+      .process-step {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 18px;
+      }
+
+      .guide-card h3,
+      .checklist-item h3,
+      .process-step h3 {
+        margin: 0 0 8px;
+        font-size: 1rem;
+        letter-spacing: 0;
+      }
+
+      .guide-card p,
+      .checklist-item p,
+      .process-step p {
+        margin: 0;
+        color: #526070;
+        line-height: 1.62;
+      }
+
+      .guide-card ul,
+      .guide-card ol {
+        margin: 0;
+        padding-left: 19px;
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .process-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .process-step {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 13px;
+      }
+
+      .process-step > span {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #e8f5ef;
+        color: #0f6b4f;
+        font-weight: 900;
+      }
+
+      .checklist-item {
+        display: flex;
+        gap: 12px;
+      }
+
+      .checklist-item i {
+        margin-top: 3px;
+        color: #0f6b4f;
+      }
+
+      .mistake-list {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .mistake-list li {
+        display: flex;
+        gap: 10px;
+        padding: 13px 14px;
+        border: 1px solid #fde68a;
+        border-radius: 8px;
+        background: #fffbeb;
+        color: #744210;
+      }
+
+      .source-pill {
+        margin-top: 12px;
+        padding: 6px 9px;
+        background: #eef2ff;
+        color: #3730a3;
+      }
+
+      .guide-disclaimer {
+        margin-top: 24px;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      @media (max-width: 720px) {
+        .guide-hero {
+          padding-top: 42px;
+        }
+
+        .guide-action {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <div class="auth-buttons">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+        </div>
+        <button class="menu-toggle" aria-label="Open mobile menu">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="export-opportunity-report.html">Reports</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </div>
+
+    <main>
+      <section class="guide-hero">
+        <div class="container">
+          <div class="guide-hero-content">
+            <span class="guide-badge" id="guideFreshness">Manual beginner guide</span>
+            <h1>Export-Import Starter Guide</h1>
+            <p>
+              A practical IEC, DGFT and shipment-process walkthrough for Indian freshers,
+              SMEs, exporters and importers who need to understand the first real steps
+              before speaking to buyers, suppliers, banks, CHA or freight forwarders.
+            </p>
+            <div class="guide-actions" aria-label="Starter guide actions">
+              <a class="guide-action primary" href="export-opportunity-report.html">
+                <i class="fa-solid fa-file-lines"></i>
+                Generate Export Opportunity Report
+              </a>
+              <a class="guide-action" href="dashboard.html#hs-codes">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Check HS Code
+              </a>
+              <a class="guide-action" href="document-checklist.html">
+                <i class="fa-solid fa-list-check"></i>
+                View Documents Required
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-layout">
+        <div class="container">
+          <div id="guideStatus" class="guide-status">Loading export-import starter guide...</div>
+
+          <section id="iecBasics" class="guide-section" aria-label="IEC basics"></section>
+
+          <section class="guide-section" aria-labelledby="checklistHeading">
+            <div class="guide-section-heading">
+              <span class="guide-eyebrow">Beginner checklist</span>
+              <h2 id="checklistHeading">What To Complete Before First Shipment</h2>
+            </div>
+            <div id="beginnerChecklist" class="checklist-grid" aria-live="polite"></div>
+          </section>
+
+          <section class="guide-section" aria-labelledby="exportHeading">
+            <div class="guide-section-heading">
+              <span class="guide-eyebrow">Export process</span>
+              <h2 id="exportHeading">Export From India, Step By Step</h2>
+            </div>
+            <div id="exportSteps" class="process-list" aria-live="polite"></div>
+          </section>
+
+          <section class="guide-section" aria-labelledby="importHeading">
+            <div class="guide-section-heading">
+              <span class="guide-eyebrow">Import process</span>
+              <h2 id="importHeading">Import Into India, Step By Step</h2>
+            </div>
+            <div id="importSteps" class="process-list" aria-live="polite"></div>
+          </section>
+
+          <section class="guide-section" aria-labelledby="mistakesHeading">
+            <div class="guide-section-heading">
+              <span class="guide-eyebrow">Risk checks</span>
+              <h2 id="mistakesHeading">Mistakes Beginners Should Avoid</h2>
+            </div>
+            <ul id="commonMistakes" class="mistake-list" aria-live="polite"></ul>
+          </section>
+
+          <section class="guide-section" aria-labelledby="departmentsHeading">
+            <div class="guide-section-heading">
+              <span class="guide-eyebrow">When to consult experts</span>
+              <h2 id="departmentsHeading">Useful Departments And Partners</h2>
+            </div>
+            <div id="usefulDepartments" class="department-grid" aria-live="polite"></div>
+          </section>
+
+          <aside class="guide-disclaimer">
+            <strong>Disclaimer:</strong>
+            <span id="guideDisclaimer">Verify final IEC, HS code, duty, customs and banking decisions with official authorities or qualified professionals.</span>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/api/guideApi.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/export-import-guide.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

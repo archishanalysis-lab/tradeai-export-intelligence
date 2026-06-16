@@ -28,6 +28,8 @@ const ensureUserWorkspace = async (user) => {
     });
 
     user.organizationId = organization._id;
+    user.plan = user.plan || "free";
+    user.subscriptionStatus = user.subscriptionStatus || "inactive";
     await user.save();
 
     await Promise.all([
@@ -58,6 +60,8 @@ const buildSafeUser = (user) => ({
     organizationId: user.organizationId,
     role: user.role,
     status: user.status,
+    plan: user.plan || "free",
+    subscriptionStatus: user.subscriptionStatus || "inactive",
 });
 
 const buildUserResponse = (user) => ({
@@ -152,6 +156,8 @@ const registerUser = async (req, res, next) => {
             password,
             role,
             organizationId: organization._id,
+            plan: "free",
+            subscriptionStatus: "inactive",
         });
 
         organization.owner = user._id;

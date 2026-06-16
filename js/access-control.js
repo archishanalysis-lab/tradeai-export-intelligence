@@ -68,6 +68,24 @@
     return getCurrentPlan() === requiredPlan || getCurrentPlan() === "enterprise";
   }
 
+  function getFeatureGateMessage(feature, state = {}) {
+    if (!isLoggedIn()) {
+      return "Login to save/download this result and keep your TradeAI workspace history.";
+    }
+
+    if (state.reason === "limit_reached" || state.code === "USAGE_LIMIT_REACHED") {
+      return "Free limit reached. Upgrade to unlock more searches, reports and downloads.";
+    }
+
+    if (feature === "download" || feature === "reportDownload") {
+      return isPaidUser()
+        ? "Download is available on your plan."
+        : "Upgrade to unlock more report downloads.";
+    }
+
+    return hasAccess("paid") ? "Feature unlocked." : "Upgrade to unlock this feature.";
+  }
+
   function closeModal(backdrop) {
     if (!backdrop) return;
     backdrop.classList.add("access-modal-closing");
@@ -350,6 +368,7 @@
     try {
       const status = await window.TradeAI.api.billing.status();
       if (status?.plan) storage.set(PLAN_KEY, status.plan);
+      if (status?.subscription?.status) storage.set("tradeai_subscription_status", status.subscription.status);
     } catch (error) {
       // Access checks fall back to the cached/free plan if billing is unavailable.
     }
@@ -367,6 +386,7 @@
     openAccessModal,
     isPaidUser,
     getCurrentPlan,
+    getFeatureGateMessage,
     hasAccess,
   };
 })();

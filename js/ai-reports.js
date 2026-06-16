@@ -43,6 +43,8 @@
       `Country: ${report.country || ""}`,
       `Direction: ${directionLabel(report.direction)}`,
       `HS Code / Category: ${report.hsCodeOrCategory || ""}`,
+      `Shipment Size: ${report.shipmentSize || ""}`,
+      `Buyer/Supplier Status: ${report.partnerStatus || ""}`,
       `Risk Level: ${report.riskLevel || ""}`,
       `Source: ${report.sourceType || ""}`,
       "",
@@ -81,6 +83,8 @@
       `Country: ${report.country || ""}`,
       `Direction: ${directionLabel(report.direction)}`,
       `HS/category: ${report.hsCodeOrCategory || ""}`,
+      `Shipment size: ${report.shipmentSize || ""}`,
+      `Buyer/supplier status: ${report.partnerStatus || ""}`,
       `Summary: ${report.opportunitySummary || ""}`,
       "Focus on what I should do next, what documents matter, payment risk and what to verify with official authorities.",
     ].join("\n");
@@ -91,6 +95,8 @@
       localStorage.setItem("tradeai_selected_product", report.productName || "");
       localStorage.setItem("tradeai_selected_country", report.country || "");
       localStorage.setItem("tradeai_selected_hsCode", report.hsCodeOrCategory || "");
+      localStorage.setItem("tradeai_selected_shipmentSize", report.shipmentSize || "");
+      localStorage.setItem("tradeai_selected_partnerStatus", report.partnerStatus || "");
       localStorage.setItem("tradeai_latest_report_prompt", buildCopilotPrompt(report));
     } catch (error) {
       // Copilot context is a convenience only.
@@ -125,6 +131,8 @@
           <article class="analytics-card"><h3>Country</h3><p>${escapeHtml(report.country)}</p></article>
           <article class="analytics-card"><h3>Direction</h3><p>${escapeHtml(directionLabel(report.direction))}</p></article>
           <article class="analytics-card"><h3>HS/category</h3><p>${escapeHtml(report.hsCodeOrCategory || "Verify")}</p></article>
+          <article class="analytics-card"><h3>Shipment</h3><p>${escapeHtml(report.shipmentSize || "Sample")}</p></article>
+          <article class="analytics-card"><h3>Partner</h3><p>${escapeHtml(report.partnerStatus || "New")}</p></article>
         </div>
         <h4>Process summary</h4>
         <p>${escapeHtml(report.opportunitySummary)}</p>
@@ -162,6 +170,8 @@
       direction: document.getElementById("reportDirection")?.value || "export_from_india",
       country: document.getElementById("reportCountry")?.value.trim(),
       experienceLevel: document.getElementById("reportExperienceLevel")?.value || "beginner",
+      shipmentSize: document.getElementById("reportShipmentSize")?.value || "sample",
+      partnerStatus: document.getElementById("reportPartnerStatus")?.value || "new",
     };
   }
 

@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Country Compliance Finder | TradeAI</title>
+    <meta
+      name="description"
+      content="Sample country-specific compliance rules for Indian exporters and importers across Kenya, Tanzania, Uganda, Rwanda, UAE, Saudi Arabia, Oman, Qatar and China."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background: #f6f8fb;
+        color: #172033;
+      }
+
+      .compliance-hero {
+        padding: 68px 0 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .compliance-hero h1 {
+        margin: 10px 0 12px;
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .compliance-hero p {
+        max-width: 790px;
+        margin: 0;
+        color: #526070;
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .compliance-badge,
+      .source-pill,
+      .risk-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .compliance-badge,
+      .source-pill {
+        padding: 7px 11px;
+        background: #eef2ff;
+        color: #3730a3;
+      }
+
+      .compliance-layout {
+        padding: 32px 0 58px;
+      }
+
+      .finder-panel,
+      .rule-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .finder-panel {
+        padding: 20px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-weight: 800;
+      }
+
+      .field select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .primary-action,
+      .secondary-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        border-radius: 8px;
+        padding: 0 16px;
+        font-weight: 800;
+        border: 1px solid #0f6b4f;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .primary-action {
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .secondary-action {
+        background: #ffffff;
+        color: #0f6b4f;
+      }
+
+      .compliance-status {
+        margin: 18px 0;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #dbe3ec;
+        background: #ffffff;
+        color: #526070;
+        font-weight: 700;
+      }
+
+      .compliance-status-success {
+        border-color: #b7e0cf;
+        background: #effaf5;
+        color: #0f6b4f;
+      }
+
+      .compliance-status-error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .result-heading,
+      .rule-topline {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .result-heading {
+        margin-bottom: 14px;
+      }
+
+      .result-heading h2,
+      .rule-card h3 {
+        margin: 7px 0 0;
+        letter-spacing: 0;
+      }
+
+      .rules-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .rule-card {
+        padding: 18px;
+      }
+
+      .rule-card p {
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .risk-pill {
+        padding: 7px 10px;
+        color: #ffffff;
+      }
+
+      .risk-low {
+        background: #15803d;
+      }
+
+      .risk-medium {
+        background: #b45309;
+      }
+
+      .risk-high {
+        background: #b91c1c;
+      }
+
+      .rule-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .rule-grid h4 {
+        margin: 0 0 6px;
+        color: #172033;
+      }
+
+      .rule-grid ul {
+        margin: 0;
+        padding-left: 19px;
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .locked-note {
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+        padding: 12px;
+        border-radius: 8px;
+        background: #fffbeb;
+        color: #744210;
+        font-weight: 700;
+      }
+
+      .disclaimer,
+      .empty-copy {
+        margin: 0;
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .disclaimer {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 8px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+      }
+
+      @media (max-width: 720px) {
+        .compliance-hero {
+          padding-top: 42px;
+        }
+
+        .primary-action,
+        .secondary-action {
+          width: 100%;
+        }
+
+        .result-heading,
+        .rule-topline {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="export-import-guide.html">Starter Guide</a>
+          <a href="document-checklist.html">Documents</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <div class="auth-buttons">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+        </div>
+        <button class="menu-toggle" aria-label="Open mobile menu">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="export-import-guide.html">Starter Guide</a>
+      <a href="document-checklist.html">Documents</a>
+      <a href="export-opportunity-report.html">Reports</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </div>
+
+    <main>
+      <section class="compliance-hero">
+        <div class="container">
+          <span class="compliance-badge">Sample compliance intelligence — verify with official authority</span>
+          <h1>Country Compliance Finder</h1>
+          <p>
+            Find starter country-specific compliance rules for India-linked
+            export/import workflows across East Africa, the Gulf and China.
+            This is manual sample guidance, not live official regulatory data.
+          </p>
+        </div>
+      </section>
+
+      <section class="compliance-layout">
+        <div class="container">
+          <form id="countryComplianceForm" class="finder-panel">
+            <div class="form-grid">
+              <div class="field">
+                <label for="country">Country</label>
+                <select id="country" required>
+                  <option value="">Select country</option>
+                  <option>Kenya</option>
+                  <option>Tanzania</option>
+                  <option>Uganda</option>
+                  <option>Rwanda</option>
+                  <option>UAE</option>
+                  <option>Saudi Arabia</option>
+                  <option>Oman</option>
+                  <option>Qatar</option>
+                  <option>China</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="productCategory">Product Category</label>
+                <select id="productCategory" required>
+                  <option value="">Select category</option>
+                  <option>Food/agri</option>
+                  <option>Pharma</option>
+                  <option>Chemicals</option>
+                  <option>Electronics</option>
+                  <option>Textiles</option>
+                  <option>Machinery</option>
+                  <option>General goods</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="direction">Export / Import</label>
+                <select id="direction" required>
+                  <option value="">Select direction</option>
+                  <option>export from India</option>
+                  <option>import into India</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="riskLevel">Risk Level</label>
+                <select id="riskLevel">
+                  <option value="">Any risk</option>
+                  <option>low</option>
+                  <option>medium</option>
+                  <option>high</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary-action">
+                <i class="fa-solid fa-shield-halved"></i>
+                View Compliance Rules
+              </button>
+              <a href="document-checklist.html" class="secondary-action">
+                <i class="fa-solid fa-list-check"></i>
+                Find Documents
+              </a>
+            </div>
+          </form>
+
+          <div id="countryComplianceStatus" class="compliance-status">
+            Select country, category and direction to view sample compliance rules.
+          </div>
+
+          <section id="countryComplianceResult" hidden aria-live="polite"></section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/api/complianceApi.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/country-compliance.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

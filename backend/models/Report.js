@@ -45,6 +45,21 @@ const reportSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
+    reportType: {
+        type: String,
+        trim: true,
+        default: "trade-readiness",
+    },
+    sourceDataType: {
+        type: String,
+        trim: true,
+        default: "sample/manual",
+    },
+    downloadCount: {
+        type: Number,
+        default: 0,
+        min: 0,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

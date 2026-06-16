@@ -151,17 +151,35 @@ const saveBuyer = async (req, res, next) => {
 
 const removeSavedItem = async (req, res, next) => {
     try {
-        const savedItem = await SavedItem.findOneAndDelete({
+        const scopedQuery = {
             _id: req.cleanParams.id,
-            ...userScopeFilter(req.user, "user"),
-        });
+            organizationId: req.user.organizationId,
+            user: req.user._id,
+        };
 
-        if (!savedItem) {
-            res.status(404);
-            throw new Error("Saved item not found");
+        const savedItem = await SavedItem.findOneAndDelete(scopedQuery);
+
+        if (savedItem) {
+            res.json({ message: "Saved item removed", type: "buyer" });
+            return;
         }
 
-        res.json({ message: "Saved item removed" });
+        const savedCompany = await SavedCompany.findOneAndDelete(scopedQuery);
+
+        if (savedCompany) {
+            res.json({ message: "Saved company removed", type: "company" });
+            return;
+        }
+
+        const savedProduct = await SavedProduct.findOneAndDelete(scopedQuery);
+
+        if (savedProduct) {
+            res.json({ message: "Saved product removed", type: "product" });
+            return;
+        }
+
+        res.status(404);
+        throw new Error("Saved item not found");
     } catch (error) {
         next(error);
     }

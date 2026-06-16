@@ -352,6 +352,79 @@
         </section>
 
         <section id="hs-codes" class="dashboard-tab-panel" data-dashboard-panel="hs-codes" hidden>
+          <section class="dashboard-panel" aria-labelledby="hsDirectoryHeading">
+            <div class="panel-heading">
+              <div>
+                <span class="section-kicker">HS Code Directory</span>
+                <h2 id="hsDirectoryHeading">Product classification examples</h2>
+                <p>Search sample/manual HS code guidance for TradeAI focus corridors. Verify final classification with a CHA/customs expert.</p>
+              </div>
+              <span class="status-badge status-pending">DEMO/SAMPLE DATA</span>
+            </div>
+            <form class="settings-form" id="hsDirectoryForm">
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="hsDirectorySearch">Product name or HS code</label>
+                  <input id="hsDirectorySearch" name="search" type="search" placeholder="spices, 1006, garments..." />
+                </div>
+                <div class="input-group">
+                  <label for="hsDirectoryCountry">Country</label>
+                  <select id="hsDirectoryCountry" name="country">
+                    <option value="">All focus countries</option>
+                    <option value="Kenya">Kenya</option>
+                    <option value="Tanzania">Tanzania</option>
+                    <option value="Uganda">Uganda</option>
+                    <option value="Rwanda">Rwanda</option>
+                    <option value="UAE">UAE</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="Oman">Oman</option>
+                    <option value="Qatar">Qatar</option>
+                    <option value="China">China</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="hsDirectoryCategory">Category</label>
+                  <select id="hsDirectoryCategory" name="category">
+                    <option value="">All categories</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="hsDirectoryType">Export/import type</label>
+                  <select id="hsDirectoryType" name="exportImportType">
+                    <option value="">Export and import</option>
+                    <option value="export">Export</option>
+                    <option value="import">Import</option>
+                    <option value="both">Both</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="hsDirectoryRisk">Risk level</label>
+                  <select id="hsDirectoryRisk" name="riskLevel">
+                    <option value="">All risk levels</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+              </div>
+              <button class="primary" type="submit" id="hsDirectorySubmit">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                Search directory
+              </button>
+            </form>
+            <p class="table-subtext">DEMO/SAMPLE label means this is not official tariff or legal classification data.</p>
+          </section>
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <h2>HS Code Directory Results</h2>
+              <p id="hsDirectoryStatus" aria-live="polite">Search by product name, HS code, country or category.</p>
+            </div>
+            <div id="hsDirectoryResults" class="activity-grid" aria-live="polite">
+              <article class="activity-card"><h4>Loading directory...</h4><p>Fetching sample HS code guidance.</p></article>
+            </div>
+          </section>
           <section class="dashboard-panel" aria-labelledby="analyticsFormHeading">
             <div class="panel-heading">
               <div>
@@ -404,10 +477,10 @@
                 </div>
                 <div class="form-row">
                   <div class="input-group"><label for="reportExperienceLevel">Experience level</label><select id="reportExperienceLevel"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="experienced">Experienced</option></select></div>
-                  <div class="input-group"><label for="reportMonthlyCapacity">Monthly capacity later</label><input id="reportMonthlyCapacity" placeholder="Optional for future buyer matching" /></div>
+                  <div class="input-group"><label for="reportShipmentSize">Shipment size</label><select id="reportShipmentSize"><option value="sample">Sample</option><option value="small">Small shipment</option><option value="bulk">Bulk shipment</option></select></div>
                 </div>
                 <div class="form-row">
-                  <div class="input-group"><label for="reportPriceRange">Price range</label><input id="reportPriceRange" placeholder="Example: USD 2.1-2.5/kg FOB" /></div>
+                  <div class="input-group"><label for="reportPartnerStatus">Buyer/supplier status</label><select id="reportPartnerStatus"><option value="new">New</option><option value="known">Known</option><option value="verified">Verified</option></select></div>
                   <div class="input-group"><label for="reportCertifications">Certifications</label><input id="reportCertifications" placeholder="FSSAI, organic, ISO, halal" /></div>
                 </div>
                 <p class="table-subtext">Output: process summary, HS/category guidance, document checklist, compliance notes, duty/tariff warning, Incoterms, payment risk, logistics, customs steps and next actions. Logged-in reports can be saved and downloaded.</p>
@@ -428,7 +501,7 @@
           <section class="dashboard-section" id="reports-tab-my-reports-section">
             <article class="dashboard-panel">
               <h2>Reports & My Reports</h2>
-              <p class="table-subtext">Saved reports from logged-in generation appear here. Select View to expand, Download for a text export, or Print for a pitch-ready copy.</p>
+              <p class="table-subtext">Saved reports from logged-in generation appear here. Select View to expand, Download for text, Download CSV for spreadsheet use, or Print for a pitch-ready copy.</p>
               <ul id="reports-tab-my-reports-list"></ul>
             </article>
           </section>
@@ -501,6 +574,7 @@
     <script src="../js/config.js" defer></script>
     <script src="../js/api.js" defer></script>
     <script src="../js/auth.js" defer></script>
+    <script src="../js/api/tradeApi.js" defer></script>
     <script src="../js/api/billingApi.js" defer></script>
     <script src="../js/access-control.js" defer></script>
     <script src="../js/api/savedItemApi.js" defer></script>
@@ -510,6 +584,7 @@
     <script src="../js/theme.js" defer></script>
     <script src="../js/dashboard-tabs.js" defer></script>
     <script src="../js/dashboard.js" defer></script>
+    <script src="../js/hs-code-directory.js" defer></script>
     <script src="../js/buyers.js" defer></script>
     <script src="../js/trade-analytics.js" defer></script>
     <script src="../js/ai-reports.js" defer></script>

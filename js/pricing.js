@@ -137,6 +137,21 @@
     button.innerHTML = "Preparing checkout...";
 
     try {
+      const status = await withTimeout(
+        billingApi.status(),
+        "Unable to verify payment readiness. Please register interest and try again later.",
+        10000,
+      );
+
+      if (!status?.paymentGatewayReady) {
+        window.TradeAI?.toast?.(
+          "Payments are not live yet. Register interest and the TradeAI team will follow up.",
+          "info",
+        );
+        window.location.href = `register.html?plan=${encodeURIComponent(plan)}&source=pricing-payment-staged`;
+        return;
+      }
+
       const result = await withTimeout(
         billingApi.checkout(plan),
         "Checkout is taking too long. Please try again.",

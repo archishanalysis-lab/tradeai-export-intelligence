@@ -11,10 +11,10 @@ Use `Authorization: Bearer <token>` for all protected routes after login.
     ```json
     {
       "name": "Demo Exporter",
-      "email": "exporter@tradeai.test",
+      "email": "<set local test email>",
       "company": "TradeAI Exports",
       "role": "exporter",
-      "password": "Password@123"
+      "password": "<set local test password, do not commit>"
     }
     ```
   - Expect: `201`, user object, `token`.
@@ -23,8 +23,8 @@ Use `Authorization: Bearer <token>` for all protected routes after login.
   - Body:
     ```json
     {
-      "email": "exporter@tradeai.test",
-      "password": "Password@123"
+      "email": "<set local test email>",
+      "password": "<set local test password, do not commit>"
     }
     ```
   - Expect: `200`, user object, `token`.

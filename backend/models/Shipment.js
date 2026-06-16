@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+// Future placeholder: no shipment CRUD route is mounted in the MVP release.
+// Keep this model unmounted until the logistics workflow persists shipments.
 const shipmentSchema = new mongoose.Schema(
     {
         referenceNo: {

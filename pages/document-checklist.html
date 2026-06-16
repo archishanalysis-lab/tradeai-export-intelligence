@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document Checklist Finder | TradeAI</title>
+    <meta
+      name="description"
+      content="Find sample export/import document requirements for Indian trade corridors across East Africa, Gulf and China."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background: #f6f8fb;
+        color: #172033;
+      }
+
+      .documents-hero {
+        padding: 68px 0 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .documents-hero h1 {
+        margin: 10px 0 12px;
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .documents-hero p {
+        max-width: 760px;
+        margin: 0;
+        color: #526070;
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .source-pill,
+      .risk-pill,
+      .documents-badge {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .documents-badge {
+        padding: 7px 11px;
+        background: #eef2ff;
+        color: #3730a3;
+        text-transform: uppercase;
+      }
+
+      .documents-layout {
+        padding: 32px 0 58px;
+      }
+
+      .finder-panel,
+      .result-card,
+      .paid-preview,
+      .download-panel {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .finder-panel {
+        padding: 20px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-weight: 800;
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      .form-actions,
+      .download-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .primary-action,
+      .secondary-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        border-radius: 8px;
+        padding: 0 16px;
+        font-weight: 800;
+        border: 1px solid #0f6b4f;
+        cursor: pointer;
+      }
+
+      .primary-action {
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .secondary-action {
+        background: #ffffff;
+        color: #0f6b4f;
+      }
+
+      .documents-status {
+        margin: 18px 0;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #dbe3ec;
+        background: #ffffff;
+        color: #526070;
+        font-weight: 700;
+      }
+
+      .documents-status-success {
+        border-color: #b7e0cf;
+        background: #effaf5;
+        color: #0f6b4f;
+      }
+
+      .documents-status-error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .result-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .result-heading h2 {
+        margin: 7px 0 0;
+        letter-spacing: 0;
+      }
+
+      .source-pill {
+        padding: 6px 9px;
+        background: #e8f5ef;
+        color: #0f6b4f;
+      }
+
+      .risk-pill {
+        padding: 7px 10px;
+        color: #ffffff;
+        text-transform: uppercase;
+      }
+
+      .risk-low {
+        background: #15803d;
+      }
+
+      .risk-medium {
+        background: #b45309;
+      }
+
+      .risk-high {
+        background: #b91c1c;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 14px;
+      }
+
+      .result-card {
+        padding: 18px;
+      }
+
+      .result-card h3,
+      .paid-preview h3 {
+        margin: 0 0 8px;
+        font-size: 1rem;
+        letter-spacing: 0;
+      }
+
+      .result-card ul {
+        margin: 0;
+        padding-left: 19px;
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .notes-card,
+      .paid-preview,
+      .download-panel {
+        margin-top: 14px;
+      }
+
+      .paid-preview {
+        display: flex;
+        gap: 13px;
+        padding: 16px;
+        background: #fffbeb;
+        color: #744210;
+      }
+
+      .paid-preview p,
+      .disclaimer,
+      .empty-copy {
+        margin: 0;
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .paid-preview i {
+        margin-top: 3px;
+      }
+
+      .download-panel {
+        padding: 16px;
+      }
+
+      .disclaimer {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 8px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+      }
+
+      @media (max-width: 720px) {
+        .documents-hero {
+          padding-top: 42px;
+        }
+
+        .primary-action,
+        .secondary-action {
+          width: 100%;
+        }
+
+        .result-heading {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="export-import-guide.html">Starter Guide</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <div class="auth-buttons">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+        </div>
+        <button class="menu-toggle" aria-label="Open mobile menu">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="export-import-guide.html">Starter Guide</a>
+      <a href="export-opportunity-report.html">Reports</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </div>
+
+    <main>
+      <section class="documents-hero">
+        <div class="container">
+          <span class="documents-badge">Sample/manual compliance preview</span>
+          <h1>Document Checklist Finder</h1>
+          <p>
+            Select a product category, direction and country to see a practical
+            export/import document checklist for India-linked trade corridors.
+            Use this as a starter checklist, then verify with a CHA, customs
+            broker or regulator before shipment.
+          </p>
+        </div>
+      </section>
+
+      <section class="documents-layout">
+        <div class="container">
+          <form id="documentsForm" class="finder-panel">
+            <div class="form-grid">
+              <div class="field">
+                <label for="productCategory">Product / Category</label>
+                <select id="productCategory" required>
+                  <option value="">Select category</option>
+                  <option>Food/agri</option>
+                  <option>Pharma</option>
+                  <option>Chemicals</option>
+                  <option>Electronics</option>
+                  <option>Textiles</option>
+                  <option>Machinery</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="hsCode">HS Code if available</label>
+                <input id="hsCode" name="hsCode" inputmode="numeric" placeholder="Example: 0902" />
+              </div>
+              <div class="field">
+                <label for="direction">Direction</label>
+                <select id="direction" required>
+                  <option value="">Select direction</option>
+                  <option>export from India</option>
+                  <option>import into India</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="country">Country</label>
+                <select id="country" required>
+                  <option value="">Select country</option>
+                  <option>Kenya</option>
+                  <option>Tanzania</option>
+                  <option>Uganda</option>
+                  <option>Rwanda</option>
+                  <option>UAE</option>
+                  <option>Saudi Arabia</option>
+                  <option>Oman</option>
+                  <option>Qatar</option>
+                  <option>China</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary-action">
+                <i class="fa-solid fa-list-check"></i>
+                Generate Checklist
+              </button>
+              <a href="export-opportunity-report.html" class="secondary-action">
+                <i class="fa-solid fa-file-lines"></i>
+                Generate Export Opportunity Report
+              </a>
+            </div>
+          </form>
+
+          <div id="documentsStatus" class="documents-status">
+            Select your product, country and direction to generate a basic checklist.
+          </div>
+
+          <section id="documentsResult" hidden aria-live="polite"></section>
+
+          <section id="downloadPanel" class="download-panel" hidden>
+            <h2>Save Or Download</h2>
+            <p class="empty-copy">
+              Guest users can view the basic checklist. Login is required for downloadable
+              checklists and saved history. Detailed compliance notes should be reserved for
+              paid plans later.
+            </p>
+            <div class="download-actions">
+              <button type="button" id="downloadChecklist" class="primary-action">
+                <i class="fa-solid fa-download"></i>
+                Download Checklist
+              </button>
+              <a id="registerPrompt" href="register.html?source=document-checklist" class="secondary-action">
+                <i class="fa-solid fa-user-plus"></i>
+                Register To Save
+              </a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/api/complianceApi.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/document-checklist.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

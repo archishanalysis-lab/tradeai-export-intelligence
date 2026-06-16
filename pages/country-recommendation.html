@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Country Recommendation Tool | TradeAI</title>
+    <meta
+      name="description"
+      content="Rule-based country recommendation tool for Indian exporters and importers comparing Kenya, Tanzania, Uganda, Rwanda, UAE, Saudi Arabia, Oman, Qatar and China."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background: #f6f8fb;
+        color: #172033;
+      }
+
+      .recommendation-hero {
+        padding: 68px 0 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .recommendation-hero h1 {
+        margin: 10px 0 12px;
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .recommendation-hero p {
+        max-width: 800px;
+        margin: 0;
+        color: #526070;
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .recommendation-badge,
+      .source-pill,
+      .rank-pill,
+      .score-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .recommendation-badge,
+      .source-pill {
+        padding: 7px 11px;
+        background: #eef2ff;
+        color: #3730a3;
+      }
+
+      .recommendation-layout {
+        padding: 32px 0 58px;
+      }
+
+      .finder-panel,
+      .recommendation-card,
+      .locked-card,
+      .paid-panel {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .finder-panel,
+      .recommendation-card,
+      .locked-card,
+      .paid-panel {
+        padding: 18px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-weight: 800;
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      .form-actions,
+      .tool-links,
+      .paid-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .primary-action,
+      .secondary-action,
+      .tool-links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        border-radius: 8px;
+        padding: 0 14px;
+        font-weight: 800;
+        border: 1px solid #0f6b4f;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .primary-action {
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .secondary-action,
+      .tool-links a {
+        background: #ffffff;
+        color: #0f6b4f;
+      }
+
+      .recommendation-status {
+        margin: 18px 0;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #dbe3ec;
+        background: #ffffff;
+        color: #526070;
+        font-weight: 700;
+      }
+
+      .recommendation-status-success {
+        border-color: #b7e0cf;
+        background: #effaf5;
+        color: #0f6b4f;
+      }
+
+      .recommendation-status-error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .result-heading,
+      .card-topline {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .recommendation-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .recommendation-card h3,
+      .result-heading h2 {
+        margin: 7px 0 0;
+        letter-spacing: 0;
+      }
+
+      .score-pill {
+        padding: 7px 10px;
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .rank-pill {
+        padding: 6px 9px;
+        background: #e8f5ef;
+        color: #0f6b4f;
+      }
+
+      .score-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 8px;
+        margin: 14px 0;
+      }
+
+      .score-grid span {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 9px 10px;
+        border-radius: 8px;
+        background: #f8fafc;
+        color: #526070;
+      }
+
+      .card-section {
+        margin-top: 13px;
+      }
+
+      .card-section h4 {
+        margin: 0 0 7px;
+      }
+
+      .card-section ul {
+        margin: 0;
+        padding-left: 19px;
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .card-section p,
+      .disclaimer,
+      .locked-card p,
+      .paid-panel p {
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .locked-card {
+        display: flex;
+        gap: 13px;
+        margin-top: 14px;
+        background: #fffbeb;
+        color: #744210;
+      }
+
+      .paid-panel {
+        margin-top: 14px;
+      }
+
+      .disclaimer {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 8px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+      }
+
+      @media (max-width: 720px) {
+        .recommendation-hero {
+          padding-top: 42px;
+        }
+
+        .primary-action,
+        .secondary-action,
+        .tool-links a {
+          width: 100%;
+        }
+
+        .result-heading,
+        .card-topline,
+        .locked-card {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="document-checklist.html">Documents</a>
+          <a href="country-compliance.html">Compliance</a>
+          <a href="duty-tariff.html">Tariffs</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <div class="auth-buttons">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+        </div>
+        <button class="menu-toggle" aria-label="Open mobile menu">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="document-checklist.html">Documents</a>
+      <a href="country-compliance.html">Compliance</a>
+      <a href="duty-tariff.html">Tariffs</a>
+      <a href="export-opportunity-report.html">Reports</a>
+      <a href="pricing.html">Pricing</a>
+    </div>
+
+    <main>
+      <section class="recommendation-hero">
+        <div class="container">
+          <span class="recommendation-badge">Rule-based recommendation — sample intelligence, not AI</span>
+          <h1>Which Country Should I Choose?</h1>
+          <p>
+            Compare the 9 TradeAI focus countries for your product using demand,
+            logistics, compliance, payment risk, tariff risk and market-entry difficulty.
+          </p>
+        </div>
+      </section>
+
+      <section class="recommendation-layout">
+        <div class="container">
+          <form id="recommendationForm" class="finder-panel">
+            <div class="form-grid">
+              <div class="field">
+                <label for="productCategory">Product / Category</label>
+                <select id="productCategory" required>
+                  <option value="">Select category</option>
+                  <option>Food/agri</option>
+                  <option>Textiles</option>
+                  <option>Electronics</option>
+                  <option>Machinery</option>
+                  <option>Chemicals</option>
+                  <option>Pharma</option>
+                  <option>General goods</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="hsCode">Optional HS code</label>
+                <input id="hsCode" inputmode="numeric" placeholder="Example: 0902" />
+              </div>
+              <div class="field">
+                <label for="direction">Export / Import Direction</label>
+                <select id="direction">
+                  <option>export from India</option>
+                  <option>import into India</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="exporterExperience">Experience Level</label>
+                <select id="exporterExperience" required>
+                  <option value="">Select experience</option>
+                  <option>beginner</option>
+                  <option>intermediate</option>
+                  <option>experienced</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="shipmentSize">Shipment Size</label>
+                <select id="shipmentSize" required>
+                  <option value="">Select size</option>
+                  <option>sample</option>
+                  <option>small</option>
+                  <option>bulk</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="budgetLevel">Budget Level</label>
+                <select id="budgetLevel" required>
+                  <option value="">Select budget</option>
+                  <option>low</option>
+                  <option>medium</option>
+                  <option>high</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary-action">
+                <i class="fa-solid fa-ranking-star"></i>
+                Compare Countries
+              </button>
+              <a href="export-opportunity-report.html" class="secondary-action">
+                <i class="fa-solid fa-file-lines"></i>
+                Generate Report
+              </a>
+            </div>
+          </form>
+
+          <div id="recommendationStatus" class="recommendation-status">
+            Select your product and business context to compare countries.
+          </div>
+
+          <section id="recommendationResult" hidden aria-live="polite"></section>
+
+          <section id="paidPanel" class="paid-panel" hidden>
+            <h2>Save Or Download</h2>
+            <p>
+              Guest users see the top 1 country. Free logged-in users can view top 3.
+              Paid plans should unlock detailed downloadable comparison reports.
+            </p>
+            <div class="paid-actions">
+              <button type="button" id="downloadComparison" class="secondary-action">
+                <i class="fa-solid fa-download"></i>
+                Download Comparison
+              </button>
+              <a href="register.html?source=country-recommendation" class="primary-action">
+                <i class="fa-solid fa-user-plus"></i>
+                Register
+              </a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/api/recommendationApi.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/country-recommendation.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

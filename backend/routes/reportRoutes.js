@@ -8,6 +8,7 @@ import {
     deleteMyReportById,
     exportAiReport,
     exportMyReportById,
+    exportReportsCsv,
     generateSampleReport,
     getAiReportById,
     getAiReports,
@@ -26,6 +27,10 @@ const publicTradeReadinessLimiter = apiRateLimit({
     windowMs: 60 * 60 * 1000,
     max: 10,
 });
+const reportExportLimiter = apiRateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+});
 
 router.post("/trade-readiness", publicTradeReadinessLimiter, optionalProtect, createTradeReadinessReport);
 
@@ -37,6 +42,7 @@ router.get("/my-reports/:id/export", exportMyReportById);
 router.route("/my-reports/:id").get(getMyReportById).delete(deleteMyReportById);
 router.route("/").get(getAiReports).post(reportGenerationLimiter, createAiReport);
 router.post("/opportunity", reportGenerationLimiter, createOpportunityReport);
+router.get("/export/csv", reportExportLimiter, exportReportsCsv);
 router.route("/:id").get(getAiReportById).delete(deleteAiReportById);
 router.get("/:id/export", exportAiReport);
 

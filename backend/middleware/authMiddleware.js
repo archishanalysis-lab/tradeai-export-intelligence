@@ -57,7 +57,7 @@ const protect = async (req, res, next) => {
         }
 
         const dbUser = await User.findById(tokenUserId)
-            .select("_id name email company role status organizationId")
+            .select("_id name email company role status organizationId plan subscriptionStatus")
             .lean();
 
         if (!dbUser) {

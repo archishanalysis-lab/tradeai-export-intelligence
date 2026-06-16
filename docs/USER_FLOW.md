@@ -426,7 +426,7 @@ Backend flow:
 - AI provider: OpenAI when configured
 - Fallback: rule-based response if OpenAI is unavailable or not configured
 
-Note: `backend/routes/copilotRoutes.js` also exists with a protected controller-based implementation, but the mounted route in `backend/server.js` currently points to `backend/routes/copilot.js`.
+Note: `backend/routes/copilot.js` is the canonical mounted Copilot implementation. It handles protected ask/history behavior, persistence, rate limiting and usage limits.
 
 Status: Working. Backend AI is connected when environment keys are available; fallback is MVP/demo-safe.
 

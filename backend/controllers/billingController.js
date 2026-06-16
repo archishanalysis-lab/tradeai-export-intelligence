@@ -1,6 +1,7 @@
 import Organization from "../models/Organization.js";
 import Payment from "../models/Payment.js";
 import Subscription from "../models/Subscription.js";
+import User from "../models/User.js";
 import { getPlanLimits, normalizePlanName, serializeUsage } from "../services/usageLimitService.js";
 import crypto from "crypto";
 
@@ -73,6 +74,13 @@ const getBillingStatus = async (req, res, next) => {
             planDetails: {
                 ...(planCatalog[plan] || planCatalog.free),
                 usageLimits: getPlanLimits(plan),
+            },
+            featureAccess: {
+                copilotPromptsPerDay: getPlanLimits(plan).copilotPromptsPerDay,
+                reportDownloadsPerMonth: getPlanLimits(plan).reportDownloadsPerMonth,
+                hsCodeSearchesPerDay: getPlanLimits(plan).hsCodeSearchesPerDay,
+                countryComparisonsPerDay: getPlanLimits(plan).countryComparisonsPerDay,
+                savedReportsLimit: getPlanLimits(plan).savedReportsLimit,
             },
             usage: usageStatus.usage,
             limits: usageStatus.limits,
@@ -255,6 +263,10 @@ const verifyRazorpayPayment = async (req, res, next) => {
         );
 
         await Organization.findByIdAndUpdate(req.user.organizationId, { plan });
+        await User.findByIdAndUpdate(req.user._id, {
+            plan,
+            subscriptionStatus: "active",
+        });
 
         await Payment.findOneAndUpdate(
             { orderId: razorpay_order_id },
@@ -308,6 +320,10 @@ const cancelSubscription = async (req, res, next) => {
         );
 
         await Organization.findByIdAndUpdate(req.user.organizationId, { plan: "free" });
+        await User.findByIdAndUpdate(req.user._id, {
+            plan: "free",
+            subscriptionStatus: "cancelled",
+        });
 
         res.json({ subscription, message: "Subscription downgraded to free" });
     } catch (error) {

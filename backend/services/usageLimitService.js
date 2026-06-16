@@ -9,31 +9,63 @@ const PLAN_ALIASES = {
 };
 
 const PLAN_LIMITS = {
+    guest: {
+        name: "Guest",
+        copilotPromptsPerDay: 0,
+        copilotQuestionsPerDay: 0,
+        reportDownloadsPerMonth: 0,
+        reportsPerMonth: 1,
+        hsCodeSearchesPerDay: 5,
+        countryComparisonsPerDay: 1,
+        savedReportsLimit: 0,
+        savedReports: 0,
+        buyerSearchesPerDay: 0,
+    },
     free: {
         name: "Free",
+        copilotPromptsPerDay: 5,
         copilotQuestionsPerDay: 5,
+        reportDownloadsPerMonth: 5,
         reportsPerMonth: 2,
+        hsCodeSearchesPerDay: 20,
+        countryComparisonsPerDay: 5,
+        savedReportsLimit: 20,
         savedReports: 20,
         buyerSearchesPerDay: 10,
     },
     growth: {
         name: "Growth",
+        copilotPromptsPerDay: 50,
         copilotQuestionsPerDay: 50,
+        reportDownloadsPerMonth: 50,
         reportsPerMonth: 20,
+        hsCodeSearchesPerDay: 100,
+        countryComparisonsPerDay: 30,
+        savedReportsLimit: 200,
         savedReports: 200,
         buyerSearchesPerDay: 100,
     },
     pro: {
         name: "Pro",
+        copilotPromptsPerDay: 200,
         copilotQuestionsPerDay: 200,
+        reportDownloadsPerMonth: 200,
         reportsPerMonth: 100,
+        hsCodeSearchesPerDay: 500,
+        countryComparisonsPerDay: 100,
+        savedReportsLimit: 1000,
         savedReports: 1000,
         buyerSearchesPerDay: 500,
     },
     enterprise: {
         name: "Enterprise",
+        copilotPromptsPerDay: -1,
         copilotQuestionsPerDay: -1,
+        reportDownloadsPerMonth: -1,
         reportsPerMonth: -1,
+        hsCodeSearchesPerDay: -1,
+        countryComparisonsPerDay: -1,
+        savedReportsLimit: -1,
         savedReports: -1,
         buyerSearchesPerDay: -1,
     },
@@ -52,6 +84,30 @@ const FEATURE_CONFIG = {
         period: "month",
         label: "export reports",
     },
+    reportDownload: {
+        usageKey: "reportDownloads",
+        limitKey: "reportDownloadsPerMonth",
+        period: "month",
+        label: "report downloads",
+    },
+    hsCodeSearch: {
+        usageKey: "hsCodeSearch",
+        limitKey: "hsCodeSearchesPerDay",
+        period: "day",
+        label: "HS code searches",
+    },
+    countryComparison: {
+        usageKey: "countryComparison",
+        limitKey: "countryComparisonsPerDay",
+        period: "day",
+        label: "country comparisons",
+    },
+    savedReports: {
+        usageKey: "reports",
+        limitKey: "savedReportsLimit",
+        period: "month",
+        label: "saved reports",
+    },
     buyerSearch: {
         usageKey: "buyerSearch",
         limitKey: "buyerSearchesPerDay",
@@ -67,6 +123,13 @@ function normalizePlanName(plan = "free") {
 
 function getPlanLimits(plan = "free") {
     return PLAN_LIMITS[normalizePlanName(plan)] || PLAN_LIMITS.free;
+}
+
+function getFeatureLimit(plan = "free", featureName = "") {
+    const config = FEATURE_CONFIG[featureName];
+    if (!config) return null;
+
+    return getPlanLimits(plan)[config.limitKey];
 }
 
 function getNextResetAt(period, from = new Date()) {
@@ -88,7 +151,7 @@ function isAdmin(req) {
 }
 
 function isActiveForPlan(subscription, plan) {
-    if (plan === "free") {
+    if (plan === "guest" || plan === "free") {
         return true;
     }
 
@@ -134,6 +197,86 @@ async function findOrCreateSubscription(req) {
         },
         { new: true, upsert: true, runValidators: true },
     );
+}
+
+async function findSubscriptionForUser(user) {
+    if (!user?.organizationId) {
+        return null;
+    }
+
+    return Subscription.findOne({ organizationId: user.organizationId }).lean();
+}
+
+async function checkFeatureAccess(userOrReq, featureName) {
+    const user = userOrReq?.user || userOrReq;
+    const config = FEATURE_CONFIG[featureName];
+
+    if (!config) {
+        throw new Error(`Unknown feature access check: ${featureName}`);
+    }
+
+    if (user?.role === "admin") {
+        return {
+            allowed: true,
+            bypassed: true,
+            reason: "admin",
+            plan: "enterprise",
+            feature: featureName,
+            limit: -1,
+            used: 0,
+        };
+    }
+
+    if (!user?._id && !user?.id && !user?.userId) {
+        const limit = getFeatureLimit("guest", featureName);
+        return {
+            allowed: limit !== 0,
+            plan: "guest",
+            feature: featureName,
+            limit,
+            used: 0,
+            reason: limit === 0 ? "login_required" : "guest_preview",
+            message: limit === 0 ? "Login to unlock this feature." : "Guest preview access.",
+        };
+    }
+
+    const subscription = await findSubscriptionForUser(user);
+    const plan = normalizePlanName(subscription?.plan || user.plan || "free");
+    const limits = getPlanLimits(plan);
+    const limit = limits[config.limitKey];
+    const usage = subscription?.usage?.[config.usageKey] || {};
+    const used = Number(usage.count || 0);
+    const active = isActiveForPlan(subscription, plan);
+
+    if (!active) {
+        return {
+            allowed: false,
+            plan,
+            feature: featureName,
+            limit,
+            used,
+            resetAt: formatResetDate(usage.resetAt),
+            reason: subscription?.billingStatus === "past_due" ? "billing_issue" : "plan_inactive",
+            message:
+                subscription?.billingStatus === "past_due"
+                    ? "Billing issue detected. Please update billing to continue."
+                    : "Plan inactive. Upgrade or reactivate to unlock this feature.",
+        };
+    }
+
+    return {
+        allowed: limit === -1 || used < limit,
+        plan,
+        feature: featureName,
+        limit,
+        used,
+        resetAt: formatResetDate(usage.resetAt),
+        reason: limit !== -1 && used >= limit ? "limit_reached" : "allowed",
+        message:
+            limit !== -1 && used >= limit
+                ? `${limits.name} limit reached for ${config.label}. Upgrade to unlock more.`
+                : `${limits.name} access available for ${config.label}.`,
+    };
 }
 
 function ensureCounter(subscription, config, now) {
@@ -259,6 +402,21 @@ function serializeUsage(subscription) {
                 limit: limits.reportsPerMonth,
                 resetAt: formatResetDate(usage.reports?.resetAt),
             },
+            reportDownloads: {
+                used: Number(usage.reportDownloads?.count || 0),
+                limit: limits.reportDownloadsPerMonth,
+                resetAt: formatResetDate(usage.reportDownloads?.resetAt),
+            },
+            hsCodeSearch: {
+                used: Number(usage.hsCodeSearch?.count || 0),
+                limit: limits.hsCodeSearchesPerDay,
+                resetAt: formatResetDate(usage.hsCodeSearch?.resetAt),
+            },
+            countryComparison: {
+                used: Number(usage.countryComparison?.count || 0),
+                limit: limits.countryComparisonsPerDay,
+                resetAt: formatResetDate(usage.countryComparison?.resetAt),
+            },
             buyerSearch: {
                 used: Number(usage.buyerSearch?.count || 0),
                 limit: limits.buyerSearchesPerDay,
@@ -269,8 +427,11 @@ function serializeUsage(subscription) {
 }
 
 export {
+    FEATURE_CONFIG,
     PLAN_LIMITS,
+    checkFeatureAccess,
     consumeUsageLimit,
+    getFeatureLimit,
     getPlanLimits,
     normalizePlanName,
     serializeUsage,

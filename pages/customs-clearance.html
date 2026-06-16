@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customs Clearance Checklist | TradeAI</title>
+    <meta
+      name="description"
+      content="Sample export and import customs clearance workflow for Indian exporters and importers."
+    />
+    <link rel="stylesheet" href="../css/main.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
+    <link rel="stylesheet" href="../css/responsive.css?v=replit-style" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background: #f6f8fb;
+        color: #172033;
+      }
+
+      .customs-hero {
+        padding: 68px 0 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .customs-hero h1 {
+        margin: 10px 0 12px;
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .customs-hero p {
+        max-width: 800px;
+        margin: 0;
+        color: #526070;
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .customs-badge,
+      .source-pill,
+      .complexity-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .customs-badge,
+      .source-pill {
+        padding: 7px 11px;
+        background: #eef2ff;
+        color: #3730a3;
+      }
+
+      .customs-layout {
+        padding: 32px 0 58px;
+      }
+
+      .finder-panel,
+      .summary-card,
+      .workflow-step,
+      .download-panel {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 18px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-weight: 800;
+      }
+
+      .field select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      .form-actions,
+      .download-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .primary-action,
+      .secondary-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        border-radius: 8px;
+        padding: 0 14px;
+        font-weight: 800;
+        border: 1px solid #0f6b4f;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .primary-action {
+        background: #0f6b4f;
+        color: #ffffff;
+      }
+
+      .secondary-action {
+        background: #ffffff;
+        color: #0f6b4f;
+      }
+
+      .customs-status {
+        margin: 18px 0;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #dbe3ec;
+        background: #ffffff;
+        color: #526070;
+        font-weight: 700;
+      }
+
+      .customs-status-success {
+        border-color: #b7e0cf;
+        background: #effaf5;
+        color: #0f6b4f;
+      }
+
+      .customs-status-error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+      }
+
+      .result-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+
+      .result-heading h2 {
+        margin: 7px 0 0;
+        letter-spacing: 0;
+      }
+
+      .complexity-pill {
+        padding: 7px 10px;
+        color: #ffffff;
+      }
+
+      .complexity-low {
+        background: #15803d;
+      }
+
+      .complexity-medium {
+        background: #b45309;
+      }
+
+      .complexity-high {
+        background: #b91c1c;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+
+      .workflow-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .workflow-step {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 13px;
+      }
+
+      .workflow-step > span {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #e8f5ef;
+        color: #0f6b4f;
+        font-weight: 900;
+      }
+
+      .workflow-step h3,
+      .summary-card h3 {
+        margin: 0 0 8px;
+        letter-spacing: 0;
+      }
+
+      .workflow-step p,
+      .summary-card p,
+      .download-panel p,
+      .disclaimer {
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .step-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .summary-card ul,
+      .step-grid ul {
+        margin: 0;
+        padding-left: 19px;
+        color: #526070;
+        line-height: 1.65;
+      }
+
+      .download-panel {
+        margin-top: 14px;
+      }
+
+      .disclaimer {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 8px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+      }
+
+      @media (max-width: 720px) {
+        .customs-hero {
+          padding-top: 42px;
+        }
+
+        .primary-action,
+        .secondary-action {
+          width: 100%;
+        }
+
+        .result-heading,
+        .workflow-step {
+          display: block;
+        }
+
+        .workflow-step > span {
+          margin-bottom: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav-container">
+        <a href="../index.html" class="logo">TradeAI</a>
+        <nav class="nav">
+          <a href="../index.html">Home</a>
+          <a href="document-checklist.html">Documents</a>
+          <a href="country-compliance.html">Compliance</a>
+          <a href="payment-risk.html">Payments</a>
+          <a href="export-opportunity-report.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+        </nav>
+        <div class="auth-buttons">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="register.html" class="cta">Register</a>
+        </div>
+        <button class="menu-toggle" aria-label="Open mobile menu">☰</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu">
+      <a href="../index.html">Home</a>
+      <a href="document-checklist.html">Documents</a>
+      <a href="country-compliance.html">Compliance</a>
+      <a href="payment-risk.html">Payments</a>
+      <a href="export-opportunity-report.html">Reports</a>
+      <a href="pricing.html">Pricing</a>
+    </div>
+
+    <main>
+      <section class="customs-hero">
+        <div class="container">
+          <span class="customs-badge">Sample customs workflow - verify with CHA/customs broker</span>
+          <h1>Customs Clearance Checklist</h1>
+          <p>
+            Understand the step-by-step export and import customs workflow,
+            documents, responsibilities and risk warnings before cargo reaches
+            port, airport or customs clearance.
+          </p>
+        </div>
+      </section>
+
+      <section class="customs-layout">
+        <div class="container">
+          <form id="customsForm" class="finder-panel">
+            <div class="form-grid">
+              <div class="field">
+                <label for="direction">Export / Import</label>
+                <select id="direction" required>
+                  <option value="">Select direction</option>
+                  <option value="export">export</option>
+                  <option value="import">import</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="mode">Shipment Mode</label>
+                <select id="mode" required>
+                  <option value="">Select mode</option>
+                  <option>sea</option>
+                  <option>air</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="productCategory">Product Category</label>
+                <select id="productCategory" required>
+                  <option value="">Select category</option>
+                  <option>Food/agri</option>
+                  <option>Pharma</option>
+                  <option>Chemicals</option>
+                  <option>Electronics</option>
+                  <option>Textiles</option>
+                  <option>Machinery</option>
+                  <option>General goods</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="country">Country</label>
+                <select id="country" required>
+                  <option value="">Select country</option>
+                  <option>Kenya</option>
+                  <option>Tanzania</option>
+                  <option>Uganda</option>
+                  <option>Rwanda</option>
+                  <option>UAE</option>
+                  <option>Saudi Arabia</option>
+                  <option>Oman</option>
+                  <option>Qatar</option>
+                  <option>China</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="riskLevel">Risk Level</label>
+                <select id="riskLevel">
+                  <option>medium</option>
+                  <option>low</option>
+                  <option>high</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary-action">
+                <i class="fa-solid fa-clipboard-check"></i>
+                Generate Clearance Workflow
+              </button>
+              <a href="document-checklist.html" class="secondary-action">
+                <i class="fa-solid fa-list-check"></i>
+                Find Documents
+              </a>
+            </div>
+          </form>
+
+          <div id="customsStatus" class="customs-status">
+            Select shipment context to see a customs clearance workflow.
+          </div>
+
+          <section id="customsResult" hidden aria-live="polite"></section>
+
+          <section id="downloadPanel" class="download-panel" hidden>
+            <h2>Downloadable Workflow</h2>
+            <p>
+              Basic customs checklist is free. Downloadable workflow and
+              product-country checklist require login. Advanced paid reports can
+              combine documents, compliance, tariff and logistics.
+            </p>
+            <div class="download-actions">
+              <button type="button" id="downloadWorkflow" class="secondary-action">
+                <i class="fa-solid fa-download"></i>
+                Download Workflow
+              </button>
+              <a href="register.html?source=customs-clearance" class="primary-action">
+                <i class="fa-solid fa-user-plus"></i>
+                Register
+              </a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="copyright">© 2026 TradeAI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="../js/storage.js" defer></script>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/api.js" defer></script>
+    <script src="../js/api/tradeApi.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+    <script src="../js/customs-clearance.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/i18n.js" defer></script>
+  </body>
+</html>

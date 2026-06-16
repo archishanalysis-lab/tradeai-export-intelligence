@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+// Future placeholder: the active saved report flow uses Report/AiReport.
+// Keep this model unmounted until a migration or route explicitly adopts it.
 const generatedReportSchema = new mongoose.Schema(
     {
         userId: {
