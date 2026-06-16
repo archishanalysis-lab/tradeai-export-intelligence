@@ -43,33 +43,66 @@
     />
   </head>
 
-  <body class="dashboard-page">
+  <body>
+    <!-- HEADER -->
     <header class="header">
       <div class="container nav-container">
-        <a href="../index.html" class="public-brand" aria-label="TradeAI Home">
-          <span class="public-brand-mark" aria-hidden="true">T</span>
-          <span>TradeAI</span>
+        <a
+          href="../index.html"
+          class="logo"
+          aria-label="TradeAI Home"
+        >
+          <img
+            src="../assets/tradeai-nav-emblem.png"
+            alt=""
+            width="160"
+            height="164"
+            decoding="async"
+          />
         </a>
 
-        <nav class="nav" aria-label="Main navigation">
-          <a href="../index.html">Home</a>
+        <nav
+          class="nav"
+          aria-label="Main Navigation"
+        >
           <a href="../index.html#features">Features</a>
+          <a href="countries.html">Countries</a>
+          <a href="corridors.html">Corridors</a>
+          <a href="export-opportunity-report.html">Reports</a>
           <a href="pricing.html">Pricing</a>
           <a href="contact.html" class="active">Contact</a>
         </nav>
 
-        <div class="nav-actions">
-          <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+        <div class="auth-buttons">
+          <button
+            id="themeToggle"
+            class="theme-btn"
+            type="button"
+            aria-label="Toggle dark mode"
+          >
             <i class="fa-solid fa-moon" aria-hidden="true"></i>
           </button>
-          <a href="login.html" class="login-btn">Login</a>
-          <a href="register.html" class="cta">Register</a>
+
+          <a
+            href="login.html"
+            class="login-btn"
+          >
+            Login
+          </a>
+
+          <a
+            href="register.html?plan=Free&source=contact-header"
+            class="cta-btn"
+          >
+            Register
+          </a>
         </div>
 
         <button
           class="menu-toggle"
           id="menuToggle"
-          aria-label="Open menu"
+          type="button"
+          aria-label="Open mobile menu"
           aria-expanded="false"
           aria-controls="mobileMenu"
         >
@@ -78,15 +111,26 @@
       </div>
     </header>
 
-    <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
-      <nav>
-        <a href="../index.html">Home</a>
-        <a href="../index.html#features">Features</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="contact.html">Contact</a>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
-      </nav>
+    <!-- MOBILE MENU -->
+    <div
+      class="mobile-menu"
+      id="mobileMenu"
+      role="navigation"
+      aria-label="Mobile navigation"
+      aria-hidden="true"
+    >
+      <a href="../index.html#features">Features</a>
+      <a href="countries.html">Countries</a>
+      <a href="corridors.html">Corridors</a>
+      <a href="export-opportunity-report.html">Reports</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html">Login</a>
+      <a
+        href="register.html?plan=Free&source=mobile-menu"
+      >
+        Register
+      </a>
     </div>
 
     <main class="dashboard-main contact-page-main">
