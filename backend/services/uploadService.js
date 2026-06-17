@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 
+const isProduction = () => process.env.NODE_ENV === "production";
+
 const isCloudinaryConfigured = () =>
     Boolean(
         process.env.CLOUDINARY_CLOUD_NAME &&
@@ -41,18 +43,41 @@ const buildUploadedAsset = (file = {}, fallbackUrl = "") => ({
 
 const parseUploadUrl = (value = "") => value.toString().trim();
 
+const createCloudinaryConfigurationError = () => {
+    const error = new Error(
+        "Cloudinary is not configured for production uploads. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET before uploading files.",
+    );
+    error.status = 503;
+    error.code = "CLOUDINARY_NOT_CONFIGURED";
+    return error;
+};
+
+const requirePersistentUploadStorage = (req, res, next) => {
+    if (isProduction() && !isCloudinaryConfigured()) {
+        next(createCloudinaryConfigurationError());
+        return;
+    }
+
+    next();
+};
+
+const shouldServeLocalUploads = () => !isProduction();
+
 const warnIfCloudinaryMissingInProduction = () => {
-    if (process.env.NODE_ENV === "production" && !isCloudinaryConfigured()) {
+    if (isProduction() && !isCloudinaryConfigured()) {
         console.warn(
-            "Cloudinary is not configured in production. Uploads will use local disk and may not persist across deploys or restarts.",
+            "Cloudinary is not configured in production. Upload routes will fail-safe instead of returning ephemeral local disk URLs.",
         );
     }
 };
 
 export {
     buildUploadedAsset,
+    createCloudinaryConfigurationError,
     isCloudinaryConfigured,
     parseUploadUrl,
+    requirePersistentUploadStorage,
+    shouldServeLocalUploads,
     uploadToCloudinary,
     warnIfCloudinaryMissingInProduction,
 };

@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import { apiRateLimit, sanitizeRequest, securityHeaders } from "./middleware/securityMiddleware.js";
-import { warnIfCloudinaryMissingInProduction } from "./services/uploadService.js";
+import { shouldServeLocalUploads, warnIfCloudinaryMissingInProduction } from "./services/uploadService.js";
 
 /* ROUTES */
 
@@ -44,11 +44,6 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
-/* DATABASE CONNECTION */
-
-connectDB();
-warnIfCloudinaryMissingInProduction();
-
 const app = express();
 
 /* MIDDLEWARE */
@@ -69,16 +64,25 @@ const configuredOrigins = (process.env.FRONTEND_URL || "")
     .map((origin) => origin.trim())
     .filter(Boolean);
 const defaultFrontendOrigins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
     "http://localhost:5500",
     "http://127.0.0.1:5500",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "https://tradeai-export-intelligence.vercel.app",
 ];
 const allowedOrigins = Array.from(new Set([...defaultFrontendOrigins, ...configuredOrigins]));
+const allowedOriginPatterns = [
+    /^https:\/\/tradeai-export-intelligence(?:-[a-z0-9-]+)?\.vercel\.app$/i,
+];
+const isAllowedOrigin = (origin = "") =>
+    allowedOrigins.includes(origin) || allowedOriginPatterns.some((pattern) => pattern.test(origin));
 
 app.use(
     cors({
         origin(origin, callback) {
-            if (!origin || allowedOrigins.includes(origin)) {
+            if (!origin || isAllowedOrigin(origin)) {
                 callback(null, true);
                 return;
             }
@@ -102,6 +106,19 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
+    const databaseState = mongoose.connection.readyState === 1 ? "connected" : "not_connected";
+
+    res.set("Cache-Control", "no-store");
+    res.json({
+        status: "ok",
+        service: "TradeAI API",
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || "local",
+        database: databaseState,
+    });
+});
+
+app.get("/api/health", (req, res) => {
     const databaseState = mongoose.connection.readyState === 1 ? "connected" : "not_connected";
 
     res.set("Cache-Control", "no-store");
@@ -140,7 +157,10 @@ app.use("/api/trade-data", tradeDataRoutes);
 app.use("/api/trade-news", tradeNewsRoutes);
 app.use("/api/copilot", copilotRoutes);
 app.use("/api/uploads", uploadRoutes);
-app.use("/uploads", express.static("uploads"));
+
+if (shouldServeLocalUploads()) {
+    app.use("/uploads", express.static("uploads"));
+}
 
 app.use(notFound);
 
@@ -150,6 +170,15 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+    await connectDB();
+    warnIfCloudinaryMissingInProduction();
+
+    app.listen(PORT, () => {
+        console.log(`TradeAI API running on port ${PORT}`);
+        console.log(`Health checks available at /health and /api/health`);
+        console.log(`CORS allows ${allowedOrigins.length} configured origin(s) plus TradeAI Vercel previews.`);
+    });
+};
+
+startServer();

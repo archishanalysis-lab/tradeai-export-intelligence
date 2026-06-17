@@ -53,7 +53,20 @@
   }
 
   async function loadSaved() {
-    if (!TradeAI.auth.requireAuth()) return;
+    if (!TradeAI.auth.isLoggedIn()) {
+      if (total) total.textContent = "0";
+      list.innerHTML = `
+        <article class="activity-card">
+          <h4>Login to view saved profiles</h4>
+          <p>Saved buyers, suppliers and products are available after login.</p>
+          <div class="table-actions">
+            <a class="secondary" href="login.html?reason=login-required&redirect=saved-search.html">Login</a>
+            <a class="primary" href="register.html?plan=Free&source=saved-search">Register</a>
+          </div>
+        </article>
+      `;
+      return;
+    }
 
     try {
       const data = await TradeAI.api.savedItems.list();

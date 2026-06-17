@@ -226,7 +226,7 @@ const verifyRazorpayPayment = async (req, res, next) => {
             .update(`${razorpay_order_id}|${razorpay_payment_id}`)
             .digest("hex");
 
-        if (expectedSignature !== razorpay_signature) {
+        if (!signaturesMatch(expectedSignature, razorpay_signature)) {
             res.status(400);
             throw new Error("Payment verification failed");
         }

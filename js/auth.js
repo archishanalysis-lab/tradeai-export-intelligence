@@ -2,16 +2,16 @@
    TRADEAI AUTH SYSTEM
 ========================================================= */
 
+const PRODUCTION_BACKEND_URL = "https://tradeai-export-intelligence-1.onrender.com";
 const normalizeBackendBaseUrl = (url) => {
   const cleanUrl = String(url || "").replace(/\/$/, "");
   return cleanUrl.endsWith("/api") ? cleanUrl.slice(0, -4) : cleanUrl;
 };
 const backendBaseUrl = normalizeBackendBaseUrl(
   window.TradeAI?.config?.API_BASE_URL ||
+    window.TRADEAI_BACKEND_URL ||
     window.TRADEAI_API_URL ||
-    (["localhost", "127.0.0.1", ""].includes(window.location.hostname)
-      ? "http://localhost:5000"
-      : "https://tradeai-export-intelligence-1.onrender.com"),
+    PRODUCTION_BACKEND_URL,
 );
 const API_BASE_URL = window.TradeAI?.config?.API_URL || `${backendBaseUrl}/api`;
 const AUTH_BACKEND_UNAVAILABLE_MESSAGE =
@@ -163,12 +163,12 @@ const DASHBOARD_PATHS = {
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
 const logoutButtons = document.querySelectorAll(".logout-btn");
+const guestAuthActions = document.querySelectorAll(".guest-auth-action");
 const privacyConfirmSection = document.getElementById("privacyConfirmSection");
 const privacyConfirmButton = document.getElementById("privacyConfirmButton");
 
 const protectedPages = [
   "setting",
-  "saved-search",
   "notification",
   "market-analysis",
   "dashboard",
@@ -340,6 +340,11 @@ function syncLogoutVisibility() {
   logoutButtons.forEach((button) => {
     button.hidden = !loggedIn;
     button.setAttribute("aria-hidden", String(!loggedIn));
+  });
+
+  guestAuthActions.forEach((element) => {
+    element.hidden = loggedIn;
+    element.setAttribute("aria-hidden", String(loggedIn));
   });
 }
 

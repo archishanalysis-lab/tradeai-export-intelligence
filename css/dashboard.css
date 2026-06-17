@@ -1945,6 +1945,44 @@ html.light-theme .copilot-inline-disclaimer {
   }
 }
 
+/* =========================================================
+   MARKETPLACE GUEST AUTH ACTIONS
+========================================================= */
+
+.marketplace-auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.marketplace-auth-actions .login-btn,
+.marketplace-auth-actions .cta-btn {
+  min-height: 42px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.marketplace-auth-actions .logout-btn {
+  min-height: 42px;
+}
+
+@media (max-width: 768px) {
+  .marketplace-auth-actions {
+    gap: 8px;
+  }
+
+  .marketplace-auth-actions .login-btn,
+  .marketplace-auth-actions .cta-btn,
+  .marketplace-auth-actions .logout-btn {
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
 
 
 

@@ -9,12 +9,15 @@ import {
 
 import { protect } from "../middleware/authMiddleware.js";
 import { upload } from "../middleware/uploadMiddleware.js";
+import { requirePersistentUploadStorage } from "../services/uploadService.js";
 
 const router = express.Router();
 
-router.post("/product-image", protect, upload.single("file"), uploadProductImage);
-router.post("/certificates", protect, upload.single("file"), uploadCertificate);
-router.post("/catalogs", protect, upload.single("file"), uploadCatalog);
-router.post("/invoices", protect, upload.single("file"), uploadInvoice);
+router.use(protect, requirePersistentUploadStorage);
+
+router.post("/product-image", upload.single("file"), uploadProductImage);
+router.post("/certificates", upload.single("file"), uploadCertificate);
+router.post("/catalogs", upload.single("file"), uploadCatalog);
+router.post("/invoices", upload.single("file"), uploadInvoice);
 
 export default router;

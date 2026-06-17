@@ -4,10 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-<meta http-equiv="refresh" content="0; url=dashboard.html#saved" />
-    <script>
-      window.location.replace("dashboard.html#saved");
-    </script>
     <title>Saved Profiles - TradeAI</title>
     <meta name="description" content="Manage saved buyers, suppliers and market opportunities with TradeAI." />
     <link rel="stylesheet" href="../css/main.css?v=replit-style" />
@@ -27,7 +23,11 @@
           <a href="pricing.html">Pricing</a>
         </nav>
         <button id="themeToggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
-        <button type="button" class="secondary logout-btn" hidden aria-hidden="true">Logout</button>
+        <div class="marketplace-auth-actions">
+          <a href="login.html?redirect=saved-search.html" class="login-btn guest-auth-action">Login</a>
+          <a href="register.html?plan=Free&source=saved-search-header" class="cta-btn guest-auth-action">Register</a>
+          <button type="button" class="secondary logout-btn" hidden aria-hidden="true">Logout</button>
+        </div>
         <button class="menu-toggle">Menu</button>
       </div>
     </header>
@@ -67,7 +67,6 @@
       </div>
     </main>
     <script src="../js/storage.js" defer></script>
-    <script src="../js/authGuard.js" defer></script>
     <script src="../js/state/authState.js" defer></script>
     <script src="../js/state/appState.js" defer></script>
     <script src="../js/state/notificationState.js" defer></script>

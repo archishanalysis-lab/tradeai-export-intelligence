@@ -1,4 +1,9 @@
-import { buildUploadedAsset, isCloudinaryConfigured, uploadToCloudinary } from "../services/uploadService.js";
+import {
+    buildUploadedAsset,
+    createCloudinaryConfigurationError,
+    isCloudinaryConfigured,
+    uploadToCloudinary,
+} from "../services/uploadService.js";
 
 const handleUpload = (documentType) => async (req, res, next) => {
     try {
@@ -11,6 +16,10 @@ const handleUpload = (documentType) => async (req, res, next) => {
             req.file.path,
             `tradeai/${documentType}`,
         );
+
+        if (process.env.NODE_ENV === "production" && !cloudinaryResult) {
+            throw createCloudinaryConfigurationError();
+        }
 
         const asset = cloudinaryResult
             ? buildUploadedAsset({ ...cloudinaryResult, mimetype: req.file.mimetype, size: req.file.size })

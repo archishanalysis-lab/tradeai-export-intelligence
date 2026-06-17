@@ -35,18 +35,19 @@
     <header class="header">
       <div class="container nav-container">
         <a href="../index.html" class="public-brand" aria-label="TradeAI Home"><span class="public-brand-mark" aria-hidden="true">T</span><span>TradeAI</span></a>
-        <nav class="nav" aria-label="Main navigation">
-          <a href="buyer-dashboard.html">Buyers</a>
-          <a href="product-dashboard.html" class="active">Products</a>
-          <a href="inquiry-dashboard.html">Inquiries</a>
-          <a href="deals.html">Deals</a>
-          <a href="analytics-dashboard.html">Analytics</a>
-          <a href="copilot.html">Copilot</a>
-        </nav>
-        <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
-          <i class="fa-solid fa-moon" aria-hidden="true"></i>
-        </button>
-        <button type="button" class="secondary logout-btn" hidden aria-hidden="true">Logout</button>
+        <div class="nav-actions">
+          <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+            <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          </button>
+          <a href="notification.html" class="notification-btn" aria-label="Open notifications">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+          </a>
+          <a href="company-profile.html" class="login-btn auth-user-link">
+            <i class="fa-solid fa-user" aria-hidden="true"></i>
+            <span class="user-name">TradeAI User</span>
+          </a>
+          <button type="button" class="secondary logout-btn" hidden aria-hidden="true">Logout</button>
+        </div>
         <button
           class="menu-toggle"
           id="menuToggle"
@@ -60,18 +61,31 @@
     </header>
 
     <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
-      <nav>
-        <a href="buyer-dashboard.html">Buyers</a>
-        <a href="product-dashboard.html">Products</a>
-        <a href="inquiry-dashboard.html">Inquiries</a>
-        <a href="deals.html">Deals</a>
-        <a href="analytics-dashboard.html">Analytics</a>
-        <a href="copilot.html">Copilot</a>
-        <button type="button" class="mobile-logout logout-btn" hidden aria-hidden="true">Logout</button>
-      </nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="copilot.html">Copilot</a>
+      <a href="product-dashboard.html">Products</a>
+      <a href="inquiry-dashboard.html">Inquiries</a>
+      <a href="analytics-dashboard.html">Analytics</a>
+      <a href="dashboard.html#reports">Reports & My Reports</a>
+      <a href="saved-search.html">Saved Searches</a>
+      <a href="setting.html">Settings</a>
+      <button type="button" class="mobile-logout logout-btn" hidden aria-hidden="true">Logout</button>
     </div>
 
-    <main class="dashboard-main no-sidebar">
+    <aside class="dashboard-sidebar">
+      <nav class="sidebar-menu" aria-label="TradeAI app navigation">
+        <a href="dashboard.html"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Dashboard</a>
+        <a href="copilot.html"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Copilot</a>
+        <a href="product-dashboard.html" class="active" aria-current="page"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i> Products</a>
+        <a href="inquiry-dashboard.html"><i class="fa-solid fa-comments" aria-hidden="true"></i> Inquiries</a>
+        <a href="analytics-dashboard.html"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Analytics</a>
+        <a href="dashboard.html#reports"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Reports</a>
+        <a href="saved-search.html"><i class="fa-solid fa-bookmark" aria-hidden="true"></i> Saved</a>
+        <a href="setting.html"><i class="fa-solid fa-gear" aria-hidden="true"></i> Settings</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
       <div class="container">
         <section class="dashboard-hero">
           <div>
