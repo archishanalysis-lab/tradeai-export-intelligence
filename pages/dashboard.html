@@ -29,26 +29,10 @@
   <body class="dashboard-page" data-buyer-management>
     <header class="header">
       <div class="container nav-container">
-        <a
-          href="../index.html"
-          class="logo"
-          aria-label="TradeAI Home"
-        >
-          <img
-            src="../assets/tradeai-nav-emblem.png"
-            alt=""
-            width="160"
-            height="164"
-            decoding="async"
-          />
+        <a href="../index.html" class="public-brand" aria-label="TradeAI Home">
+          <span class="public-brand-mark" aria-hidden="true">T</span>
+          <span>TradeAI</span>
         </a>
-        <nav class="nav" aria-label="Main navigation">
-          <a href="../index.html">Home</a>
-          <a href="dashboard.html#overview" class="active">Dashboard</a>
-          <a href="companies.html">Marketplace</a>
-          <a href="pricing.html">Pricing</a>
-          <a href="contact.html">Contact</a>
-        </nav>
         <div class="nav-actions">
           <button id="themeToggle" class="theme-btn" type="button" aria-label="Toggle theme">
             <i class="fa-solid fa-moon" aria-hidden="true"></i>
@@ -84,6 +68,7 @@
       <a href="dashboard.html#reports">Reports & My Reports</a>
       <a href="dashboard.html#saved">Saved Searches</a>
       <a href="dashboard.html#settings">Settings</a>
+      <button type="button" class="mobile-logout logout-btn" hidden aria-hidden="true">Logout</button>
     </div>
 
     <aside class="dashboard-sidebar">

@@ -234,6 +234,11 @@ a:focus-visible {
   filter: drop-shadow(0 10px 22px rgba(212, 175, 55, 0.18));
 }
 
+.landing-page .logo {
+  width: clamp(54px, 5vw, 70px);
+  height: clamp(54px, 5vw, 70px);
+}
+
 .logo::before {
   content: none;
 }
@@ -248,6 +253,7 @@ a:focus-visible {
   letter-spacing: 0;
   line-height: 1;
   flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .public-brand-mark {
@@ -259,6 +265,19 @@ a:focus-visible {
   background: linear-gradient(135deg, #f7d774, #d8a441);
   color: #071a33;
   box-shadow: 0 12px 26px rgba(216, 164, 65, 0.26);
+}
+
+@media (max-width: 768px) {
+  .public-brand {
+    gap: 8px;
+    font-size: 1.12rem;
+  }
+
+  .public-brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+  }
 }
 
 .hero-content {
@@ -2426,4 +2445,305 @@ html.light-theme .landing-page {
 .language-select,
 .mobile-language-select {
   display: none !important;
+}
+
+/* =========================================================
+   BALANCED PUBLIC PAGE SPACING
+========================================================= */
+
+.landing-page .tradeai-demo-hero {
+  padding: 48px 0 58px;
+}
+
+.landing-page .hero-layout {
+  gap: clamp(24px, 4vw, 44px);
+}
+
+.landing-page .hero-content p,
+.landing-page .hero-lead {
+  margin-bottom: 20px;
+}
+
+.landing-page .coverage-section,
+.landing-page .toolkit-section,
+.landing-page .workflow-section,
+.landing-page .roles-section,
+.landing-page .intelligence-section,
+.landing-page .trust-section,
+.landing-page .comparison-section,
+.landing-page .unlock-section,
+.landing-page .faq-section {
+  padding: 58px 0;
+}
+
+.landing-page .section-heading {
+  margin-bottom: 34px;
+}
+
+.landing-page .feature-grid,
+.landing-page .pricing-grid,
+.landing-page .stats-grid,
+.landing-page .toolkit-grid,
+.landing-page .corridor-card-grid,
+.landing-page .report-teaser-grid {
+  gap: 18px;
+}
+
+.landing-page .feature-card,
+.landing-page .pricing-card,
+.landing-page .toolkit-card,
+.landing-page .corridor-card,
+.landing-page .report-teaser-card {
+  padding: 22px;
+}
+
+.pricing-hero {
+  padding: 54px 20px 42px !important;
+}
+
+.pricing-hero .hero-inner {
+  max-width: 980px;
+}
+
+.pricing-hero h1 {
+  font-size: clamp(34px, 4.6vw, 56px) !important;
+}
+
+.pricing-hero p {
+  margin-top: 14px !important;
+}
+
+.pricing-toggle-card {
+  padding: 26px 20px !important;
+}
+
+.pricing-section {
+  padding: 34px 20px 46px !important;
+}
+
+.plans-grid {
+  gap: 16px !important;
+}
+
+.plan-card {
+  padding: 24px !important;
+}
+
+.addons-section,
+.comparison-section,
+.faq-section,
+.cta-section {
+  padding-top: 52px !important;
+  padding-bottom: 52px !important;
+}
+
+body:has(.reports-header) .hero {
+  padding: 56px 20px 64px !important;
+}
+
+body:has(.reports-header) .hero-inner {
+  gap: 24px !important;
+}
+
+body:has(.reports-header) .report-form-card {
+  padding: 22px !important;
+}
+
+body:has(.reports-header) .section {
+  padding: 50px 20px !important;
+}
+
+body:has(.reports-header) .section-head {
+  margin-bottom: 24px !important;
+}
+
+@media (max-width: 768px) {
+  .landing-page .tradeai-demo-hero {
+    padding: 36px 0 44px;
+  }
+
+  .landing-page .coverage-section,
+  .landing-page .toolkit-section,
+  .landing-page .workflow-section,
+  .landing-page .roles-section,
+  .landing-page .intelligence-section,
+  .landing-page .trust-section,
+  .landing-page .comparison-section,
+  .landing-page .unlock-section,
+  .landing-page .faq-section {
+    padding: 44px 0;
+  }
+
+  .landing-page .section-heading {
+    margin-bottom: 24px;
+  }
+
+  .pricing-hero {
+    padding: 40px 18px 32px !important;
+  }
+
+  .pricing-toggle-card,
+  .pricing-section,
+  .addons-section,
+  .comparison-section,
+  .faq-section,
+  .cta-section {
+    padding-top: 36px !important;
+    padding-bottom: 36px !important;
+  }
+
+  body:has(.reports-header) .hero {
+    padding: 40px 18px 44px !important;
+  }
+
+  body:has(.reports-header) .section {
+    padding: 38px 18px !important;
+  }
+}
+
+/* =========================================================
+   PUBLIC FOOTER AND MOBILE CONSISTENCY PASS
+========================================================= */
+
+.footer {
+  margin-top: 0;
+  padding: 42px 0 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0)),
+    var(--bg-secondary);
+}
+
+.footer .container {
+  width: min(1180px, 92%);
+}
+
+.footer-grid {
+  grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(130px, 1fr));
+  gap: clamp(20px, 3vw, 34px);
+  align-items: start;
+}
+
+.footer-grid > div {
+  min-width: 0;
+}
+
+.footer-brand-column {
+  max-width: 330px;
+}
+
+.footer-logo {
+  margin-bottom: 12px;
+  line-height: 1.1;
+}
+
+.footer h3 {
+  margin-bottom: 12px;
+}
+
+.footer a {
+  margin-bottom: 9px;
+  overflow-wrap: anywhere;
+}
+
+.footer-desc {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.copyright {
+  width: min(1180px, 92%);
+  margin: 28px auto 0;
+  padding-top: 18px;
+}
+
+.nav-container,
+.mobile-menu,
+.hero-layout,
+.feature-grid,
+.toolkit-grid,
+.pricing-grid,
+.plans-grid,
+.report-form-card,
+.auth-box,
+.contact-form-wrapper,
+.contact-info-wrapper {
+  min-width: 0;
+}
+
+.mobile-menu {
+  max-width: min(100vw, 360px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: calc(28px + env(safe-area-inset-bottom));
+}
+
+.mobile-menu a,
+.mobile-menu button,
+.hero-actions a,
+.hero-actions button,
+.auth-buttons a,
+.nav-actions a,
+.nav-actions button {
+  max-width: 100%;
+}
+
+.mobile-menu a,
+.mobile-menu button {
+  white-space: normal;
+}
+
+.report-form-card,
+.auth-box,
+.contact-form-wrapper,
+.contact-info-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 992px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-brand-column {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding: 34px 0 20px;
+  }
+
+  .footer .container {
+    width: min(100% - 32px, 1180px);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .footer h3 {
+    margin-bottom: 10px;
+  }
+
+  .footer a {
+    margin-bottom: 8px;
+  }
+
+  .copyright {
+    width: min(100% - 32px, 1180px);
+    margin-top: 22px;
+  }
+
+  .public-brand {
+    max-width: calc(100vw - 112px);
+  }
+
+  .hero-actions,
+  .auth-buttons,
+  .nav-actions {
+    min-width: 0;
+  }
 }

@@ -334,6 +334,15 @@ function logoutUser() {
   window.location.href = getLoginPath();
 }
 
+function syncLogoutVisibility() {
+  const loggedIn = isLoggedIn();
+
+  logoutButtons.forEach((button) => {
+    button.hidden = !loggedIn;
+    button.setAttribute("aria-hidden", String(!loggedIn));
+  });
+}
+
 function requireAuth() {
   if (isLoggedIn()) {
     return true;
@@ -820,6 +829,10 @@ if (registerForm) {
 logoutButtons.forEach((button) => {
   button.addEventListener("click", logoutUser);
 });
+
+syncLogoutVisibility();
+window.addEventListener("DOMContentLoaded", syncLogoutVisibility);
+window.addEventListener("tradeai:auth-change", syncLogoutVisibility);
 
 if (storage.get(AUTH_KEY) === "true" && getToken() && isTokenExpired(getToken())) {
   clearSession();

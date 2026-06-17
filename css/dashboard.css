@@ -1781,6 +1781,170 @@ html.light-theme .copilot-inline-disclaimer {
   }
 }
 
+/* =========================================================
+   BALANCED SPACING PASS
+========================================================= */
+
+.dashboard-main {
+  padding-top: 28px;
+  padding-bottom: 52px;
+}
+
+.dashboard-main.no-sidebar > .container {
+  width: min(1180px, 92%);
+}
+
+.dashboard-hero {
+  gap: 22px;
+  margin-bottom: 22px;
+  padding: 26px 28px;
+  align-items: center;
+}
+
+.dashboard-hero h1 {
+  font-size: clamp(28px, 3.4vw, 44px);
+  margin-bottom: 10px;
+}
+
+.dashboard-hero p {
+  line-height: 1.65;
+}
+
+.dashboard-section {
+  margin-bottom: 28px;
+}
+
+.dashboard-tab-panel {
+  gap: 20px;
+}
+
+.management-grid {
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.dashboard-panel,
+.analytics-card,
+.activity-card,
+.notification-card,
+.settings-card,
+.tool-card,
+.match-card {
+  padding: 24px;
+}
+
+.panel-heading {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+}
+
+.analytics-grid,
+.activity-grid,
+.tool-grid,
+.compact-stats {
+  gap: 16px;
+}
+
+.dashboard-search,
+.dashboard-search-form {
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding-top: 22px;
+    padding-bottom: 38px;
+  }
+
+  .dashboard-main.no-sidebar > .container {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .dashboard-hero {
+    gap: 14px;
+    margin-bottom: 18px;
+    padding: 20px;
+  }
+
+  .dashboard-panel,
+  .analytics-card,
+  .activity-card,
+  .notification-card,
+  .settings-card,
+  .tool-card,
+  .match-card {
+    padding: 18px;
+  }
+
+  .management-grid,
+  .dashboard-tab-panel {
+    gap: 16px;
+  }
+}
+
+/* =========================================================
+   MOBILE OVERFLOW GUARDS
+========================================================= */
+
+.dashboard-main,
+.dashboard-hero,
+.dashboard-panel,
+.analytics-card,
+.activity-card,
+.notification-card,
+.settings-card,
+.tool-card,
+.match-card,
+.management-grid,
+.analytics-grid,
+.activity-grid,
+.tool-grid,
+.compact-stats {
+  min-width: 0;
+}
+
+.dashboard-panel,
+.analytics-card,
+.activity-card,
+.notification-card,
+.settings-card,
+.tool-card,
+.match-card {
+  box-sizing: border-box;
+}
+
+.dashboard-hero > *,
+.panel-heading > *,
+.dashboard-panel > *,
+.analytics-card > *,
+.activity-card > * {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .analytics-grid,
+  .activity-grid,
+  .tool-grid,
+  .compact-stats,
+  .management-grid,
+  .dashboard-tab-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-search,
+  .dashboard-search-form {
+    width: 100%;
+  }
+
+  .dashboard-search input,
+  .dashboard-search-form input,
+  .dashboard-search-form select,
+  .dashboard-search-form button {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 
 
 

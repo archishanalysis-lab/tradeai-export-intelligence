@@ -45,17 +45,7 @@
 
     <header class="header">
       <div class="container nav-container">
-        <a href="../index.html" class="logo"> TradeAI </a>
-
-        <nav class="nav">
-          <a href="../index.html"> Home </a>
-
-          <a href="../index.html#features"> Features </a>
-
-          <a href="pricing.html"> Pricing </a>
-
-          <a href="contact.html"> Contact </a>
-        </nav>
+        <a href="../index.html" class="public-brand" aria-label="TradeAI Home"><span class="public-brand-mark" aria-hidden="true">T</span><span>TradeAI</span></a>
 
         <div class="nav-actions">
           <button id="themeToggle" class="theme-btn">
@@ -65,10 +55,7 @@
           <a href="notification.html" class="icon-btn" aria-label="Open notifications">
             <i class="fa-solid fa-bell" aria-hidden="true"></i>
           </a>
-
-          <a href="login.html" class="login-btn">Login</a>
-
-          <a href="register.html" class="cta">Register</a>
+          <button type="button" class="secondary logout-btn" hidden aria-hidden="true">Logout</button>
         </div>
 
         <button class="menu-toggle">☰</button>
@@ -89,6 +76,7 @@
       <a href="pricing.html"> Pricing </a>
 
       <a href="contact.html"> Contact </a>
+      <button type="button" class="mobile-logout logout-btn" hidden aria-hidden="true">Logout</button>
     </div>
 
     <!-- SIDEBAR -->
@@ -201,7 +189,7 @@
               <p><strong>HS code:</strong> 2106 if applicable by product</p>
               <p><strong>Source label:</strong> Sample GCC corridor brief</p>
               <p class="table-subtext">Last updated: June 2026</p>
-              <a class="secondary" href="register.html?source=market-analysis&intent=sample-report">Register for sample report</a>
+              <a class="secondary" href="export-opportunity-report.html">Generate report preview</a>
             </article>
           </div>
         </section>
