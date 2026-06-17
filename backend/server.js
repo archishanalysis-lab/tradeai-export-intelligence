@@ -73,11 +73,11 @@ const defaultFrontendOrigins = [
     "https://tradeai-export-intelligence.vercel.app",
 ];
 const allowedOrigins = Array.from(new Set([...defaultFrontendOrigins, ...configuredOrigins]));
-const allowedOriginPatterns = [
-    /^https:\/\/tradeai-export-intelligence(?:-[a-z0-9-]+)?\.vercel\.app$/i,
-];
-const isAllowedOrigin = (origin = "") =>
-    allowedOrigins.includes(origin) || allowedOriginPatterns.some((pattern) => pattern.test(origin));
+
+// CORS is credentials-enabled, so only exact trusted origins are allowed.
+// Vercel preview URLs must be manually added to FRONTEND_URL as comma-separated exact origins.
+// Wildcard or pattern-based vercel.app origins are intentionally not allowed.
+const isAllowedOrigin = (origin = "") => allowedOrigins.includes(origin);
 
 app.use(
     cors({
@@ -177,7 +177,7 @@ const startServer = async () => {
     app.listen(PORT, () => {
         console.log(`TradeAI API running on port ${PORT}`);
         console.log(`Health checks available at /health and /api/health`);
-        console.log(`CORS allows ${allowedOrigins.length} configured origin(s) plus TradeAI Vercel previews.`);
+        console.log(`CORS allows ${allowedOrigins.length} exact configured origin(s).`);
     });
 };
 

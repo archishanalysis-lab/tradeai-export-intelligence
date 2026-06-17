@@ -14,7 +14,10 @@
       content="TradeAI helps Indian exporters, importers and SMEs discover export opportunities, buyer category direction, HS codes and AI-assisted report previews across East Africa, Gulf and China corridors."
     />
 
-    <link rel="canonical" href="https://tradeai-export-intelligence.vercel.app/" />
+    <link
+      rel="canonical"
+      href="https://tradeai-export-intelligence.vercel.app/"
+    />
 
     <meta property="og:type" content="website" />
     <meta
@@ -185,7 +188,10 @@
       }
 
       .landing-page .footer-grid {
-        grid-template-columns: minmax(210px, 1.3fr) repeat(5, minmax(110px, 1fr));
+        grid-template-columns: minmax(210px, 1.3fr) repeat(
+            5,
+            minmax(110px, 1fr)
+          );
         gap: clamp(18px, 2vw, 28px);
         align-items: flex-start;
       }
@@ -501,12 +507,28 @@
           <a href="#features" data-nav="desktop" data-i18n="navFeatures">
             Features
           </a>
-          <a href="pages/countries.html" data-nav="desktop" data-i18n="countries">Countries</a>
-          <a href="pages/corridors.html" data-nav="desktop" data-i18n="corridors">Corridors</a>
-          <a href="pages/export-opportunity-report.html" data-nav="desktop" data-i18n="reports">
+          <a
+            href="pages/countries.html"
+            data-nav="desktop"
+            data-i18n="countries"
+            >Countries</a
+          >
+          <a
+            href="pages/corridors.html"
+            data-nav="desktop"
+            data-i18n="corridors"
+            >Corridors</a
+          >
+          <a
+            href="pages/export-opportunity-report.html"
+            data-nav="desktop"
+            data-i18n="reports"
+          >
             Reports
           </a>
-          <a href="pages/pricing.html" data-nav="desktop" data-i18n="pricing">Pricing</a>
+          <a href="pages/pricing.html" data-nav="desktop" data-i18n="pricing"
+            >Pricing</a
+          >
           <a
             href="pages/contact.html"
             data-nav="desktop"
@@ -570,12 +592,22 @@
       aria-hidden="true"
     >
       <a href="#features" data-nav="mobile" data-i18n="navFeatures">Features</a>
-      <a href="pages/countries.html" data-nav="mobile" data-i18n="countries">Countries</a>
-      <a href="pages/corridors.html" data-nav="mobile" data-i18n="corridors">Corridors</a>
-      <a href="pages/export-opportunity-report.html" data-nav="mobile" data-i18n="reports">
+      <a href="pages/countries.html" data-nav="mobile" data-i18n="countries"
+        >Countries</a
+      >
+      <a href="pages/corridors.html" data-nav="mobile" data-i18n="corridors"
+        >Corridors</a
+      >
+      <a
+        href="pages/export-opportunity-report.html"
+        data-nav="mobile"
+        data-i18n="reports"
+      >
         Reports
       </a>
-      <a href="pages/pricing.html" data-nav="mobile" data-i18n="pricing">Pricing</a>
+      <a href="pages/pricing.html" data-nav="mobile" data-i18n="pricing"
+        >Pricing</a
+      >
 
       <a href="pages/contact.html" data-nav="mobile" data-i18n="navContact">
         Contact
@@ -608,8 +640,12 @@
             </span>
 
             <h1 id="heroHeading">
-              <span data-i18n="landingHeroTitleA">AI-Powered Export-Import Intelligence</span>
-              <span data-i18n="landingHeroTitleB">For Focused Trade Corridors</span>
+              <span data-i18n="landingHeroTitleA"
+                >AI-Powered Export-Import Intelligence</span
+              >
+              <span data-i18n="landingHeroTitleB"
+                >For Focused Trade Corridors</span
+              >
             </h1>
 
             <p class="hero-lead" data-i18n="landingHeroLead">
@@ -667,7 +703,9 @@
                 data-i18n-aria="landingSearchFormAria"
               >
                 <div class="corridor-search-field">
-                  <label for="corridorProduct" data-i18n="productHsCode">Product / HS Code</label>
+                  <label for="corridorProduct" data-i18n="productHsCode"
+                    >Product / HS Code</label
+                  >
                   <input
                     id="corridorProduct"
                     name="product"
@@ -683,9 +721,18 @@
                 </div>
 
                 <div class="corridor-search-field">
-                  <label for="corridorCountry" data-i18n="targetCountry">Target Country</label>
+                  <label for="corridorCountry" data-i18n="targetCountry"
+                    >Target Country</label
+                  >
                   <select id="corridorCountry" name="country" required>
-                    <option value="" selected disabled data-i18n="selectCountry">Select country</option>
+                    <option
+                      value=""
+                      selected
+                      disabled
+                      data-i18n="selectCountry"
+                    >
+                      Select country
+                    </option>
                     <option value="kenya">Kenya</option>
                     <option value="tanzania">Tanzania</option>
                     <option value="uganda">Uganda</option>
@@ -698,7 +745,11 @@
                   </select>
                 </div>
 
-                <button type="submit" class="search-submit-btn" data-i18n="generatePreview">
+                <button
+                  type="submit"
+                  class="search-submit-btn"
+                  data-i18n="generatePreview"
+                >
                   Generate report preview
                 </button>
               </form>
@@ -719,8 +770,8 @@
             <h2 id="coreModulesHeading">Core Platform Modules</h2>
             <p>
               The main TradeAI workflows for finding opportunities, checking
-              product intelligence, using Copilot, generating reports and exploring
-              the marketplace.
+              product intelligence, using Copilot, generating reports and
+              exploring the marketplace.
             </p>
           </div>
 
@@ -808,7 +859,8 @@
               <h3>Export Opportunity Reports</h3>
               <p>
                 Generate product-country reports with checklist guidance and
-                honest sample or rule-engine labels where live data is unavailable.
+                honest sample or rule-engine labels where live data is
+                unavailable.
               </p>
               <a
                 href="pages/export-opportunity-report.html"
@@ -842,10 +894,7 @@
       </section>
 
       <!-- EXPORT-IMPORT DECISION TOOLKIT -->
-      <section
-        class="toolkit-section"
-        aria-labelledby="toolkitHeading"
-      >
+      <section class="toolkit-section" aria-labelledby="toolkitHeading">
         <div class="container">
           <div class="section-heading fade-up">
             <span class="section-kicker">Export-import decision toolkit</span>
@@ -856,68 +905,116 @@
             </p>
           </div>
 
-          <div class="toolkit-grid" aria-label="TradeAI tools for exporters and importers">
+          <div
+            class="toolkit-grid"
+            aria-label="TradeAI tools for exporters and importers"
+          >
             <a class="toolkit-card" href="pages/export-import-guide.html">
               <span class="toolkit-label">Free guide</span>
-              <span class="toolkit-icon"><i class="fa-solid fa-route" aria-hidden="true"></i></span>
+              <span class="toolkit-icon"
+                ><i class="fa-solid fa-route" aria-hidden="true"></i
+              ></span>
               <strong>Starter Guide</strong>
-              <span>Learn IEC basics and the export-import process before you begin.</span>
+              <span
+                >Learn IEC basics and the export-import process before you
+                begin.</span
+              >
             </a>
 
             <a class="toolkit-card" href="pages/document-checklist.html">
               <span class="toolkit-label">Manual intelligence</span>
-              <span class="toolkit-icon"><i class="fa-solid fa-file-circle-check" aria-hidden="true"></i></span>
+              <span class="toolkit-icon"
+                ><i class="fa-solid fa-file-circle-check" aria-hidden="true"></i
+              ></span>
               <strong>Documents</strong>
-              <span>Build a basic export or import document checklist by product and country.</span>
+              <span
+                >Build a basic export or import document checklist by product
+                and country.</span
+              >
             </a>
 
             <a class="toolkit-card" href="pages/country-compliance.html">
               <span class="toolkit-label">Sample rules</span>
-              <span class="toolkit-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+              <span class="toolkit-icon"
+                ><i class="fa-solid fa-shield-halved" aria-hidden="true"></i
+              ></span>
               <strong>Compliance</strong>
-              <span>Review country-specific checks and authority notes for focus corridors.</span>
+              <span
+                >Review country-specific checks and authority notes for focus
+                corridors.</span
+              >
             </a>
 
             <a class="toolkit-card" href="pages/duty-tariff.html">
               <span class="toolkit-label">Sample rates</span>
-              <span class="toolkit-icon"><i class="fa-solid fa-percent" aria-hidden="true"></i></span>
+              <span class="toolkit-icon"
+                ><i class="fa-solid fa-percent" aria-hidden="true"></i
+              ></span>
               <strong>Tariffs</strong>
-              <span>Understand duty, tax and certificate-of-origin considerations.</span>
+              <span
+                >Understand duty, tax and certificate-of-origin
+                considerations.</span
+              >
             </a>
 
             <a class="toolkit-card" href="pages/country-recommendation.html">
               <span class="toolkit-label">Rule engine</span>
-              <span class="toolkit-icon"><i class="fa-solid fa-ranking-star" aria-hidden="true"></i></span>
+              <span class="toolkit-icon"
+                ><i class="fa-solid fa-ranking-star" aria-hidden="true"></i
+              ></span>
               <strong>Country Fit</strong>
-              <span>Compare target countries and see why one market may fit better.</span>
+              <span
+                >Compare target countries and see why one market may fit
+                better.</span
+              >
             </a>
 
             <a class="toolkit-card" href="pages/incoterms-advisor.html">
               <span class="toolkit-label">Educational</span>
-              <span class="toolkit-icon"><i class="fa-solid fa-handshake" aria-hidden="true"></i></span>
+              <span class="toolkit-icon"
+                ><i class="fa-solid fa-handshake" aria-hidden="true"></i
+              ></span>
               <strong>Incoterms</strong>
-              <span>Compare risk transfer, freight responsibility and beginner-friendly terms.</span>
+              <span
+                >Compare risk transfer, freight responsibility and
+                beginner-friendly terms.</span
+              >
             </a>
 
             <a class="toolkit-card" href="pages/payment-risk.html">
               <span class="toolkit-label">Risk guide</span>
-              <span class="toolkit-icon"><i class="fa-solid fa-building-columns" aria-hidden="true"></i></span>
+              <span class="toolkit-icon"
+                ><i class="fa-solid fa-building-columns" aria-hidden="true"></i
+              ></span>
               <strong>Payments</strong>
-              <span>Choose safer payment terms for new buyers, suppliers and high-value shipments.</span>
+              <span
+                >Choose safer payment terms for new buyers, suppliers and
+                high-value shipments.</span
+              >
             </a>
 
             <a class="toolkit-card" href="pages/customs-clearance.html">
               <span class="toolkit-label">Checklist</span>
-              <span class="toolkit-icon"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i></span>
+              <span class="toolkit-icon"
+                ><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i
+              ></span>
               <strong>Customs</strong>
-              <span>Follow export or import clearance steps and see who handles each task.</span>
+              <span
+                >Follow export or import clearance steps and see who handles
+                each task.</span
+              >
             </a>
 
             <a class="toolkit-card" href="pages/logistics-planner.html">
               <span class="toolkit-label">Manual guide</span>
-              <span class="toolkit-icon"><i class="fa-solid fa-ship" aria-hidden="true"></i></span>
+              <span class="toolkit-icon"
+                ><i class="fa-solid fa-ship" aria-hidden="true"></i
+              ></span>
               <strong>Logistics</strong>
-              <span>Plan shipment mode, transit expectations, documents and forwarder involvement.</span>
+              <span
+                >Plan shipment mode, transit expectations, documents and
+                forwarder involvement.</span
+              >
             </a>
           </div>
         </div>
@@ -1036,7 +1133,6 @@
         </div>
       </section>
 
-
       <!-- AI REPORT TEASER -->
       <section
         class="report-teaser-section"
@@ -1049,10 +1145,10 @@
               What you get after registering: report, checklist and next steps.
             </h2>
             <p>
-              Select a product and target country to generate an export opportunity
-              report with a score, HS/document checklist, buyer or supplier direction
-              and next actions. SAMPLE DATA and Rule Engine Preview labels appear
-              when live verified data is not available.
+              Select a product and target country to generate an export
+              opportunity report with a score, HS/document checklist, buyer or
+              supplier direction and next actions. SAMPLE DATA and Rule Engine
+              Preview labels appear when live verified data is not available.
             </p>
           </div>
 
@@ -1126,7 +1222,8 @@
             </h2>
             <p>
               TradeAI turns one product-country question into a report preview,
-              document checklist, Copilot guidance and buyer or supplier discovery path.
+              document checklist, Copilot guidance and buyer or supplier
+              discovery path.
             </p>
           </div>
 
@@ -1190,8 +1287,8 @@
               </div>
               <h3>Review Documents</h3>
               <p>
-                Check HS category, commercial invoice, packing list and compliance
-                guidance before moving forward.
+                Check HS category, commercial invoice, packing list and
+                compliance guidance before moving forward.
               </p>
               <a
                 href="pages/register.html?plan=Free&source=workflow&intent=document-review"
@@ -1522,9 +1619,9 @@
                 ready.
               </h2>
               <p>
-                Search markets, generate report previews, ask Copilot and compare
-                opportunities. Upgrade later for higher report limits, saved outputs,
-                buyer discovery and export-ready downloads.
+                Search markets, generate report previews, ask Copilot and
+                compare opportunities. Upgrade later for higher report limits,
+                saved outputs, buyer discovery and export-ready downloads.
               </p>
             </div>
 
@@ -1664,7 +1761,6 @@
           <a href="pages/privacy-policy.html">Privacy Policy</a>
           <a href="pages/terms-and-conditions.html">Terms & Conditions</a>
         </div>
-
       </div>
 
       <div class="copyright">© 2026 TradeAI. All rights reserved.</div>
@@ -1697,7 +1793,9 @@
             clearSearchValidity();
 
             if (!product && !country) {
-              productInput?.setCustomValidity(getCopy("productCountryRequired"));
+              productInput?.setCustomValidity(
+                getCopy("productCountryRequired"),
+              );
               productInput?.reportValidity();
               return;
             }
