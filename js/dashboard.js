@@ -917,10 +917,10 @@ async function renderAccountSummary() {
     document.getElementById("dashboardWelcomeTitle");
   const planSummary =
     document.getElementById("dashboardPlanSummary");
-  const recentReports =
-    document.getElementById("dashboardRecentReports");
+  const recentCountryFit =
+    document.getElementById("dashboardRecentCountryFit");
 
-  if (!welcomeTitle && !planSummary && !recentReports)
+  if (!welcomeTitle && !planSummary && !recentCountryFit)
     return;
 
   const user =
@@ -932,63 +932,95 @@ async function renderAccountSummary() {
   }
 
   try {
-    const [billing, reports] =
-      await Promise.all([
-        window.TradeAI?.api?.billing?.status?.().catch(() => null),
-        window.TradeAI?.api?.reports?.list?.().catch(() => ({ reports: [] })),
+    const [billingResult, reportsResult] =
+      await Promise.allSettled([
+        window.TradeAI?.api?.billing?.status?.(),
+        window.TradeAI?.api?.reports?.myReports?.(),
       ]);
+    const billing =
+      billingResult.status === "fulfilled" ? billingResult.value : null;
+    const reports =
+      reportsResult.status === "fulfilled" ? reportsResult.value : null;
 
     if (planSummary) {
-      const planName =
-        billing?.planDetails?.name || billing?.plan || "Free";
-      const copilotUsage =
-        billing?.usage?.copilot;
-      const reportUsage =
-        billing?.usage?.reports;
-      const downloadUsage =
-        billing?.usage?.reportDownloads;
-      const formatUsage =
-        (item) => item
-          ? `${item.used || 0}/${item.limit === -1 ? "unlimited" : item.limit}`
-          : "";
-      const usageText = [
-        copilotUsage ? `Copilot ${formatUsage(copilotUsage)} today` : "",
-        reportUsage ? `reports ${formatUsage(reportUsage)} this month` : "",
-        downloadUsage ? `downloads ${formatUsage(downloadUsage)} this month` : "",
-      ].filter(Boolean).join(", ");
+      if (!billing) {
+        planSummary.textContent =
+          "Plan usage could not load right now. Your saved workspace is still available below.";
+      } else {
+        const planName =
+          billing?.planDetails?.name || billing?.plan || user.plan || "Free";
+        const copilotUsage =
+          billing?.usage?.copilot;
+        const reportUsage =
+          billing?.usage?.reports;
+        const downloadUsage =
+          billing?.usage?.reportDownloads;
+        const formatUsage =
+          (item) => item
+            ? `${item.used || 0}/${item.limit === -1 ? "unlimited" : item.limit}`
+            : "";
+        const usageText = [
+          copilotUsage ? `Copilot ${formatUsage(copilotUsage)} today` : "",
+          reportUsage ? `reports ${formatUsage(reportUsage)} this month` : "",
+          downloadUsage ? `downloads ${formatUsage(downloadUsage)} this month` : "",
+        ].filter(Boolean).join(", ");
 
-      planSummary.textContent =
-        `${planName} plan${usageText ? ` - ${usageText}` : ""}.`;
+        planSummary.textContent =
+          `${planName} plan${usageText ? ` - ${usageText}` : ""}.`;
+      }
     }
 
-    if (recentReports) {
+    if (recentCountryFit) {
+      if (reportsResult.status === "rejected") {
+        recentCountryFit.innerHTML = `
+          <article class="activity-card">
+            <h4>Country Fit history is unavailable</h4>
+            <p>Your saved results could not load right now. No sample result has been substituted.</p>
+            <a class="secondary" href="#reports">Retry in My Reports</a>
+          </article>
+        `;
+        return;
+      }
+
+      const savedReports =
+        Array.isArray(reports) ? reports : reports?.reports || [];
       const items =
-        reports?.reports || [];
+        savedReports.filter((report) =>
+          report?.reportType === "country-fit" ||
+          report?.reportType === "country-recommendation"
+        );
 
       if (!items.length) {
-        recentReports.innerHTML = `
+        recentCountryFit.innerHTML = `
           <article class="activity-card">
-            <h4>No saved reports yet</h4>
-            <p>Create one export opportunity report to get a real saved result in this dashboard.</p>
+            <h4>No saved Country Fit results yet</h4>
+            <p>Compare your product across TradeAI's focus countries and save the full ranking here.</p>
             <div class="table-actions">
-              <a class="secondary" href="#reports">Create report</a>
-              <a class="secondary" href="export-opportunity-report.html">Use guided report page</a>
+              <a class="primary" href="country-recommendation.html">Run Country Fit</a>
             </div>
           </article>
         `;
         return;
       }
 
-      recentReports.innerHTML =
+      recentCountryFit.innerHTML =
         items.slice(0, 3)
-          .map((report) => `
+          .map((report) => {
+            const data = report.reportData || {};
+            const source = data.sourceType || data.dataSourceLabel || report.sourceDataType || (report.isDemo ? "Rule Engine" : "TradeAI report");
+            const confidence = Number(data.confidenceScore);
+
+            return `
             <article class="activity-card">
-              <h4>${escapeDashboardHtml(report.title)}</h4>
-              <p>${escapeDashboardHtml((report.reportType || "report").replace(/_/g, " "))}</p>
+              <span class="status-badge ${source === "UN Comtrade" ? "status-active" : "status-pending"}">${escapeDashboardHtml(source)}</span>
+              <h4>${escapeDashboardHtml(report.productName || data.productName || "Country Fit result")}</h4>
+              <p><strong>Recommended market:</strong> ${escapeDashboardHtml(data.recommendedCountry || data.country || report.targetCountry || "View saved ranking")}</p>
+              ${Number.isFinite(confidence) ? `<p><strong>Confidence:</strong> ${confidence}%</p>` : ""}
               <p class="table-subtext">${new Date(report.createdAt).toLocaleDateString()}</p>
-              <a class="secondary" href="#reports">Open reports</a>
+              <a class="secondary" href="#reports">Open full saved ranking</a>
             </article>
-          `)
+          `;
+          })
           .join("");
     }
   } catch (error) {
@@ -1019,6 +1051,37 @@ function renderSavedReportFields(report) {
 
   const data =
     report?.reportData || {};
+
+  if (report?.reportType === "country-fit" || report?.reportType === "country-recommendation") {
+    const ranking =
+      Array.isArray(data.rankedCountries) ? data.rankedCountries : [];
+    const source =
+      data.sourceType || report?.sourceDataType || (report?.isDemo ? "Rule Engine" : "TradeAI report");
+
+    return `
+      <div class="activity-card saved-report-detail">
+        <h4>${escapeDashboardHtml(report?.productName || data.productName || "Country Fit result")}</h4>
+        <p><strong>Recommended country:</strong> ${escapeDashboardHtml(data.recommendedCountry || data.country || report?.targetCountry || "Not available")}</p>
+        <p><strong>HS code:</strong> ${escapeDashboardHtml(report?.hsCode || data.hsCode || "Not provided")}</p>
+        ${Number.isFinite(Number(data.confidenceScore)) ? `<p><strong>Confidence:</strong> ${Number(data.confidenceScore)}%</p>` : ""}
+        <p><strong>Data source:</strong> ${escapeDashboardHtml(source)}</p>
+        ${data.explanation ? `<p><strong>Explanation:</strong> ${escapeDashboardHtml(Array.isArray(data.explanation) ? data.explanation.join(" ") : data.explanation)}</p>` : ""}
+        ${ranking.length ? `
+          <p><strong>Country ranking:</strong></p>
+          <ol>
+            ${ranking.map((item) => `
+              <li>
+                ${escapeDashboardHtml(item.country || "Country")}
+                ${Number.isFinite(Number(item.confidenceScore)) ? ` - ${Number(item.confidenceScore)}% confidence` : ""}
+                (${escapeDashboardHtml(item.dataSourceLabel || item.sourceLabel || source)})
+              </li>
+            `).join("")}
+          </ol>
+        ` : ""}
+        <p class="table-subtext">TradeAI Country Fit is decision-support guidance. Verify commercial, customs and compliance details before acting.</p>
+      </div>
+    `;
+  }
 
   if (data.reportTitle) {
     const listBlock = (title, items) => {
@@ -1097,8 +1160,10 @@ function renderMyReportsList(list, reports) {
   if (!reports.length) {
     list.innerHTML = `
       <li>
-        No reports yet. Generate your first export opportunity report.
-        <a href="export-opportunity-report.html">Generate report</a>
+        No reports yet.
+        <a href="country-recommendation.html">Run Country Fit</a>
+        or
+        <a href="export-opportunity-report.html">generate an export report</a>.
       </li>
     `;
     return;

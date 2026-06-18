@@ -1,99 +1,134 @@
 (function () {
-  const marketInput = document.getElementById("mainSearch");
-  const marketButton = document.getElementById("marketSearchButton");
-  const chartTitle = document.getElementById("chartTitle");
-  const chartBars = document.querySelectorAll(".chart-track-bar");
-  const chartWrap = document.getElementById("chartDataVisualization");
-  const marketChartCard = document.getElementById("marketChartCard");
-  let loadingTimer;
+  const form = document.getElementById("landingCountryFitForm");
+  const result = document.getElementById("landingCountryFitResult");
+  const status = document.getElementById("landingCountryFitStatus");
+  const submit = document.getElementById("landingCountryFitSubmit");
 
-  function getCopy(key) {
-    return window.TradeAI?.i18n?.getCopy?.(key) || key;
+  if (!form || !result || !status || !submit) return;
+
+  const escapeHtml = (value = "") =>
+    String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  function setStatus(message, state = "info") {
+    status.textContent = message;
+    status.dataset.state = state;
   }
 
-  function resetChart() {
-    if (marketChartCard) {
-      marketChartCard.hidden = true;
-      marketChartCard.setAttribute("aria-busy", "false");
-      marketChartCard.setAttribute("aria-hidden", "true");
-    }
+  function buildPayload() {
+    const selectedCountries = Array.from(
+      form.querySelectorAll('input[name="targetCountries"]:checked'),
+      (input) => input.value,
+    );
 
-    if (chartTitle) {
-      chartTitle.textContent = getCopy("chartTitleDefault");
-    }
+    return {
+      productName: document.getElementById("landingProductName")?.value.trim() || "",
+      hsCode: document.getElementById("landingHsCode")?.value.trim() || "",
+      sourceCountry: "India",
+      targetCountries: selectedCountries,
+      productCategory: "General goods",
+      direction: "export from India",
+      exporterExperience: "beginner",
+      shipmentSize: "small",
+      budgetLevel: "medium",
+    };
   }
 
-  function runSearch() {
-    const product = marketInput?.value.trim();
+  function formatTradeValue(value) {
+    const amount = Number(value);
+    return Number.isFinite(amount) && amount > 0
+      ? `USD ${amount.toLocaleString("en-US")}`
+      : "Not available";
+  }
 
-    if (!product) {
-      resetChart();
+  function renderResult(data) {
+    const recommendation = data?.topRecommendations?.[0];
+
+    if (!recommendation) {
+      throw new Error("No Country Fit result was returned for this selection.");
+    }
+
+    const source =
+      recommendation.dataSourceLabel || data.dataSourceLabel || "Rule Engine";
+    const explanations = Array.isArray(recommendation.whyRecommended)
+      ? recommendation.whyRecommended
+      : [];
+
+    result.hidden = false;
+    result.innerHTML = `
+      <span class="source-label">${escapeHtml(source)}</span>
+      <h3>Best current fit: ${escapeHtml(recommendation.country)}</h3>
+      <p>${escapeHtml(data.explanation || "This result compares the selected focus markets using available demand and rule-engine signals.")}</p>
+      <div class="result-metrics">
+        <div><span>Country Fit score</span><strong>${escapeHtml(recommendation.finalScore ?? "-")} / 100</strong></div>
+        <div><span>Confidence</span><strong>${escapeHtml(data.confidenceScore ?? "-")} / 100</strong></div>
+        <div><span>Available trade value</span><strong>${escapeHtml(formatTradeValue(recommendation.tradeValue))}</strong></div>
+        <div><span>Growth signal</span><strong>${escapeHtml(recommendation.trend || "Not available")}</strong></div>
+      </div>
+      ${explanations.length ? `<p><strong>Why this market:</strong> ${escapeHtml(explanations.join(" "))}</p>` : ""}
+      <p class="country-fit-status">${escapeHtml(data.disclaimer || "TradeAI guidance is decision support and should be verified before commercial decisions.")}</p>
+      <div class="result-actions">
+        <a class="landing-primary" href="pages/register.html?plan=Free&source=country-fit-preview">Register to save full ranking</a>
+        <a class="landing-secondary" href="pages/country-recommendation.html">Open detailed Country Fit</a>
+      </div>
+    `;
+    result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const payload = buildPayload();
+
+    if (!payload.productName) {
+      setStatus("Enter a product name to generate your preview.", "error");
+      document.getElementById("landingProductName")?.focus();
       return;
     }
 
-    if (marketChartCard) {
-      marketChartCard.hidden = false;
-      marketChartCard.setAttribute("aria-busy", "true");
-      marketChartCard.setAttribute("aria-hidden", "false");
+    if (!payload.targetCountries.length) {
+      setStatus("Select at least one target country.", "error");
+      return;
     }
 
-    if (marketButton) {
-      marketButton.disabled = true;
-      marketButton.setAttribute("aria-busy", "true");
-    }
+    submit.disabled = true;
+    submit.textContent = "Comparing countries...";
+    setStatus("Checking available Comtrade data and Country Fit guidance...", "info");
 
-    if (chartTitle) {
-      chartTitle.textContent = getCopy("chartTitleProduct").replace(
-        "{product}",
-        product,
+    try {
+      window.TradeAI?.storage?.set(
+        "tradeai_pending_country_fit",
+        JSON.stringify(payload),
       );
-    }
+      window.TradeAI?.analytics?.track("country_fit_preview_submit", {
+        productName: payload.productName,
+        hsCode: payload.hsCode,
+        targetCountries: payload.targetCountries,
+        source: "landing",
+      });
 
-    chartWrap?.classList.add("is-demo-active");
-
-    chartBars.forEach((bar, index) => {
-      const baseWidth = Number.parseFloat(bar.style.width) || 54;
-      const variance = (product.length * (index + 3)) % 27;
-      const newWidth = Math.max(32, Math.min(100, baseWidth - 12 + variance));
-
-      bar.style.width = `${newWidth}%`;
-      bar.setAttribute("aria-valuenow", Math.round(newWidth));
-    });
-
-    window.clearTimeout(loadingTimer);
-    loadingTimer = window.setTimeout(() => {
-      marketChartCard?.setAttribute("aria-busy", "false");
-      if (marketButton) {
-        marketButton.disabled = false;
-        marketButton.setAttribute("aria-busy", "false");
+      if (!window.TradeAI?.api?.recommendations?.countryFit) {
+        throw new Error("Country Fit is temporarily unavailable. Please try again shortly.");
       }
-    }, 650);
 
-    window.TradeAI?.analytics?.track("market_search_demo", {
-      query: product,
-    });
-  }
-
-  marketButton?.addEventListener("click", runSearch);
-  marketInput?.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      runSearch();
-    }
-  });
-
-  window.addEventListener("tradeai:language-change", () => {
-    if (marketChartCard?.hidden) {
-      resetChart();
-      return;
-    }
-
-    if (marketInput?.value.trim()) {
-      chartTitle.textContent = getCopy("chartTitleProduct").replace(
-        "{product}",
-        marketInput.value.trim(),
+      const data = await window.TradeAI.api.recommendations.countryFit(payload);
+      renderResult(data);
+      setStatus(`Preview generated from ${data.dataSourceLabel || "Rule Engine"}.`, "success");
+    } catch (error) {
+      result.hidden = true;
+      setStatus(
+        window.TradeAI?.getPreviewMessage?.(
+          error,
+          "Country Fit is temporarily unavailable. No sample result has been substituted.",
+        ) || error.message,
+        "error",
       );
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Generate Free Country-Fit Preview";
     }
   });
-
-  resetChart();
 })();

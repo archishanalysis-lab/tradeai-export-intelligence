@@ -9,7 +9,7 @@
     <title>TradeAI Dashboard</title>
     <meta
       name="description"
-      content="Unified TradeAI dashboard for buyer discovery, market analysis, HS codes, AI reports, saved searches and settings."
+      content="TradeAI workspace for Country Fit, saved export reports, Copilot guidance, buyer discovery and account settings."
     />
     <link rel="stylesheet" href="../css/main.css?v=replit-style" />
     <link rel="stylesheet" href="../css/dashboard.css?v=replit-style" />
@@ -62,11 +62,10 @@
     <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
       <a href="../index.html">Home</a>
       <a href="dashboard.html#overview">Overview</a>
+      <a href="country-recommendation.html">Country Fit</a>
+      <a href="dashboard.html#reports">My Reports</a>
+      <a href="copilot.html">Ask Copilot</a>
       <a href="dashboard.html#buyers">Buyer Discovery</a>
-      <a href="dashboard.html#markets">Market Analysis</a>
-      <a href="dashboard.html#hs-codes">HS Codes</a>
-      <a href="dashboard.html#reports">Reports & My Reports</a>
-      <a href="dashboard.html#saved">Saved Searches</a>
       <a href="dashboard.html#settings">Settings</a>
       <button type="button" class="mobile-logout logout-btn" hidden aria-hidden="true">Logout</button>
     </div>
@@ -76,20 +75,17 @@
         <a href="#overview" data-dashboard-tab="overview" class="active">
           <i class="fa-solid fa-chart-line" aria-hidden="true"></i> Overview
         </a>
-        <a href="#buyers" data-dashboard-tab="buyers">
-          <i class="fa-solid fa-users" aria-hidden="true"></i> Buyer Discovery
-        </a>
-        <a href="#markets" data-dashboard-tab="markets">
-          <i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Market Analysis
-        </a>
-        <a href="#hs-codes" data-dashboard-tab="hs-codes">
-          <i class="fa-solid fa-barcode" aria-hidden="true"></i> HS Codes
+        <a href="country-recommendation.html">
+          <i class="fa-solid fa-earth-asia" aria-hidden="true"></i> Country Fit
         </a>
         <a href="#reports" data-dashboard-tab="reports">
-          <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Reports & My Reports
+          <i class="fa-solid fa-file-lines" aria-hidden="true"></i> My Reports
         </a>
-        <a href="#saved" data-dashboard-tab="saved">
-          <i class="fa-solid fa-bookmark" aria-hidden="true"></i> Saved Searches
+        <a href="copilot.html">
+          <i class="fa-solid fa-robot" aria-hidden="true"></i> Ask Copilot
+        </a>
+        <a href="#buyers" data-dashboard-tab="buyers">
+          <i class="fa-solid fa-users" aria-hidden="true"></i> Buyer Discovery
         </a>
         <a href="#settings" data-dashboard-tab="settings">
           <i class="fa-solid fa-gear" aria-hidden="true"></i> Settings
@@ -101,11 +97,11 @@
       <div class="container">
         <section class="dashboard-hero">
           <div>
-            <span class="section-kicker">Unified workspace</span>
+            <span class="section-kicker">Phase-1 workspace</span>
             <h1>TradeAI Dashboard</h1>
             <p>
-              Review buyer discovery, corridor intelligence, HS-code analytics,
-              AI reports and saved searches from one protected workspace.
+              Run Country Fit, review saved export reports and use Copilot to
+              turn each result into a practical next action.
             </p>
           </div>
           <div class="dashboard-meta">
@@ -128,116 +124,65 @@
               <p id="dashboardPlanSummary">Loading your plan and saved report activity...</p>
             </div>
             <div class="quick-actions">
-              <a class="quick-action" href="#reports">
-                <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Generate export opportunity report
+              <a class="quick-action" href="country-recommendation.html">
+                <i class="fa-solid fa-earth-asia" aria-hidden="true"></i> Run Country Fit
               </a>
-              <a class="quick-action" href="#reports">
-                <i class="fa-solid fa-folder-open" aria-hidden="true"></i> Save/download report
+              <a class="quick-action" href="export-opportunity-report.html">
+                <i class="fa-solid fa-file-circle-plus" aria-hidden="true"></i> New Export Report
               </a>
               <a class="quick-action" href="copilot.html">
-                <i class="fa-solid fa-robot" aria-hidden="true"></i> Ask Trade Copilot
+                <i class="fa-solid fa-robot" aria-hidden="true"></i> Ask Copilot about a saved report
               </a>
-              <a class="quick-action" href="#buyers">
-                <i class="fa-solid fa-users" aria-hidden="true"></i> Explore buyer/supplier marketplace
+              <a class="quick-action" href="#reports">
+                <i class="fa-solid fa-folder-open" aria-hidden="true"></i> Open My Reports
               </a>
-            </div>
-            <div id="dashboardRecentReports" class="activity-grid">
-              <article class="activity-card"><h4>Loading recent reports...</h4><p>Your saved export reports will appear here.</p></article>
             </div>
             <div class="section-heading">
-              <span class="section-kicker">Start Here</span>
-              <h2>Get one useful TradeAI result in five steps</h2>
-              <p>Select a product-country pair, generate a checklist/report, ask Copilot, then save or download the result.</p>
+              <span class="section-kicker">Country Fit</span>
+              <h3>Recent Country Fit results</h3>
             </div>
-            <div class="activity-grid" aria-label="Start Here checklist">
-              <article class="activity-card">
-                <span class="status-badge status-active">Getting started</span>
-                <h4>Step 1: Select product and country</h4>
-                <p>Enter your product, target country and HS code if available.</p>
-                <a class="secondary" href="#reports">Open report form</a>
-              </article>
-              <article class="activity-card">
-                <span class="status-badge status-pending">Next</span>
-                <h4>Step 2: Generate checklist/report</h4>
-                <p>Get opportunity score, demand reason, risk notes, document checklist and next actions.</p>
-                <a class="secondary" href="#reports">Generate report</a>
-              </article>
-              <article class="activity-card">
-                <span class="status-badge status-pending">Next</span>
-                <h4>Step 3: Ask Copilot for guidance</h4>
-                <p>Ask follow-up questions about documents, safer payment terms, buyer outreach or HS-code direction.</p>
-                <a class="secondary" href="copilot.html">Ask Copilot</a>
-              </article>
-              <article class="activity-card">
-                <span class="status-badge status-pending">Next</span>
-                <h4>Step 4: Save/download result</h4>
-                <p>Open My Reports to view, print or download saved export opportunity reports.</p>
-                <a class="secondary" href="#reports">My Reports</a>
-              </article>
-              <article class="activity-card">
-                <span class="status-badge status-pending">Upgrade later</span>
-                <h4>Step 5: Upgrade when limits are reached</h4>
-                <p>Use free output first. Upgrade later for more reports, saved results, Copilot usage and buyer/supplier discovery.</p>
-                <a class="secondary" href="pricing.html">View limits</a>
-              </article>
+            <div id="dashboardRecentCountryFit" class="activity-grid">
+              <article class="activity-card"><h4>Loading Country Fit results...</h4><p>Your latest saved rankings will appear here.</p></article>
             </div>
           </section>
 
           <section class="dashboard-section" id="my-reports-section">
             <div class="section-heading">
               <h3>My Reports</h3>
+              <p>Open, download or print your saved Country Fit and export report results.</p>
             </div>
             <ul id="my-reports-list"></ul>
           </section>
 
           <section class="dashboard-section">
             <div class="section-heading">
-              <h2>Overview</h2>
-              <p>MVP sample signals are shown alongside your real saved reports and account status.</p>
+              <span class="section-kicker">Copilot</span>
+              <h2>Explain your saved result</h2>
+              <p>Ask Copilot to explain a ranking, risk note or next action from a saved report. Copilot labels rule-engine fallback responses when live AI is unavailable.</p>
             </div>
-            <form id="dashboardSearchForm" class="dashboard-search">
-              <input id="dashboardSearch" type="search" placeholder="Search buyers, products, HS codes..." />
-              <button class="primary" type="submit">Search</button>
-            </form>
-            <div id="analyticsContainer" class="analytics-grid"></div>
-          </section>
-
-          <section class="quick-actions">
-            <a class="quick-action" href="#reports">
-              <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Generate report
-            </a>
-            <a class="quick-action" href="#buyers">
-              <i class="fa-solid fa-users" aria-hidden="true"></i> Explore buyer leads
-            </a>
-            <a class="quick-action" href="#hs-codes">
-              <i class="fa-solid fa-barcode" aria-hidden="true"></i> Check HS code
-            </a>
-            <a class="quick-action" href="contact.html?interest=walkthrough&source=dashboard">
-              <i class="fa-solid fa-message" aria-hidden="true"></i> Request walkthrough
-            </a>
+            <a class="primary" href="copilot.html">Ask Copilot to explain your saved report</a>
           </section>
 
           <section class="dashboard-section">
-            <div class="section-heading"><h2>Notifications</h2></div>
-            <div id="notificationContainer" class="notification-grid"></div>
-          </section>
-
-          <section class="dashboard-section">
-            <div class="section-heading"><h2>Recent Activity</h2></div>
-            <div id="activityContainer" class="activity-grid"></div>
+            <div class="section-heading">
+              <span class="section-kicker">Source-labeled records</span>
+              <h2>Buyer Discovery</h2>
+              <p>Buyer Discovery uses verified, public and source-labeled records where available. Sample records are labeled and are not presented as verified buyers.</p>
+            </div>
+            <a class="secondary" href="#buyers">Open Buyer Discovery</a>
           </section>
         </section>
 
         <section id="buyers" class="dashboard-tab-panel" data-dashboard-panel="buyers" hidden>
           <section class="buyer-finder-shell">
             <div class="finder-status-strip">
-              <span><i class="fa-solid fa-shield-halved"></i> MVP Preview Data</span>
-              <span><i class="fa-solid fa-bolt"></i> Backend-aware fallback</span>
+              <span><i class="fa-solid fa-shield-halved"></i> Source-labeled records</span>
+              <span><i class="fa-solid fa-circle-info"></i> Samples labeled clearly</span>
             </div>
             <div class="finder-hero">
               <span class="section-kicker">Buyer discovery</span>
               <h2>Buyer Discovery Workspace</h2>
-              <p>Search sample buyer signals and manage backend-connected buyer records.</p>
+              <p>Buyer Discovery uses verified, public and source-labeled records where available. Sample records are clearly labeled and are not verified buyer leads.</p>
               <form id="buyerFinderForm" class="finder-search">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input id="buyerFinderSearch" type="search" placeholder="e.g. Spices, Rice, Pharmaceuticals..." />
@@ -460,6 +405,18 @@
         </section>
 
         <section id="reports" class="dashboard-tab-panel" data-dashboard-panel="reports" hidden>
+          <section class="dashboard-section">
+            <div class="section-heading">
+              <span class="section-kicker">Saved workspace</span>
+              <h2>My Reports</h2>
+              <p>Review saved Country Fit rankings and export reports, or create a new result.</p>
+            </div>
+            <div class="quick-actions">
+              <a class="quick-action" href="country-recommendation.html"><i class="fa-solid fa-earth-asia" aria-hidden="true"></i> Run Country Fit</a>
+              <a class="quick-action" href="export-opportunity-report.html"><i class="fa-solid fa-file-circle-plus" aria-hidden="true"></i> New Export Report</a>
+              <a class="quick-action" href="copilot.html"><i class="fa-solid fa-robot" aria-hidden="true"></i> Ask Copilot about a report</a>
+            </div>
+          </section>
           <section class="dashboard-section two-column-layout">
             <article class="dashboard-panel">
               <h2>Create Trade Readiness Report</h2>
@@ -497,7 +454,7 @@
           </section>
           <section class="dashboard-section" id="reports-tab-my-reports-section">
             <article class="dashboard-panel">
-              <h2>Reports & My Reports</h2>
+              <h2>Saved report history</h2>
               <p class="table-subtext">Saved reports from logged-in generation appear here. Select View to expand, Download for text, Download CSV for spreadsheet use, or Print for a pitch-ready copy.</p>
               <ul id="reports-tab-my-reports-list"></ul>
             </article>
@@ -551,10 +508,9 @@
               <article class="settings-card">
                 <div class="settings-header"><h2>Subscription</h2><i class="fa-solid fa-credit-card"></i></div>
                 <div class="subscription-card">
-                  <h3>Pro Plan</h3>
-                  <p>Active Subscription</p>
-                  <span class="subscription-price">Rs. 4,999/month</span>
-                  <div class="card-actions"><a href="pricing.html" class="primary">Manage Plan</a></div>
+                  <h3>Current plan</h3>
+                  <p>Live plan usage is shown in your Overview.</p>
+                  <div class="card-actions"><a href="pricing.html" class="primary">View plans and limits</a></div>
                 </div>
               </article>
             </div>
