@@ -8,7 +8,9 @@ import Subscription from "../models/Subscription.js";
 import { buildCsvExport } from "../services/reportExportService.js";
 import { buildOpportunityIntelligence } from "../services/tradeIntelligenceService.js";
 import { answerTradeQuestion } from "../services/tradeCopilotService.js";
+import { buildComtradeRanking } from "../services/countryFitService.js";
 import { consumeUsageLimit, getPlanLimits, normalizePlanName } from "../services/usageLimitService.js";
+import { getCuratedGuidance } from "../data/focusCountryGuidance.js";
 
 const buildReportPrompt = ({ reportType, product, hsCode, targetCountry, prompt }) => {
     const reportLabel = {
@@ -319,6 +321,123 @@ const normalizeGeneratedReport = (value = {}) => ({
 
 const TRADE_READINESS_DISCLAIMER =
     "TradeAI provides directional trade guidance, not legal, customs, tax or financial advice. Verify final HS code with a CHA/customs expert and verify duty, tariff, compliance and payment decisions with official authorities or qualified professionals.";
+
+const getPaymentTermGuidance = ({ partnerStatus = "new", riskLevel = "Medium" } = {}) => {
+    const partner = String(partnerStatus || "new").toLowerCase();
+    const risk = String(riskLevel || "Medium").toLowerCase();
+
+    if (partner === "verified" && !risk.includes("high")) {
+        return "Suggested payment term: partial advance with balance against documents, or LC for higher-value shipments. Source: Rule Engine.";
+    }
+
+    if (partner === "known") {
+        return "Suggested payment term: partial advance plus document-linked balance; consider LC for larger orders. Source: Rule Engine.";
+    }
+
+    return "Suggested payment term: advance, LC at sight, escrow, or partial advance with balance before document release for new counterparties. Source: Rule Engine.";
+};
+
+const getIncotermGuidance = ({ direction = "export_from_india", shipmentSize = "sample" } = {}) => {
+    const isImport = normalizeDirection(direction) === "import_into_india";
+    const size = String(shipmentSize || "sample").toLowerCase();
+
+    if (isImport) {
+        return "Suggested Incoterm: compare FOB, CFR and CIF. FOB gives more freight control; CIF/CFR must be checked against insurance and landed cost. Source: Rule Engine.";
+    }
+
+    if (size === "bulk") {
+        return "Suggested Incoterm: FOB for controlled export handoff, or CIF/CFR only after freight, insurance and destination responsibilities are priced. Source: Rule Engine.";
+    }
+
+    return "Suggested Incoterm: FOB or FCA for first shipments/samples where responsibilities are easier to control. Source: Rule Engine.";
+};
+
+const buildReportSourceLabels = ({ marketDemandSource = "Rule Engine" } = {}) => ({
+    marketDemand: marketDemandSource,
+    complianceChecklist: "Curated guidance",
+    tariffGuidance: "Curated guidance - not live tariff API",
+    paymentTerm: "Rule Engine",
+    incoterm: "Rule Engine",
+});
+
+const enrichReportWithRealOutput = async ({
+    report = {},
+    productName = "",
+    hsCode = "",
+    sourceCountry = "India",
+    targetCountry = "",
+    direction = "export_from_india",
+    shipmentSize = "sample",
+    partnerStatus = "new",
+} = {}) => {
+    const countryFit = await buildComtradeRanking({
+        productName,
+        hsCode,
+        sourceCountry,
+        targetCountries: targetCountry,
+        flowCode: normalizeDirection(direction) === "import_into_india" ? "M" : "X",
+        productCategory: report.productCategory,
+        filters: {
+            shipmentSize,
+            exporterExperience: "beginner",
+            budgetLevel: "medium",
+            direction,
+        },
+    });
+    const selectedCountry = countryFit.ranking.find((item) => item.country === countryFit.recommendedCountry) || countryFit.ranking[0];
+    const guidance = getCuratedGuidance(targetCountry || selectedCountry?.country);
+    const marketDemand = {
+        country: selectedCountry?.country || targetCountry,
+        tradeValue: selectedCountry?.tradeValue ?? null,
+        trend: selectedCountry?.trend || "Not available",
+        period: selectedCountry?.period || "",
+        confidenceScore: selectedCountry?.confidenceScore || countryFit.confidenceScore,
+        explanation: selectedCountry?.explanation || [countryFit.explanation],
+        sourceLabel: selectedCountry?.dataSourceLabel || countryFit.dataSourceLabel,
+    };
+    const sourceLabels = buildReportSourceLabels({ marketDemandSource: marketDemand.sourceLabel });
+
+    return {
+        ...report,
+        marketDemand,
+        countryFit: {
+            recommendedCountry: countryFit.recommendedCountry,
+            ranking: countryFit.ranking.slice(0, 5),
+            confidenceScore: countryFit.confidenceScore,
+            sourceLabel: countryFit.dataSourceLabel,
+        },
+        complianceChecklist: {
+            documents: guidance?.documents || report.documents || [],
+            authorityNotes: guidance?.complianceAuthorityNotes || [],
+            riskNotes: guidance?.commonRiskNotes || [],
+            sourceLabel: "Curated guidance",
+        },
+        tariffGuidance: {
+            note:
+                guidance?.tariffGuidanceDisclaimer ||
+                "Curated guidance only. No live tariff API is configured; verify exact duty and taxes with official sources or a CHA/customs broker.",
+            sourceLabel: "Curated guidance - not live tariff API",
+        },
+        paymentTermSuggestion: {
+            note: getPaymentTermGuidance({ partnerStatus, riskLevel: report.riskLevel }),
+            sourceLabel: "Rule Engine",
+        },
+        incotermSuggestion: {
+            note: getIncotermGuidance({ direction, shipmentSize }),
+            sourceLabel: "Rule Engine",
+        },
+        logisticsGuidance: {
+            note: guidance?.logisticsNote || report.logisticsNotes || "Confirm freight route, insurance, packaging and delivery responsibility before quoting.",
+            sourceLabel: guidance ? "Curated guidance" : "Rule Engine",
+        },
+        sourceLabels,
+        dataSourceLabel:
+            marketDemand.sourceLabel === "UN Comtrade"
+                ? "UN Comtrade market demand + curated/rule-engine guidance"
+                : "Rule-engine and curated guidance. UN Comtrade demand unavailable for this query.",
+        isDemo: marketDemand.sourceLabel !== "UN Comtrade",
+    };
+};
 
 const normalizeDirection = (value = "") => {
     const normalized = String(value || "").toLowerCase();
@@ -680,7 +799,7 @@ const generateWithOpenAI = async (payload) => {
     });
 };
 
-const buildOpportunityReport = ({
+const buildOpportunityReport = async ({
     productName,
     hsCode,
     originCountry = "India",
@@ -716,6 +835,17 @@ const buildOpportunityReport = ({
             : "Add available certifications such as FSSAI, organic, ISO, halal or phytosanitary documents if applicable.",
     ];
 
+    const enrichedReport = await enrichReportWithRealOutput({
+        report: structuredReport,
+        productName,
+        hsCode,
+        sourceCountry: originCountry || "India",
+        targetCountry: profile.label,
+        direction: "export_from_india",
+        shipmentSize: "small",
+        partnerStatus: "new",
+    });
+
     const answer = [
         `${productName || "Selected product"} export opportunity report`,
         "",
@@ -724,20 +854,25 @@ const buildOpportunityReport = ({
         capacityNote,
         priceNote,
         "",
-        `Market potential: ${structuredReport.marketPotential}`,
-        `Opportunity score: ${structuredReport.opportunityScore}/100`,
-        `Demand reason: ${structuredReport.demandReason}`,
-        `Likely buyer type: ${structuredReport.buyerType}`,
-        `Risk level: ${structuredReport.riskLevel}`,
+        `Market demand: ${enrichedReport.marketDemand.tradeValue ? `USD ${Math.round(enrichedReport.marketDemand.tradeValue).toLocaleString("en-US")}` : "Not available from live Comtrade for this query"} (${enrichedReport.marketDemand.sourceLabel})`,
+        `Market potential: ${enrichedReport.marketPotential}`,
+        `Opportunity score: ${enrichedReport.opportunityScore}/100`,
+        `Demand reason: ${enrichedReport.demandReason}`,
+        `Likely buyer type: ${enrichedReport.buyerType}`,
+        `Risk level: ${enrichedReport.riskLevel}`,
         "",
-        `Compliance notes:\n${structuredReport.complianceNotes.map((item) => `- ${item}`).join("\n")}`,
+        `Compliance notes (${enrichedReport.sourceLabels.complianceChecklist}):\n${enrichedReport.complianceNotes.map((item) => `- ${item}`).join("\n")}`,
         "",
-        `Suggested next actions:\n${structuredReport.suggestedNextActions.map((item) => `- ${item}`).join("\n")}`,
+        `Tariff guidance (${enrichedReport.sourceLabels.tariffGuidance}): ${enrichedReport.tariffGuidance.note}`,
+        `Payment term (${enrichedReport.sourceLabels.paymentTerm}): ${enrichedReport.paymentTermSuggestion.note}`,
+        `Incoterm (${enrichedReport.sourceLabels.incoterm}): ${enrichedReport.incotermSuggestion.note}`,
         "",
-        `Data source: ${structuredReport.dataSourceLabel}`,
+        `Suggested next actions:\n${enrichedReport.suggestedNextActions.map((item) => `- ${item}`).join("\n")}`,
+        "",
+        `Data source: ${enrichedReport.dataSourceLabel}`,
     ].join("\n");
 
-    return { answer, structuredReport, profile };
+    return { answer, structuredReport: enrichedReport, profile };
 };
 
 const createAiReport = async (req, res, next) => {
@@ -818,7 +953,7 @@ const createOpportunityReport = async (req, res, next) => {
             throw new Error("AI credits exhausted. Upgrade your plan to generate more reports.");
         }
 
-        const { answer, structuredReport, profile } = buildOpportunityReport({
+        const { answer, structuredReport, profile } = await buildOpportunityReport({
             productName: normalizedProduct,
             hsCode,
             originCountry,
@@ -977,6 +1112,17 @@ const createTradeReadinessReport = async (req, res, next) => {
                 partnerStatus,
             });
         }
+
+        report = await enrichReportWithRealOutput({
+            report,
+            productName,
+            hsCode: hsCodeOrCategory,
+            sourceCountry: direction === "import_into_india" ? country : "India",
+            targetCountry: country,
+            direction,
+            shipmentSize,
+            partnerStatus,
+        });
 
         const savedReport = isAuthenticated
             ? await saveGeneratedReportForUser({

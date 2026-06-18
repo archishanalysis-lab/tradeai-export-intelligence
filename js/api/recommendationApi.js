@@ -13,6 +13,13 @@
         skipHealthCheck: false,
       });
     },
+    countryFit(payload = {}) {
+      return TradeAI.request("/recommendations/country-fit", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        skipHealthCheck: false,
+      });
+    },
   };
 
   window.TradeAI = {

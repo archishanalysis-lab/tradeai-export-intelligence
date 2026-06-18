@@ -4,6 +4,7 @@ import {
     complianceProductCategories,
     countryComplianceRules,
 } from "../data/countryComplianceRules.js";
+import { focusCountryNames, getCuratedGuidance } from "../data/focusCountryGuidance.js";
 
 const normalize = (value = "") => String(value || "").trim().toLowerCase();
 
@@ -148,4 +149,25 @@ const getCountryComplianceRules = (req, res) => {
     });
 };
 
-export { getCountryComplianceRules, getDocumentChecklist };
+const getFocusCountryGuidance = (req, res) => {
+    const query = req.cleanQuery || req.query;
+    const guidance = getCuratedGuidance(query.country);
+
+    res.json({
+        success: true,
+        sourceType: "curated-guidance",
+        dataType: "curated",
+        label: "Curated compliance and tariff guidance - not live official data.",
+        filters: {
+            countries: focusCountryNames,
+            selected: {
+                country: query.country || "",
+            },
+        },
+        guidance: guidance ? [guidance] : focusCountryNames.map((country) => getCuratedGuidance(country)),
+        disclaimer:
+            "This is curated country guidance for TradeAI MVP screening. It is not live customs, tariff, legal, banking or compliance data. Verify exact requirements with official authorities, importer, bank, CHA/customs broker or qualified professional.",
+    });
+};
+
+export { getCountryComplianceRules, getDocumentChecklist, getFocusCountryGuidance };

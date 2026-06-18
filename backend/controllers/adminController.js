@@ -1,10 +1,12 @@
 import Buyer from "../models/Buyer.js";
+import AnalyticsEvent from "../models/AnalyticsEvent.js";
 import AiReport from "../models/AiReport.js";
 import CompanyProfile from "../models/CompanyProfile.js";
 import Contact from "../models/Contact.js";
 import KycDocument from "../models/KycDocument.js";
 import Inquiry from "../models/Inquiry.js";
 import Product from "../models/Product.js";
+import ReportRequest from "../models/ReportRequest.js";
 import User from "../models/User.js";
 import { refreshCompanyReputation } from "../services/reputationService.js";
 
@@ -238,9 +240,26 @@ const listAdminBuyers = async (req, res, next) => {
 
 const verifyBuyer = async (req, res, next) => {
     try {
+        const existingBuyer = await Buyer.findById(req.cleanParams.id);
+
+        if (!existingBuyer) {
+            res.status(404);
+            throw new Error("Buyer not found");
+        }
+
+        if (!existingBuyer.sourceName || !existingBuyer.sourceUrl) {
+            res.status(422);
+            throw new Error("Buyer source name and public source URL are required before manual verification");
+        }
+
         const buyer = await Buyer.findByIdAndUpdate(
             req.cleanParams.id,
-            { verified: true },
+            {
+                verified: true,
+                verificationStatus: "manually_verified",
+                lastVerifiedAt: new Date(),
+                isPublic: true,
+            },
             { new: true },
         );
 
@@ -325,8 +344,85 @@ const listAdminReports = async (req, res, next) => {
     }
 };
 
+const csvCell = (value) => {
+    const text = value === undefined || value === null ? "" : String(value);
+    return `"${text.replace(/"/g, '""')}"`;
+};
+
+const exportMarketingCsv = async (req, res, next) => {
+    try {
+        const [reportRequests, searches, users] = await Promise.all([
+            ReportRequest.find().sort({ createdAt: -1 }).limit(500).lean(),
+            AnalyticsEvent.find({
+                event: { $in: ["country_fit_search", "country_fit_preview_submit", "marketplace_search"] },
+            })
+                .sort({ createdAt: -1 })
+                .limit(1000)
+                .lean(),
+            User.find()
+                .select("name email company role signupSource signupIntent interestCountry interestProduct createdAt")
+                .sort({ createdAt: -1 })
+                .limit(500)
+                .lean(),
+        ]);
+
+        const rows = [
+            ["recordType", "createdAt", "name", "email", "company", "roleOrEvent", "product", "hsCode", "countryOrCountries", "source", "status"],
+            ...reportRequests.map((item) => [
+                "report_request",
+                item.createdAt?.toISOString?.() || item.createdAt,
+                item.name,
+                item.email,
+                item.company,
+                item.roleType,
+                item.productName,
+                item.hsCode,
+                item.targetCountry,
+                item.source,
+                item.status,
+            ]),
+            ...searches.map((item) => [
+                "search",
+                item.createdAt?.toISOString?.() || item.createdAt,
+                "",
+                "",
+                "",
+                item.event,
+                item.properties?.productName || item.properties?.query || item.properties?.search || "",
+                item.properties?.hsCode || "",
+                Array.isArray(item.properties?.targetCountries)
+                    ? item.properties.targetCountries.join("|")
+                    : item.properties?.targetCountries || item.properties?.country || "",
+                item.properties?.dataSourceLabel || item.path || "",
+                "",
+            ]),
+            ...users.map((item) => [
+                "registered_user",
+                item.createdAt?.toISOString?.() || item.createdAt,
+                item.name,
+                item.email,
+                item.company,
+                item.role,
+                item.interestProduct,
+                "",
+                item.interestCountry,
+                item.signupSource || "registration",
+                item.signupIntent || "registered",
+            ]),
+        ];
+        const csv = rows.map((row) => row.map(csvCell).join(",")).join("\n");
+
+        res.setHeader("Content-Type", "text/csv; charset=utf-8");
+        res.setHeader("Content-Disposition", `attachment; filename="tradeai-marketing-export-${new Date().toISOString().slice(0, 10)}.csv"`);
+        res.send(csv);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export {
     getAdminOverview,
+    exportMarketingCsv,
     listContactFeedback,
     listCompanyProfiles,
     listAdminBuyers,

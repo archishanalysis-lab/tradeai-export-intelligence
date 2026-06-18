@@ -8,6 +8,14 @@
   const PROMPT_SEEN_KEY = "tradeai_access_prompt_seen_at";
   const PLAN_KEY = "tradeai_current_plan";
   const PAID_PLANS = new Set(["growth", "pro", "premium_exporter", "verified_supplier", "ai_insights", "ai_pro", "enterprise"]);
+  const DASHBOARD_PATHS = {
+    explorer: "explorer-dashboard.html",
+    exporter: "export-dash.html",
+    importer: "importer-dashboard.html",
+    consultant: "analytics-dashboard.html",
+    sme: "explorer-dashboard.html",
+    admin: "admin-panel.html",
+  };
   const PROMPT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
   const GUEST_PREVIEW_PROMPT_MS = 10 * 1000;
   let guestPreviewTimer = null;
@@ -35,6 +43,11 @@
 
   function getPricingPath() {
     return `${getPagePrefix()}pricing.html`;
+  }
+
+  function getDashboardPath() {
+    const user = auth?.getUser?.() || {};
+    return `${getPagePrefix()}${DASHBOARD_PATHS[user.role] || DASHBOARD_PATHS.explorer}`;
   }
 
   function getCurrentPlan() {
@@ -339,6 +352,39 @@
     }
   }
 
+  function syncPublicAuthActions() {
+    if (!isLoggedIn()) return;
+
+    document.querySelectorAll(".auth-buttons").forEach((actions) => {
+      const loginLink = actions.querySelector('a[href*="login.html"]');
+      const registerLink = actions.querySelector('a[href*="register.html"]');
+
+      if (loginLink) {
+        loginLink.href = getDashboardPath();
+        loginLink.textContent = "Go to Dashboard";
+        loginLink.removeAttribute("data-i18n");
+      }
+
+      if (registerLink) {
+        registerLink.hidden = true;
+        registerLink.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    document.querySelectorAll(".mobile-menu a").forEach((link) => {
+      if (link.getAttribute("href")?.includes("login.html")) {
+        link.href = getDashboardPath();
+        link.textContent = "Go to Dashboard";
+        link.removeAttribute("data-i18n");
+      }
+
+      if (link.getAttribute("href")?.includes("register.html")) {
+        link.hidden = true;
+        link.setAttribute("aria-hidden", "true");
+      }
+    });
+  }
+
   function scheduleVisitorPrompt() {
     const isLandingPage =
       window.location.pathname.endsWith("/") ||
@@ -376,8 +422,10 @@
 
   bindAccessGates();
   window.addEventListener("tradeai:auth-change", markGuestExperience);
+  window.addEventListener("tradeai:auth-change", syncPublicAuthActions);
   window.addEventListener("DOMContentLoaded", () => {
     markGuestExperience();
+    syncPublicAuthActions();
     hydratePlan();
     scheduleVisitorPrompt();
   });

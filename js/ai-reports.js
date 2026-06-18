@@ -47,6 +47,7 @@
       `Buyer/Supplier Status: ${report.partnerStatus || ""}`,
       `Risk Level: ${report.riskLevel || ""}`,
       `Source: ${report.sourceType || ""}`,
+      `Market Demand Source: ${report.marketDemand?.sourceLabel || ""}`,
       "",
       "Summary",
       report.opportunitySummary || "",
@@ -60,8 +61,16 @@
       "Compliance Notes",
       ...(report.complianceNotes || []).map((item) => `- ${item}`),
       "",
+      "Market Demand",
+      `Source: ${report.marketDemand?.sourceLabel || "Rule Engine"}`,
+      `Trade Value: ${report.marketDemand?.tradeValue ? `USD ${Number(report.marketDemand.tradeValue).toLocaleString("en-US")}` : "Not available"}`,
+      `Trend: ${report.marketDemand?.trend || "Not available"}`,
+      "",
+      `Tariff Guidance: ${report.tariffGuidance?.note || ""}`,
       `Payment Risk: ${report.paymentRisk || ""}`,
+      `Payment Term Suggestion: ${report.paymentTermSuggestion?.note || ""}`,
       `Incoterms Guidance: ${report.incotermsGuidance || ""}`,
+      `Incoterm Suggestion: ${report.incotermSuggestion?.note || ""}`,
       `Logistics Notes: ${report.logisticsNotes || ""}`,
       "",
       "Customs Steps",
@@ -136,13 +145,21 @@
         </div>
         <h4>Process summary</h4>
         <p>${escapeHtml(report.opportunitySummary)}</p>
+        <h4>Market demand</h4>
+        <p>${escapeHtml(report.marketDemand?.tradeValue ? `USD ${Number(report.marketDemand.tradeValue).toLocaleString("en-US")} | ${report.marketDemand.trend || ""}` : "Live Comtrade demand is not available for this query.")}</p>
+        <p class="table-subtext">Source: ${escapeHtml(report.marketDemand?.sourceLabel || "Rule Engine")}</p>
         ${listMarkup("Checklist", report.checklist)}
         ${listMarkup("Documents", report.documents)}
         ${listMarkup("Compliance notes", report.complianceNotes)}
+        <h4>Tariff guidance</h4>
+        <p>${escapeHtml(report.tariffGuidance?.note || "No live tariff API is configured. Verify exact duty with official sources.")}</p>
+        <p class="table-subtext">Source: ${escapeHtml(report.tariffGuidance?.sourceLabel || "Curated guidance - not live tariff API")}</p>
         <h4>Payment term risk</h4>
         <p>${escapeHtml(report.paymentRisk)}</p>
+        <p class="table-subtext">${escapeHtml(report.paymentTermSuggestion?.note || "")}</p>
         <h4>Incoterms suggestion</h4>
         <p>${escapeHtml(report.incotermsGuidance)}</p>
+        <p class="table-subtext">${escapeHtml(report.incotermSuggestion?.note || "")}</p>
         <h4>Logistics / shipping note</h4>
         <p>${escapeHtml(report.logisticsNotes)}</p>
         ${listMarkup("Customs clearance checklist", report.customsSteps)}

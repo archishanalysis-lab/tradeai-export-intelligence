@@ -49,6 +49,26 @@ const userSchema = new mongoose.Schema(
             enum: ["active", "inactive", "trial", "cancelled"],
             default: "inactive",
         },
+        signupSource: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        signupIntent: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        interestCountry: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        interestProduct: {
+            type: String,
+            trim: true,
+            default: "",
+        },
         isDemo: {
             type: Boolean,
             default: false,

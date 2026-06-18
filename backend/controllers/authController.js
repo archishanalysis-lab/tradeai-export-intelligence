@@ -109,7 +109,17 @@ const getPasswordIssues = (password) => {
 
 const registerUser = async (req, res, next) => {
     try {
-        const { name, email, company, password, role } = req.body;
+        const {
+            name,
+            email,
+            company,
+            password,
+            role,
+            signupSource = "",
+            signupIntent = "",
+            interestCountry = "",
+            interestProduct = "",
+        } = req.body;
 
         if (!name || !email || !password || !role) {
             res.status(400);
@@ -158,6 +168,10 @@ const registerUser = async (req, res, next) => {
             organizationId: organization._id,
             plan: "free",
             subscriptionStatus: "inactive",
+            signupSource,
+            signupIntent,
+            interestCountry,
+            interestProduct,
         });
 
         organization.owner = user._id;

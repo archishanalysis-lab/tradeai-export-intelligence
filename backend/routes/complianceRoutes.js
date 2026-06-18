@@ -1,6 +1,6 @@
 import express from "express";
 
-import { getCountryComplianceRules, getDocumentChecklist } from "../controllers/complianceController.js";
+import { getCountryComplianceRules, getDocumentChecklist, getFocusCountryGuidance } from "../controllers/complianceController.js";
 import { apiRateLimit } from "../middleware/securityMiddleware.js";
 
 const router = express.Router();
@@ -12,5 +12,6 @@ const documentsLimiter = apiRateLimit({
 
 router.get("/documents", documentsLimiter, getDocumentChecklist);
 router.get("/country-rules", documentsLimiter, getCountryComplianceRules);
+router.get("/focus-country-guidance", documentsLimiter, getFocusCountryGuidance);
 
 export default router;

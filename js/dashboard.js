@@ -1602,6 +1602,26 @@ async function initializeUserPreferences() {
    DASHBOARD INIT
 ========================================================= */
 
+async function completePendingCountryFit() {
+  const storage = window.TradeAI?.storage;
+  const raw = storage?.get("tradeai_pending_country_fit");
+
+  if (!raw || !window.TradeAI?.api?.recommendations?.countryFit || !window.TradeAI?.auth?.isLoggedIn?.()) return;
+
+  try {
+    const payload = JSON.parse(raw);
+    const result = await window.TradeAI.api.recommendations.countryFit(payload);
+
+    if (result.saved) {
+      storage.remove("tradeai_pending_country_fit");
+      window.TradeAI?.toast?.("Your full Country Fit result was saved to My Reports.", "success");
+      await window.TradeAI?.renderMyReports?.();
+    }
+  } catch (error) {
+    window.TradeAI?.toast?.("Your Country Fit preview is still available. Open Country Fit to retry the full result.", "error");
+  }
+}
+
 function initializeDashboard() {
 
   renderDashboardPersonalization();
@@ -1611,6 +1631,8 @@ function initializeDashboard() {
   renderAccountSummary();
 
   renderMyReports();
+
+  completePendingCountryFit();
 
   initializeUserPreferences();
 

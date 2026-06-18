@@ -115,6 +115,9 @@ app.get("/health", (req, res) => {
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV || "local",
         database: databaseState,
+        integrations: {
+            comtradeConfigured: Boolean(process.env.COMTRADE_API_KEY || process.env.COMTRADE_PRIMARY_KEY),
+        },
     });
 });
 
@@ -128,6 +131,9 @@ app.get("/api/health", (req, res) => {
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV || "local",
         database: databaseState,
+        integrations: {
+            comtradeConfigured: Boolean(process.env.COMTRADE_API_KEY || process.env.COMTRADE_PRIMARY_KEY),
+        },
     });
 });
 

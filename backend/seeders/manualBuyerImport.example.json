@@ -1,0 +1,22 @@
+[
+  {
+    "companyName": "Example Importer Company - replace before import",
+    "country": "Kenya",
+    "city": "",
+    "buyerType": "importer",
+    "importerType": "distributor",
+    "industry": "Food imports",
+    "productCategories": ["Spices", "Packaged food"],
+    "products": ["Turmeric"],
+    "hsCodes": ["0910"],
+    "website": "",
+    "publicContactEmail": "",
+    "sourceName": "Official public directory or trade-fair exhibitor list",
+    "sourceUrl": "https://example.com/replace-with-real-public-source",
+    "sourceType": "public-directory",
+    "verificationStatus": "unverified",
+    "lastVerifiedAt": null,
+    "isPublic": false,
+    "notes": "Record only public business contact data. Replace this template and verify source terms before import."
+  }
+]

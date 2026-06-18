@@ -1387,6 +1387,11 @@
           }
           if (score) score.textContent = riskText;
           if (demand) demand.textContent = report.opportunitySummary || "Process summary unavailable.";
+          if (demand && report.marketDemand) {
+            demand.textContent = report.marketDemand.tradeValue
+              ? "Market demand: USD " + Number(report.marketDemand.tradeValue).toLocaleString("en-US") + " (" + (report.marketDemand.sourceLabel || "UN Comtrade") + "). " + (report.marketDemand.trend || "")
+              : "Market demand: live Comtrade value unavailable for this query. Source: " + (report.marketDemand.sourceLabel || "Rule Engine") + ".";
+          }
           if (competition) competition.textContent = report.paymentRisk || "Payment guidance unavailable.";
           if (risk) risk.textContent = report.riskLevel || "Risk level unavailable.";
           if (corridor) corridor.textContent = payload.direction === "import_into_india" ? payload.targetCountry + " to India" : "India to " + payload.targetCountry;
@@ -1400,6 +1405,12 @@
               formatList("Checklist", report.checklist) +
               formatList("Documents", report.documents) +
               formatList("Compliance notes", report.complianceNotes) +
+              "<h4>Market demand</h4><p>" + escapeHtml(report.marketDemand && report.marketDemand.tradeValue ? "USD " + Number(report.marketDemand.tradeValue).toLocaleString("en-US") + " | " + (report.marketDemand.trend || "") : "Live Comtrade demand unavailable for this query.") + "</p>" +
+              "<p><strong>Market demand source:</strong> " + escapeHtml(report.marketDemand?.sourceLabel || "Rule Engine") + "</p>" +
+              "<h4>Tariff guidance</h4><p>" + escapeHtml(report.tariffGuidance?.note || "No live tariff API is configured. Verify exact duty with official sources.") + "</p>" +
+              "<p><strong>Tariff source:</strong> " + escapeHtml(report.tariffGuidance?.sourceLabel || "Curated guidance - not live tariff API") + "</p>" +
+              "<h4>Payment term suggestion</h4><p>" + escapeHtml(report.paymentTermSuggestion?.note || "") + "</p>" +
+              "<h4>Incoterm suggestion</h4><p>" + escapeHtml(report.incotermSuggestion?.note || "") + "</p>" +
               "<h4>Logistics / shipping note</h4><p>" + escapeHtml(report.logisticsNotes || "") + "</p>" +
               formatList("Customs clearance checklist", report.customsSteps) +
               "<p><strong>Disclaimer:</strong> " + escapeHtml(report.disclaimer || "") + "</p>";

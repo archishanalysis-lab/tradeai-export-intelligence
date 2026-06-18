@@ -268,14 +268,23 @@
       .map((buyer) => {
         const products = (buyer.products || []).slice(0, 3).join(", ") || "Not listed";
         const score = buyerScore(buyer);
-        const statusText = buyer.demo ? buyer.status || "Sample profile" : buyer.verified ? "Verified" : "Pending";
-        const statusClass = buyer.demo ? "status-pending" : buyer.verified ? "status-active" : "status-pending";
+        const verificationStatus = buyer.verificationStatus || (buyer.verified ? "manually_verified" : "unverified");
+        const statusText = buyer.demo
+          ? buyer.status || "Sample profile"
+          : verificationStatus === "manually_verified"
+            ? "Manually verified"
+            : verificationStatus.replace(/_/g, " ");
+        const statusClass = buyer.demo ? "status-pending" : verificationStatus === "manually_verified" ? "status-active" : "status-pending";
+        const sourceLabel = buyer.demo
+          ? "SAMPLE"
+          : `${buyer.sourceName || buyer.sourceType || "User submitted"} - ${statusText}`;
 
         return `
           <tr>
             <td>
               <strong>${buyer.companyName}</strong>
-              <span class="table-subtext">${buyer.demo ? "DEMO DATA - not a verified buyer" : buyer.contactEmail || "No email added"}</span>
+              <span class="table-subtext">${buyer.demo ? "DEMO DATA - not a verified buyer" : buyer.publicContactEmail || buyer.contactEmail || "No public email listed"}</span>
+              <span class="table-subtext">Source: ${sourceLabel}</span>
             </td>
             <td>${buyer.country}</td>
             <td>${buyer.industry}</td>

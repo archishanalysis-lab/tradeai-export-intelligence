@@ -12,5 +12,6 @@ const recommendationLimiter = apiRateLimit({
 });
 
 router.get("/country", recommendationLimiter, optionalProtect, getCountryRecommendations);
+router.post("/country-fit", recommendationLimiter, optionalProtect, getCountryRecommendations);
 
 export default router;

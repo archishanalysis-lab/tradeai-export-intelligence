@@ -318,7 +318,7 @@
     <main>
       <section class="recommendation-hero">
         <div class="container">
-          <span class="recommendation-badge">Rule-based recommendation — sample intelligence, not AI</span>
+          <span class="recommendation-badge">UN Comtrade when available - rule-engine guidance otherwise</span>
           <h1>Which Country Should I Choose?</h1>
           <p>
             Compare the 9 TradeAI focus countries for your product using demand,
@@ -331,6 +331,10 @@
         <div class="container">
           <form id="recommendationForm" class="finder-panel">
             <div class="form-grid">
+              <div class="field">
+                <label for="productName">Product name</label>
+                <input id="productName" placeholder="Example: Turmeric" required />
+              </div>
               <div class="field">
                 <label for="productCategory">Product / Category</label>
                 <select id="productCategory" required>
@@ -347,6 +351,20 @@
               <div class="field">
                 <label for="hsCode">Optional HS code</label>
                 <input id="hsCode" inputmode="numeric" placeholder="Example: 0902" />
+              </div>
+              <div class="field">
+                <label for="targetCountries">Target countries</label>
+                <select id="targetCountries" multiple size="4" required>
+                  <option selected>Kenya</option>
+                  <option selected>Tanzania</option>
+                  <option selected>Uganda</option>
+                  <option selected>Rwanda</option>
+                  <option selected>UAE</option>
+                  <option selected>Saudi Arabia</option>
+                  <option selected>Oman</option>
+                  <option selected>Qatar</option>
+                  <option selected>China</option>
+                </select>
               </div>
               <div class="field">
                 <label for="direction">Export / Import Direction</label>
@@ -404,8 +422,8 @@
           <section id="paidPanel" class="paid-panel" hidden>
             <h2>Save Or Download</h2>
             <p>
-              Guest users see the top 1 country. Free logged-in users can view top 3.
-              Paid plans should unlock detailed downloadable comparison reports.
+              Guest users see the top country. Logged-in users receive the full ranking
+              and a saved Country Fit report in their dashboard history.
             </p>
             <div class="paid-actions">
               <button type="button" id="downloadComparison" class="secondary-action">
@@ -429,9 +447,12 @@
     </footer>
 
     <script src="../js/storage.js" defer></script>
+    <script src="../js/state/authState.js" defer></script>
     <script src="../js/config.js" defer></script>
     <script src="../js/api.js" defer></script>
+    <script src="../js/auth.js" defer></script>
     <script src="../js/api/recommendationApi.js" defer></script>
+    <script src="../js/access-control.js" defer></script>
     <script src="../js/navbar.js" defer></script>
     <script src="../js/theme.js" defer></script>
     <script src="../js/country-recommendation.js" defer></script>

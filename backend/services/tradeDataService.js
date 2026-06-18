@@ -2,6 +2,11 @@ const COMTRADE_API_ROOT = "https://comtradeapi.un.org";
 
 const safeNumber = (value) => Number(value) || 0;
 
+const getComtradeApiKey = () =>
+    process.env.COMTRADE_API_KEY || process.env.COMTRADE_PRIMARY_KEY || "";
+
+const hasComtradeApiKey = () => Boolean(getComtradeApiKey());
+
 const countryCodeMap = new Map([
     ["0", "World"],
     ["4", "Afghanistan"],
@@ -47,6 +52,7 @@ const countryCodeMap = new Map([
     ["392", "Japan"],
     ["400", "Jordan"],
     ["404", "Kenya"],
+    ["512", "Oman"],
     ["410", "Republic of Korea"],
     ["414", "Kuwait"],
     ["458", "Malaysia"],
@@ -63,6 +69,7 @@ const countryCodeMap = new Map([
     ["616", "Poland"],
     ["620", "Portugal"],
     ["634", "Qatar"],
+    ["646", "Rwanda"],
     ["642", "Romania"],
     ["643", "Russia"],
     ["682", "Saudi Arabia"],
@@ -76,9 +83,11 @@ const countryCodeMap = new Map([
     ["764", "Thailand"],
     ["792", "Turkiye"],
     ["784", "United Arab Emirates"],
+    ["800", "Uganda"],
     ["804", "Ukraine"],
     ["818", "Egypt"],
     ["826", "United Kingdom"],
+    ["834", "Tanzania"],
     ["840", "United States"],
     ["842", "United States"],
     ["858", "Uruguay"],
@@ -101,6 +110,7 @@ const normalizeRecord = (record = {}) => ({
     tradeValue: safeNumber(record.primaryValue || record.tradeValue),
     quantity: safeNumber(record.qty || record.quantity),
     source: "UN Comtrade",
+    sourceLabel: "UN Comtrade",
 });
 
 const fallbackPartners = [
@@ -158,7 +168,8 @@ const buildFallbackRecords = ({
         tradeFlow: flowCode,
         tradeValue: Math.round((value + index * 37500) * hsProfile.multiplier),
         quantity: 0,
-        source: "MVP sample trade-data fallback",
+        source: "Sample",
+        sourceLabel: "Sample trade-data fallback",
     }));
 };
 
@@ -170,6 +181,14 @@ const buildFallbackResult = (query = {}, reason = "Live UN Comtrade data is unav
     isDemo: true,
     records: buildFallbackRecords(query),
 });
+
+const buildComtradeConfigError = () => {
+    const error = new Error("Comtrade API key not configured. Set COMTRADE_API_KEY or COMTRADE_PRIMARY_KEY on the backend.");
+    error.status = 503;
+    error.code = "COMTRADE_API_KEY_NOT_CONFIGURED";
+    error.sourceLabel = "UN Comtrade";
+    return error;
+};
 
 const getCandidatePeriods = (period) => {
     if (period) return [String(period)];
@@ -207,8 +226,10 @@ const buildComtradeUrl = ({
         includeDesc: "true",
     });
 
-    if (process.env.COMTRADE_API_KEY) {
-        params.set("subscription-key", process.env.COMTRADE_API_KEY);
+    const apiKey = getComtradeApiKey();
+
+    if (apiKey) {
+        params.set("subscription-key", apiKey);
     }
 
     return `${endpoint}?${params.toString()}`;
@@ -219,8 +240,10 @@ const createComtradeHeaders = () => {
         Accept: "application/json",
     };
 
-    if (process.env.COMTRADE_API_KEY) {
-        headers["Ocp-Apim-Subscription-Key"] = process.env.COMTRADE_API_KEY;
+    const apiKey = getComtradeApiKey();
+
+    if (apiKey) {
+        headers["Ocp-Apim-Subscription-Key"] = apiKey;
     }
 
     return headers;
@@ -288,17 +311,22 @@ const requestComtradePeriod = async ({
 
 const fetchComtradeRecords = async ({
     hsCode,
-    reporterCode = "842",
+    reporterCode = "699",
     partnerCode = "0",
     flowCode = "X",
     period,
     limit = 100,
+    allowSampleFallback = false,
 } = {}) => {
-    if (!process.env.COMTRADE_API_KEY) {
-        return buildFallbackResult(
-            { hsCode, reporterCode, partnerCode, flowCode, period, limit },
-            "COMTRADE_API_KEY is not configured",
-        );
+    if (!hasComtradeApiKey()) {
+        if (allowSampleFallback) {
+            return buildFallbackResult(
+                { hsCode, reporterCode, partnerCode, flowCode, period, limit },
+                "Comtrade API key is not configured",
+            );
+        }
+
+        throw buildComtradeConfigError();
     }
 
     if (!hsCode) {
@@ -344,17 +372,24 @@ const fetchComtradeRecords = async ({
         if (rawRecords.length) break;
     }
 
-    if (!rawRecords.length && lastError) {
-        return buildFallbackResult(
-            { hsCode, reporterCode, partnerCode, flowCode, period, limit },
-            lastError.status === 429
-                ? "UN Comtrade rate limit reached"
-                : "UN Comtrade did not return usable records",
-        );
+    if (!rawRecords.length) {
+        if (allowSampleFallback) {
+            return buildFallbackResult(
+                { hsCode, reporterCode, partnerCode, flowCode, period, limit },
+                lastError?.status === 429
+                    ? "UN Comtrade rate limit reached"
+                    : "UN Comtrade did not return usable records",
+            );
+        }
+
+        const emptyError = lastError || new Error("UN Comtrade did not return usable records for this query.");
+        emptyError.status = emptyError.status || 502;
+        throw emptyError;
     }
 
     return {
         source: "live",
+        sourceLabel: "UN Comtrade",
         period: resolvedPeriod,
         flowCode,
         records: rawRecords.map(normalizeRecord),
@@ -411,5 +446,7 @@ export {
     buildHsCodeAnalytics,
     discoverBuyersFromTradeData,
     fetchComtradeRecords,
+    getComtradeApiKey,
     getCountryTrends,
+    hasComtradeApiKey,
 };

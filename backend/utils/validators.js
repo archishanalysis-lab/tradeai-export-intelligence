@@ -51,6 +51,10 @@ const authRegisterSchema = z.object({
         company: z.string().trim().max(120).optional().default(""),
         role: z.enum(publicRegistrationRoles),
         password: z.string().min(8).max(128),
+        signupSource: z.string().trim().max(120).optional().default(""),
+        signupIntent: z.string().trim().max(120).optional().default(""),
+        interestCountry: z.string().trim().max(80).optional().default(""),
+        interestProduct: z.string().trim().max(180).optional().default(""),
     }),
 });
 
@@ -242,13 +246,24 @@ const marketplaceIntroStatusSchema = z.object({
 const buyerBody = z.object({
     companyName: z.string().trim().min(2).max(160),
     country: z.string().trim().min(2).max(80),
+    city: z.string().trim().max(100).optional().default(""),
     industry: z.string().trim().min(2).max(120),
     products: csvOrArray,
+    productCategories: csvOrArray,
+    hsCodes: csvOrArray,
+    buyerType: z.string().trim().max(80).optional().default("importer"),
+    importerType: z.string().trim().max(80).optional().default(""),
     website: z.string().trim().max(240).optional().default(""),
     contactEmail: z.union([z.string().trim().email(), z.literal("")]).optional().default(""),
+    publicContactEmail: z.union([z.string().trim().email(), z.literal("")]).optional().default(""),
     phone: z.string().trim().max(40).optional().default(""),
     verified: z.coerce.boolean().optional(),
     tradeVolume: z.coerce.number().min(0).optional(),
+    sourceName: z.string().trim().max(160).optional().default(""),
+    sourceUrl: z.union([z.string().trim().url(), z.literal("")]).optional().default(""),
+    sourceType: z.enum(["manual", "public-directory", "trade-fair", "paid-data", "user-submitted"]).optional().default("user-submitted"),
+    verificationStatus: z.enum(["unverified", "manually_verified", "claimed", "rejected"]).optional(),
+    notes: z.string().trim().max(2000).optional().default(""),
 });
 
 const buyerCreateSchema = z.object({ body: buyerBody });
@@ -472,7 +487,7 @@ const tradeDataQuerySchema = z.object({
     query: paginationQuery.extend({
         hsCode: hsCodeQuery.optional(),
         q: z.string().trim().min(2).max(120).optional(),
-        reporterCode: comtradeCountryCode.optional().default("842"),
+        reporterCode: comtradeCountryCode.optional().default("699"),
         partnerCode: comtradeCountryCode.optional().default("0"),
         flowCode: z.enum(["M", "X"]).optional().default("X"),
         period: z
@@ -481,6 +496,7 @@ const tradeDataQuerySchema = z.object({
             .regex(/^\d{4}(?:\d{2})?$/, "Period must be YYYY or YYYYMM")
             .optional(),
         limit: z.coerce.number().int().positive().max(500).optional().default(100),
+        allowSampleFallback: z.coerce.boolean().optional().default(false),
     }),
 });
 

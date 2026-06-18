@@ -815,6 +815,10 @@ if (registerForm) {
           company,
           role,
           password,
+          signupSource: document.getElementById("signupSource")?.value || "",
+          signupIntent: document.getElementById("signupIntent")?.value || "",
+          interestCountry: document.getElementById("selectedCountry")?.value || "",
+          interestProduct: document.getElementById("selectedProduct")?.value || "",
         }),
       });
 

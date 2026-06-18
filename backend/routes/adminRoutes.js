@@ -1,6 +1,7 @@
 import express from "express";
 
 import {
+    exportMarketingCsv,
     getAdminOverview,
     listContactFeedback,
     listCompanyProfiles,
@@ -29,6 +30,7 @@ const router = express.Router();
 router.use(protect, adminOnly);
 
 router.get("/overview", getAdminOverview);
+router.get("/marketing-export.csv", exportMarketingCsv);
 router.get("/contact-feedback", validate(contactFeedbackQuerySchema), listContactFeedback);
 router.patch(
     "/contact-feedback/:id/status",

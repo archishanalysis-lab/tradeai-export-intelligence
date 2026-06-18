@@ -7,6 +7,29 @@ import {
 } from "../services/searchService.js";
 import { assertCanAccess, userScopeFilter } from "../utils/ownership.js";
 
+const buyerReadScope = (user) => {
+    if (user.role === "admin") return {};
+
+    return {
+        $or: [
+            ...(user.organizationId ? [{ organizationId: user.organizationId }] : [{ createdBy: user._id }]),
+            { isPublic: true, verificationStatus: "manually_verified" },
+        ],
+    };
+};
+
+const sanitizeBuyerForViewer = (buyer, user) => {
+    const sameOrganization =
+        buyer.organizationId && user.organizationId && String(buyer.organizationId) === String(user.organizationId);
+
+    if (user.role === "admin" || sameOrganization || String(buyer.createdBy?._id || buyer.createdBy || "") === String(user._id)) {
+        return buyer;
+    }
+
+    const { contactEmail, phone, notes, ...publicBuyer } = buyer;
+    return publicBuyer;
+};
+
 /* =========================================
    GET ALL BUYERS
 ========================================= */
@@ -22,14 +45,16 @@ const getBuyers = async (req, res, next) => {
             "industry",
             "tradeVolume",
         ]);
-        const keyword = {
-            ...userScopeFilter(req.user),
-            ...buildTextOrRegexSearch(req.query.search, [
+        const searchFilter = buildTextOrRegexSearch(req.query.search, [
                 "companyName",
                 "country",
                 "industry",
                 "products",
-            ]),
+                "productCategories",
+                "hsCodes",
+            ]);
+        const keyword = {
+            $and: [buyerReadScope(req.user), searchFilter],
             ...(req.query.country ? { country: req.query.country } : {}),
             ...(req.query.industry ? { industry: req.query.industry } : {}),
             ...(req.query.verified ? { verified: req.query.verified === "true" } : {}),
@@ -53,7 +78,7 @@ const getBuyers = async (req, res, next) => {
         ]);
 
         res.json({
-            buyers,
+            buyers: buyers.map((buyer) => sanitizeBuyerForViewer(buyer, req.user)),
             page,
             pages: Math.max(Math.ceil(total / limit), 1),
             total,
@@ -78,13 +103,22 @@ const createBuyer = async (req, res, next) => {
         const {
             companyName,
             country,
+            city,
             industry,
             products,
+            productCategories,
+            hsCodes,
+            buyerType,
+            importerType,
             website,
             contactEmail,
+            publicContactEmail,
             phone,
-            verified,
             tradeVolume,
+            sourceName,
+            sourceUrl,
+            sourceType,
+            notes,
         } = req.body;
 
         const productList = Array.isArray(products)
@@ -113,18 +147,35 @@ const createBuyer = async (req, res, next) => {
 
             country,
 
+            city,
+
             industry,
 
             products: productList,
+
+            productCategories,
+
+            hsCodes,
+
+            buyerType,
+
+            importerType,
 
             website,
 
             contactEmail,
 
+            publicContactEmail,
+
             phone,
 
-            verified,
+            verified: false,
+            verificationStatus: "unverified",
             tradeVolume,
+            sourceName,
+            sourceUrl,
+            sourceType: sourceType || "user-submitted",
+            notes,
             organizationId: req.user.organizationId,
 
             createdBy: req.user._id,
@@ -151,7 +202,7 @@ const getBuyerById = async (req, res, next) => {
 
         const buyer = await Buyer.findOne({
             _id: req.params.id,
-            ...userScopeFilter(req.user),
+            ...buyerReadScope(req.user),
         })
 
             .populate("createdBy", "name email")
@@ -166,7 +217,7 @@ const getBuyerById = async (req, res, next) => {
 
         }
 
-        res.json(buyer);
+        res.json(sanitizeBuyerForViewer(buyer, req.user));
 
     } catch (error) {
 
@@ -205,28 +256,46 @@ const updateBuyer = async (req, res, next) => {
         const {
             companyName,
             country,
+            city,
             industry,
             products,
+            productCategories,
+            hsCodes,
+            buyerType,
+            importerType,
             website,
             contactEmail,
+            publicContactEmail,
             phone,
-            verified,
             tradeVolume,
+            sourceName,
+            sourceUrl,
+            sourceType,
+            notes,
         } = req.body;
 
         buyer.companyName = companyName ?? buyer.companyName;
         buyer.country = country ?? buyer.country;
+        buyer.city = city ?? buyer.city;
         buyer.industry = industry ?? buyer.industry;
         buyer.products = Array.isArray(products)
             ? products
             : typeof products === "string"
               ? products.split(",").map((item) => item.trim()).filter(Boolean)
               : buyer.products;
+        buyer.productCategories = productCategories ?? buyer.productCategories;
+        buyer.hsCodes = hsCodes ?? buyer.hsCodes;
+        buyer.buyerType = buyerType ?? buyer.buyerType;
+        buyer.importerType = importerType ?? buyer.importerType;
         buyer.website = website ?? buyer.website;
         buyer.contactEmail = contactEmail ?? buyer.contactEmail;
+        buyer.publicContactEmail = publicContactEmail ?? buyer.publicContactEmail;
         buyer.phone = phone ?? buyer.phone;
-        buyer.verified = verified ?? buyer.verified;
         buyer.tradeVolume = tradeVolume ?? buyer.tradeVolume;
+        buyer.sourceName = sourceName ?? buyer.sourceName;
+        buyer.sourceUrl = sourceUrl ?? buyer.sourceUrl;
+        buyer.sourceType = sourceType ?? buyer.sourceType;
+        buyer.notes = notes ?? buyer.notes;
 
         if (!buyer.companyName || !buyer.country || !buyer.industry) {
 

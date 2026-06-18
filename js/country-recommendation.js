@@ -30,9 +30,14 @@
   }
 
   function buildFilters() {
+    const targetCountries = Array.from(byId("targetCountries")?.selectedOptions || []).map((option) => option.value);
+
     return {
+      productName: byId("productName")?.value || "",
       productCategory: byId("productCategory")?.value || "",
       hsCode: byId("hsCode")?.value || "",
+      sourceCountry: "India",
+      targetCountries,
       direction: byId("direction")?.value || "",
       exporterExperience: byId("exporterExperience")?.value || "",
       shipmentSize: byId("shipmentSize")?.value || "",
@@ -49,6 +54,8 @@
       logisticsEase: "Logistics ease",
       tariffRisk: "Tariff risk",
       marketEntryDifficulty: "Market entry difficulty",
+      tradeDemandScore: "Comtrade demand",
+      ruleScore: "Rule score",
     };
 
     return Object.entries(labels)
@@ -66,6 +73,7 @@
           </div>
           <span class="score-pill">${escapeHtml(item.finalScore)} / 100</span>
         </div>
+        <p class="table-subtext">Source: ${escapeHtml(item.dataSourceLabel || item.sourceLabel || "Rule Engine")}${item.tradeValue ? ` | Trade value: USD ${Number(item.tradeValue).toLocaleString("en-US")}` : ""}${item.trend ? ` | ${escapeHtml(item.trend)}` : ""}</p>
         <div class="score-grid">${breakdownList(item.scoreBreakdown)}</div>
         <div class="card-section">
           <h4>Why recommended</h4>
@@ -96,7 +104,7 @@
     if (!target) return;
 
     lastResult = data;
-    const unlockedCount = isLoggedIn() ? 3 : 1;
+    const unlockedCount = isLoggedIn() ? (data.topRecommendations || []).length : 1;
     const visible = (data.topRecommendations || []).slice(0, unlockedCount);
     const lockedCount = Math.max((data.topRecommendations || []).length - visible.length, 0);
 
@@ -105,7 +113,8 @@
       <div class="result-heading">
         <div>
           <span class="source-pill">${escapeHtml(data.label)}</span>
-          <h2>${isLoggedIn() ? "Top 3 Recommended Countries" : "Top Recommended Country"}</h2>
+          <h2>${isLoggedIn() ? "Full Country Fit Ranking" : "Free Country Fit Preview"}</h2>
+          <p class="table-subtext">Recommended: ${escapeHtml(data.recommendedCountry || "")} | Confidence: ${escapeHtml(data.confidenceScore || "-")}/100 | Source: ${escapeHtml(data.dataSourceLabel || "Rule Engine")}</p>
         </div>
       </div>
       <div class="recommendation-list">
@@ -116,9 +125,9 @@
           ? `<article class="locked-card">
               <i class="fa-solid fa-lock"></i>
               <div>
-                <h3>${lockedCount} more country recommendations available after login</h3>
-                <p>Free registered users can view the top 3. Paid plans should unlock downloadable comparison reports.</p>
-                <a href="register.html?source=country-recommendation" class="secondary-action">Register to unlock top 3</a>
+                <h3>${lockedCount} more country results available after login</h3>
+                <p>Register to unlock the full ranking and save the result to your dashboard.</p>
+                <a href="register.html?source=country-fit-preview" class="secondary-action">Register to unlock full ranking</a>
               </div>
             </article>`
           : ""
@@ -127,7 +136,7 @@
     `;
 
     if (paidPanel) paidPanel.hidden = false;
-    setStatus(`${isLoggedIn() ? "Showing top 3" : "Showing top 1 guest preview"} from rule-based sample intelligence.`, "success");
+    setStatus(`${isLoggedIn() ? "Showing top 3" : "Showing top 1 guest preview"} from ${data.dataSourceLabel || "Rule Engine"}.`, "success");
   }
 
   function downloadComparison() {
@@ -148,16 +157,23 @@
     event.preventDefault();
 
     const filters = buildFilters();
-    if (!filters.productCategory || !filters.exporterExperience || !filters.shipmentSize || !filters.budgetLevel) {
-      setStatus("Select product/category, experience, shipment size and budget level.", "error");
+    if (!filters.productName || !filters.productCategory || !filters.targetCountries.length || !filters.exporterExperience || !filters.shipmentSize || !filters.budgetLevel) {
+      setStatus("Enter a product and select category, target countries, experience, shipment size and budget.", "error");
       return;
     }
 
     setStatus("Scoring countries with rule-based sample intelligence...", "info");
 
     try {
-      const data = await window.TradeAI.api.recommendations.countries(filters);
+      localStorage.setItem("tradeai_pending_country_fit", JSON.stringify(filters));
+      window.TradeAI?.analytics?.track("country_fit_preview_submit", {
+        productName: filters.productName,
+        hsCode: filters.hsCode,
+        targetCountries: filters.targetCountries,
+      });
+      const data = await window.TradeAI.api.recommendations.countryFit(filters);
       renderRecommendations(data);
+      if (data.saved) localStorage.removeItem("tradeai_pending_country_fit");
     } catch (error) {
       setStatus(window.TradeAI?.getPreviewMessage?.(error, "Country recommendation tool is temporarily unavailable. Please try again after the backend is reachable.") || error.message, "error");
     }

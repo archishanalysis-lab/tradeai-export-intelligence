@@ -1,13 +1,12 @@
+import mongoose from "mongoose";
+
 import {
-    countryProductScores,
     recommendationCountries,
     recommendationProductCategories,
 } from "../data/countryRecommendationScores.js";
-import {
-    buildRecommendationReason,
-    buildRiskNotes,
-    scoreCountryRecommendation,
-} from "../services/countryRecommendationService.js";
+import AnalyticsEvent from "../models/AnalyticsEvent.js";
+import Report from "../models/Report.js";
+import { buildComtradeRanking } from "../services/countryFitService.js";
 import { checkFeatureAccess, consumeUsageLimit } from "../services/usageLimitService.js";
 
 const normalize = (value = "") => String(value || "").trim().toLowerCase();
@@ -26,17 +25,17 @@ const normalizeCategory = (value = "") => {
 };
 
 const getCountryRecommendations = async (req, res) => {
-    const query = req.cleanQuery || req.query;
+    const query = req.method === "POST" ? req.body || {} : req.cleanQuery || req.query;
     const access = req.user
         ? await consumeUsageLimit(req, "countryComparison").catch((error) => ({
-            allowed: false,
-            plan: error.plan || "free",
-            feature: "countryComparison",
-            limit: error.limit,
-            used: error.used,
-            reason: error.code || "limit_reached",
-            message: error.message,
-        }))
+              allowed: false,
+              plan: error.plan || "free",
+              feature: "countryComparison",
+              limit: error.limit,
+              used: error.used,
+              reason: error.code || "limit_reached",
+              message: error.message,
+          }))
         : await checkFeatureAccess(req, "countryComparison");
     const filters = {
         productCategory: normalizeCategory(query.productCategory || "General goods"),
@@ -47,53 +46,106 @@ const getCountryRecommendations = async (req, res) => {
         direction: normalize(query.direction || "export from India"),
     };
 
-    const productCategory = recommendationProductCategories.find(
-        (category) => normalize(category) === filters.productCategory,
-    ) || "General goods";
+    const productCategory =
+        recommendationProductCategories.find((category) => normalize(category) === filters.productCategory) ||
+        "General goods";
+    const countryFit = await buildComtradeRanking({
+        productName: query.productName || query.product || "",
+        hsCode: filters.hsCode,
+        sourceCountry: query.sourceCountry || "India",
+        targetCountries: query.targetCountries,
+        flowCode: normalize(query.flowCode || query.flow || "X").startsWith("m") ? "M" : "X",
+        period: query.period,
+        productCategory,
+        filters,
+    });
+    const recommendations = countryFit.ranking.map((item) => ({
+        ...item,
+        tradeDemandScore:
+            item.scoreBreakdown?.tradeDemandScore ??
+            (Number.isFinite(Number(item.scoreBreakdown?.demandScore))
+                ? Number(item.scoreBreakdown.demandScore) * 10
+                : null),
+        availableTradeValue: item.tradeValue ?? null,
+        growthSignal: item.trend || "Not available",
+        whyRecommended: item.explanation,
+        links: {
+            documents: `/pages/document-checklist.html?country=${encodeURIComponent(item.country)}&productCategory=${encodeURIComponent(item.productCategory)}`,
+            compliance: `/pages/country-compliance.html?country=${encodeURIComponent(item.country)}&productCategory=${encodeURIComponent(item.productCategory)}`,
+            tariffs: `/pages/duty-tariff.html?country=${encodeURIComponent(item.country)}&productCategory=${encodeURIComponent(item.productCategory)}`,
+            report: `/pages/export-opportunity-report.html?country=${encodeURIComponent(item.country)}&productCategory=${encodeURIComponent(item.productCategory)}`,
+        },
+    }));
+    const visibleLimit = req.user ? recommendations.length : 1;
+    const visibleRecommendations = recommendations.slice(0, visibleLimit);
+    const userId = req.user?._id || req.user?.id || req.user?.userId;
+    let savedReportId = null;
 
-    const recommendations = countryProductScores
-        .filter((item) => item.productCategory === productCategory)
-        .map((item) => {
-            const finalScore = scoreCountryRecommendation(item, filters);
+    if (req.method === "POST" && userId && mongoose.Types.ObjectId.isValid(String(userId))) {
+        const savedReport = await Report.create({
+            userId,
+            organizationId: mongoose.Types.ObjectId.isValid(String(req.user?.organizationId))
+                ? req.user.organizationId
+                : undefined,
+            productName: String(query.productName || query.product || productCategory).trim(),
+            hsCode: filters.hsCode,
+            originCountry: query.sourceCountry || "India",
+            targetCountry: countryFit.recommendedCountry,
+            businessType: "Exporter",
+            reportType: "country-fit",
+            sourceDataType: countryFit.dataSourceLabel,
+            isDemo: !countryFit.isLiveData,
+            reportData: {
+                reportTitle: `${query.productName || productCategory} Country Fit Report`,
+                productName: query.productName || query.product || productCategory,
+                hsCodeOrCategory: filters.hsCode || productCategory,
+                country: countryFit.recommendedCountry,
+                recommendedCountry: countryFit.recommendedCountry,
+                rankedCountries: recommendations,
+                confidenceScore: countryFit.confidenceScore,
+                sourceType: countryFit.dataSourceLabel,
+                disclaimer: "Country Fit is decision-support and must be verified before commercial decisions.",
+                createdAt: new Date().toISOString(),
+            },
+        });
+        savedReportId = savedReport._id;
+    }
 
-            return {
-                ...item,
-                finalScore,
-                scoreBreakdown: {
-                    demandScore: item.demandScore,
-                    competitionScore: item.competitionScore,
-                    complianceComplexity: item.complianceComplexity,
-                    paymentRisk: item.paymentRisk,
-                    logisticsEase: item.logisticsEase,
-                    tariffRisk: item.tariffRisk,
-                    marketEntryDifficulty: item.marketEntryDifficulty,
-                },
-                whyRecommended: buildRecommendationReason(item, filters),
-                risks: buildRiskNotes(item),
-                links: {
-                    documents: `/pages/document-checklist.html?country=${encodeURIComponent(item.country)}&productCategory=${encodeURIComponent(item.productCategory)}`,
-                    compliance: `/pages/country-compliance.html?country=${encodeURIComponent(item.country)}&productCategory=${encodeURIComponent(item.productCategory)}`,
-                    tariffs: `/pages/duty-tariff.html?country=${encodeURIComponent(item.country)}&productCategory=${encodeURIComponent(item.productCategory)}`,
-                    report: `/pages/export-opportunity-report.html?country=${encodeURIComponent(item.country)}&productCategory=${encodeURIComponent(item.productCategory)}`,
-                },
-            };
-        })
-        .sort((a, b) => b.finalScore - a.finalScore);
-    const isPaidPlan = ["growth", "pro", "enterprise"].includes(access.plan);
-    const visibleLimit = access.plan === "guest" ? 1 : 3;
-    const visibleRecommendations = isPaidPlan ? recommendations : recommendations.slice(0, visibleLimit);
+    AnalyticsEvent.create({
+        event: "country_fit_search",
+        userId: userId ? String(userId) : "anonymous",
+        properties: {
+            productName: query.productName || query.product || "",
+            productCategory,
+            hsCode: filters.hsCode,
+            sourceCountry: query.sourceCountry || "India",
+            targetCountries: query.targetCountries || recommendationCountries,
+            recommendedCountry: countryFit.recommendedCountry,
+            dataSourceLabel: countryFit.dataSourceLabel,
+        },
+        path: "/api/recommendations/country-fit",
+    }).catch(() => null);
 
     res.json({
         success: true,
-        sourceType: "rule-based/sample",
-        dataType: "sample",
-        label: "Rule-based recommendation — sample intelligence, not AI.",
+        sourceType: countryFit.isLiveData ? "api-backed" : "rule-engine",
+        dataType: countryFit.isLiveData ? "live-api" : "curated/rule-engine",
+        label: countryFit.isLiveData
+            ? "Country Fit Engine - UN Comtrade plus rule-engine risk scoring."
+            : "Country Fit Engine - rule-engine guidance. Live Comtrade demand is unavailable for this query.",
+        recommendedCountry: countryFit.recommendedCountry,
+        confidenceScore: countryFit.confidenceScore,
+        explanation: countryFit.explanation,
+        dataSourceLabel: countryFit.dataSourceLabel,
         access: {
             ...access,
             message: access.allowed
                 ? access.message
                 : "Free comparison limit reached. Showing preview recommendations; upgrade to unlock more comparisons.",
-            upgradePrompt: access.plan === "guest" ? "Login to see top 3 country recommendations." : "Upgrade to unlock detailed country comparison exports.",
+            upgradePrompt:
+                access.plan === "guest"
+                    ? "Login to unlock the full country ranking and save the result."
+                    : "Upgrade to unlock detailed country comparison exports.",
         },
         filters: {
             countries: recommendationCountries,
@@ -104,17 +156,24 @@ const getCountryRecommendations = async (req, res) => {
             selected: {
                 productCategory,
                 hsCode: filters.hsCode,
+                productName: query.productName || query.product || "",
+                sourceCountry: query.sourceCountry || "India",
+                targetCountries: query.targetCountries || recommendationCountries.join(","),
                 exporterExperience: filters.exporterExperience,
                 shipmentSize: filters.shipmentSize,
                 budgetLevel: filters.budgetLevel,
                 direction: query.direction || "export from India",
             },
         },
-        topRecommendations: visibleRecommendations.slice(0, 3),
+        topRecommendations: visibleRecommendations,
         recommendations: visibleRecommendations,
+        countryRanking: visibleRecommendations,
+        rankedCountries: visibleRecommendations,
+        savedReportId,
+        saved: Boolean(savedReportId),
         lockedRecommendationsCount: Math.max(recommendations.length - visibleRecommendations.length, 0),
         disclaimer:
-            "These recommendations are rule-based sample intelligence for early screening. Verify demand, HS code, documents, compliance, duty/tariff, buyer quality, payment terms and logistics with official sources and qualified professionals before making trade decisions.",
+            "Country Fit is decision-support. UN Comtrade values are historical trade-data signals when available; rule-engine and curated guidance are not legal, customs, banking or financial advice. Verify HS code, compliance, duty, buyer quality and payment terms with official sources and qualified professionals.",
     });
 };
 

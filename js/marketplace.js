@@ -215,6 +215,7 @@
             ${badge(company)}
           </div>
           <p>${escapeHtml(company.industry || company.businessType || "Trade company")} - ${escapeHtml(company.city || "")} ${escapeHtml(company.country || "")}</p>
+          <p class="table-subtext">Source: ${company.demo ? "SAMPLE" : "User-submitted company profile"} - Verification: ${escapeHtml(company.verificationStatus || "pending")}</p>
           <div class="tag-row">
             ${(company.mainProducts || company.exportCategories || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
           </div>

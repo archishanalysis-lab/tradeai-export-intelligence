@@ -26,6 +26,19 @@
         skipHealthCheck: false,
       });
     },
+    focusCountryGuidance(params = {}) {
+      const query = new URLSearchParams();
+
+      Object.entries(params).forEach(([key, value]) => {
+        const cleanValue = String(value || "").trim();
+        if (cleanValue) query.set(key, cleanValue);
+      });
+
+      const suffix = query.toString() ? `?${query.toString()}` : "";
+      return TradeAI.request(`/compliance/focus-country-guidance${suffix}`, {
+        skipHealthCheck: false,
+      });
+    },
   };
 
   window.TradeAI = {
