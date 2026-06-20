@@ -280,23 +280,35 @@ async function checkFeatureAccess(userOrReq, featureName) {
 }
 
 function ensureCounter(subscription, config, now) {
-    const usage = subscription.usage || {};
-    const current = usage[config.usageKey] || {};
+    const counterPath = `usage.${config.usageKey}`;
+    const current = subscription.get(counterPath) || {};
+    const count = Number(current.count);
     const resetAt = current.resetAt ? new Date(current.resetAt) : null;
-    const shouldReset = !resetAt || resetAt <= now;
+    const hasValidCount = Number.isFinite(count) && count >= 0;
+    const hasValidResetAt = resetAt && !Number.isNaN(resetAt.getTime());
+    const shouldReset = !hasValidResetAt || resetAt <= now;
 
+    // Set only the requested nested paths. Replacing the complete Mongoose
+    // subdocument can materialize undefined sibling counters and fail casting.
     if (shouldReset) {
-        subscription.usage = {
-            ...usage,
-            [config.usageKey]: {
-                count: 0,
-                resetAt: getNextResetAt(config.period, now),
-            },
-        };
-        return subscription.usage[config.usageKey];
+        subscription.set(`${counterPath}.count`, 0);
+        subscription.set(`${counterPath}.resetAt`, getNextResetAt(config.period, now));
+    } else if (!hasValidCount) {
+        subscription.set(`${counterPath}.count`, 0);
     }
 
-    return current;
+    return subscription.get(counterPath);
+}
+
+function buildUsageTrackingError(error, feature) {
+    const trackingError = buildUsageError({
+        status: 503,
+        code: "USAGE_TRACKING_FAILED",
+        message: "Usage tracking is temporarily unavailable. Please try again.",
+        feature,
+    });
+    trackingError.cause = error;
+    return trackingError;
 }
 
 async function consumeUsageLimit(req, feature) {
@@ -311,7 +323,15 @@ async function consumeUsageLimit(req, feature) {
     }
 
     const now = new Date();
-    const subscription = await findOrCreateSubscription(req);
+    let subscription;
+
+    try {
+        subscription = await findOrCreateSubscription(req);
+    } catch (error) {
+        if (error.status) throw error;
+        throw buildUsageTrackingError(error, feature);
+    }
+
     const plan = normalizePlanName(subscription.plan);
     const limits = getPlanLimits(plan);
 
@@ -329,10 +349,20 @@ async function consumeUsageLimit(req, feature) {
     }
 
     const limit = limits[config.limitKey];
-    const counter = ensureCounter(subscription, config, now);
+    let counter;
+
+    try {
+        counter = ensureCounter(subscription, config, now);
+    } catch (error) {
+        throw buildUsageTrackingError(error, feature);
+    }
 
     if (limit === -1) {
-        await subscription.save();
+        try {
+            await subscription.save();
+        } catch (error) {
+            throw buildUsageTrackingError(error, feature);
+        }
         return {
             allowed: true,
             plan,
@@ -358,16 +388,20 @@ async function consumeUsageLimit(req, feature) {
         });
     }
 
-    counter.count = used + 1;
-    subscription.usage[config.usageKey] = counter;
-    await subscription.save();
+    subscription.set(`usage.${config.usageKey}.count`, used + 1);
+
+    try {
+        await subscription.save();
+    } catch (error) {
+        throw buildUsageTrackingError(error, feature);
+    }
 
     return {
         allowed: true,
         plan,
         feature,
         limit,
-        used: counter.count,
+        used: used + 1,
         resetAt: formatResetDate(counter.resetAt),
     };
 }
