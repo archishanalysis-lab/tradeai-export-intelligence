@@ -36,139 +36,29 @@
   };
   const finderForm = document.getElementById("buyerFinderForm");
   const finderSearch = document.getElementById("buyerFinderSearch");
+  const finderHsCode = document.getElementById("buyerFinderHsCode");
+  const finderCountry = document.getElementById("buyerFinderCountry");
+  const finderButton = document.getElementById("buyerFinderButton");
+  const finderStatus = document.getElementById("buyerFinderStatus");
   const finderResults = document.getElementById("buyerFinderResults");
   const finderList = document.getElementById("buyerFinderList");
   const finderCount = document.getElementById("buyerFinderCount");
+  const finderSourceLabel = document.getElementById("buyerFinderSourceLabel");
   const crmSummary = document.querySelector(".buyer-crm-summary");
   const crmTools = document.querySelector(".buyer-crm-tools");
   const crmAiSection = document.querySelector(".buyer-ai-section");
-
-  const demoBuyers = [
-    {
-      _id: "demo-buyer-1",
-      companyName: "Sample Gulf Retail Sourcing Hub",
-      country: "UAE",
-      industry: "Food imports",
-      products: ["Spices", "Packaged foods", "Organic staples"],
-      aiMatchScore: 91,
-      status: "Sample profile",
-      demo: true,
-    },
-    {
-      _id: "demo-buyer-2",
-      companyName: "Sample East Africa Distribution Co.",
-      country: "Kenya",
-      industry: "Wholesale distribution",
-      products: ["Rice", "Tea", "FMCG"],
-      aiMatchScore: 88,
-      status: "Sample profile",
-      demo: true,
-    },
-    {
-      _id: "demo-buyer-3",
-      companyName: "Sample Riyadh Premium Foods Desk",
-      country: "Saudi Arabia",
-      industry: "Premium food retail",
-      products: ["Coffee", "Processed foods", "Spices"],
-      aiMatchScore: 84,
-      status: "Sample profile",
-      demo: true,
-    },
-    {
-      _id: "demo-buyer-4",
-      companyName: "Sample Dar es Salaam Trade Partners",
-      country: "Tanzania",
-      industry: "Importer network",
-      products: ["Pharma", "Packaging", "Consumer goods"],
-      aiMatchScore: 81,
-      status: "Sample profile",
-      demo: true,
-    },
-    {
-      _id: "demo-buyer-5",
-      companyName: "Sample Doha Construction Supply Desk",
-      country: "Qatar",
-      industry: "Construction materials",
-      products: ["Tools", "Hardware", "Industrial supplies"],
-      aiMatchScore: 79,
-      status: "Sample profile",
-      demo: true,
-    },
-    {
-      _id: "demo-buyer-6",
-      companyName: "Sample Kampala FMCG Import Desk",
-      country: "Uganda",
-      industry: "FMCG imports",
-      products: ["Packaged foods", "Personal care", "Textiles"],
-      aiMatchScore: 76,
-      status: "Sample profile",
-      demo: true,
-    },
-    {
-      _id: "demo-buyer-7",
-      companyName: "Sample Muscat Hospitality Procurement",
-      country: "Oman",
-      industry: "Hospitality supply",
-      products: ["Food service", "Linens", "Specialty ingredients"],
-      aiMatchScore: 73,
-      status: "Sample profile",
-      demo: true,
-    },
-    {
-      _id: "demo-buyer-8",
-      companyName: "Sample Kigali SME Trade Collective",
-      country: "Rwanda",
-      industry: "SME trade network",
-      products: ["Packaging", "Food products", "Light machinery"],
-      aiMatchScore: 70,
-      status: "Sample profile",
-      demo: true,
-    },
-  ];
-
-  const demoImporters = [
-    {
-      companyName: "Sample Gulf Retail Buyer",
-      industry: "FMCG / Food",
-      shipments: "MVP preview profile",
-      rating: "HIGH",
-      score: 94,
-    },
-    {
-      companyName: "Sample Spice Import Desk",
-      industry: "Spices",
-      shipments: "MVP preview profile",
-      rating: "HIGH",
-      score: 91,
-    },
-    {
-      companyName: "Sample East Africa Distributor",
-      industry: "Food Products",
-      shipments: "MVP preview profile",
-      rating: "MED",
-      score: 78,
-    },
-    {
-      companyName: "Sample Packaging Buyer",
-      industry: "Packaging",
-      shipments: "MVP preview profile",
-      rating: "MED",
-      score: 72,
-    },
-    {
-      companyName: "Sample Beverage Procurement Team",
-      industry: "Beverages",
-      shipments: "MVP preview profile",
-      rating: "LOW",
-      score: 61,
-    },
-  ];
 
   function normalizeProducts(value) {
     return value
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
+  }
+
+  function escapeHtml(value = "") {
+    const element = document.createElement("div");
+    element.textContent = String(value);
+    return element.innerHTML;
   }
 
   function fillForm(buyer) {
@@ -180,7 +70,6 @@
     form.website.value = buyer.website || "";
     form.contactEmail.value = buyer.contactEmail || "";
     form.phone.value = buyer.phone || "";
-    form.verified.checked = Boolean(buyer.verified);
     formTitle.textContent = "Edit buyer";
     submitButton.textContent = "Update buyer";
     cancelButton.hidden = false;
@@ -198,7 +87,7 @@
   function setLoading(isLoading) {
     if (loadingState) loadingState.hidden = !isLoading;
     if (tableWrap) tableWrap.hidden = isLoading;
-    if (emptyState) emptyState.hidden = true;
+    if (emptyState && isLoading) emptyState.hidden = true;
   }
 
   function buyerScore(buyer) {
@@ -226,43 +115,8 @@
       : "0%";
   }
 
-  function renderDemoNotice() {
-    const panel = document.querySelector(".buyer-table-panel");
-    const heading = panel?.querySelector(".panel-heading");
-    if (!panel || !heading) return;
-
-    let notice = panel.querySelector("[data-buyer-demo-notice]");
-    if (!state.isDemo) {
-      notice?.remove();
-      return;
-    }
-
-    if (!notice) {
-      notice = document.createElement("div");
-      notice.dataset.buyerDemoNotice = "true";
-      notice.className = "empty-state";
-      heading.insertAdjacentElement("afterend", notice);
-    }
-
-    notice.hidden = false;
-    notice.innerHTML = `
-      <span class="section-kicker">DEMO DATA</span>
-      <h3>Sample buyer profiles for MVP preview.</h3>
-      <p>
-        These are example buyer profiles for product-flow review only. They are
-        not verified real companies and should not be used for outreach.
-      </p>
-      <div class="form-actions">
-        <button type="button" class="secondary" data-buyer-demo-action="search">Search your first market</button>
-        <a class="secondary" href="copilot.html">Ask TradeAI Copilot</a>
-      </div>
-    `;
-  }
-
   function renderTable() {
     if (!tableBody) return;
-
-    renderDemoNotice();
 
     tableBody.innerHTML = state.buyers
       .map((buyer) => {
@@ -276,8 +130,8 @@
             : verificationStatus.replace(/_/g, " ");
         const statusClass = buyer.demo ? "status-pending" : verificationStatus === "manually_verified" ? "status-active" : "status-pending";
         const sourceLabel = buyer.demo
-          ? "SAMPLE"
-          : `${buyer.sourceName || buyer.sourceType || "User submitted"} - ${statusText}`;
+          ? "Sample/demo - SAMPLE"
+          : `${buyer.dataSourceCategory || "Curated/rule-engine"} - ${buyer.sourceName || buyer.sourceType || "User submitted"} - ${statusText}`;
 
         return `
           <tr>
@@ -335,45 +189,55 @@
     `;
   }
 
-  function renderFinderResults(searchTerm) {
+  function renderFinderResults(buyers, context = {}) {
     if (!finderList || !finderResults) return;
 
-    const label = searchTerm || "your product";
-
-    finderList.innerHTML = demoImporters
+    if (!buyers.length) {
+      finderList.innerHTML = `
+        <div class="buyer-discovery-empty">
+          <strong>No source-labeled buyer records matched this context.</strong>
+          <p>Try a broader product term, remove the HS code, or search all available countries. TradeAI does not insert demo leads into authenticated results.</p>
+        </div>
+      `;
+    } else {
+      finderList.innerHTML = buyers
       .map((buyer) => {
-        const initial = buyer.companyName.trim().charAt(0);
-        const ratingClass = buyer.rating.toLowerCase();
+        const initial = escapeHtml((buyer.companyName || "B").trim().charAt(0));
+        const verificationStatus = buyer.verificationStatus === "manually_verified"
+          ? "Manually verified"
+          : String(buyer.verificationStatus || "Unverified").replace(/_/g, " ");
+        const sourceCategory = buyer.dataSourceCategory || (buyer.isDemo ? "Sample/demo" : "Curated/rule-engine");
+        const sourceName = buyer.sourceName || buyer.sourceType || "User submitted";
+        const products = (buyer.products || []).slice(0, 3).join(", ") || context.product || "Product not listed";
+        const contact = buyer.publicContactEmail
+          ? `Public contact: ${buyer.publicContactEmail}`
+          : buyer.contactAccess === "organization-private" && buyer.contactEmail
+            ? `Organization contact: ${buyer.contactEmail}`
+            : "Private contact hidden";
+        const statusClass = buyer.verificationStatus === "manually_verified" ? "high" : "med";
 
         return `
           <article class="target-importer-row">
             <div class="importer-name">
               <div class="importer-avatar">${initial}</div>
-              <strong>${buyer.companyName}</strong>
-              <span>${label} buyer signal</span>
+              <strong>${escapeHtml(buyer.companyName || "Unnamed buyer")}</strong>
+              <span>${escapeHtml(products)}</span>
             </div>
-            <div class="importer-industry">${buyer.industry}</div>
-            <div class="importer-shipments">${buyer.shipments}</div>
+            <div class="importer-industry">${escapeHtml(buyer.country || "Country not listed")}</div>
+            <div class="importer-shipments">${escapeHtml(sourceName)}<br><small>${escapeHtml(contact)}</small></div>
             <div class="importer-score">
-              <span class="match-score" style="--score: ${buyer.score}%"><span></span></span>
-              <strong>${buyer.score}%</strong>
+              <strong>${escapeHtml(sourceCategory)}</strong>
             </div>
-            <span class="buyer-rating ${ratingClass}">${buyer.rating}</span>
-            <a
-              href="pricing.html"
-              class="unlock-row-btn"
-              aria-label="Unlock ${buyer.companyName}"
-              data-requires-plan="paid"
-              data-plan-message="Buyer contact details and shipment histories are available after activating a paid plan."
-            >
-              <i class="fa-solid fa-arrow-right"></i>
-            </a>
+            <span class="buyer-rating ${statusClass}">${escapeHtml(verificationStatus)}</span>
+            <span class="unlock-row-btn" title="${escapeHtml(sourceName)}" aria-label="Record provenance"><i class="fa-solid fa-shield-halved"></i></span>
           </article>
         `;
       })
       .join("");
+    }
 
-    if (finderCount) finderCount.textContent = `${demoImporters.length} MATCHES`;
+    if (finderCount) finderCount.textContent = `${buyers.length} ${buyers.length === 1 ? "MATCH" : "MATCHES"}`;
+    if (finderSourceLabel) finderSourceLabel.textContent = buyers.length ? "SOURCE-LABELED RESULTS" : "NO MATCHES";
     finderResults.hidden = false;
     finderResults.classList.remove("finder-results-visible");
     window.requestAnimationFrame(() => {
@@ -381,15 +245,65 @@
     });
   }
 
-  function applyDemoBuyers() {
-    state.isDemo = true;
-    state.buyers = demoBuyers;
-    state.page = 1;
-    state.pages = 1;
-    state.total = demoBuyers.length;
-    renderStats();
-    renderTable();
-    renderPagination();
+  function setFinderStatus(message, isError = false) {
+    if (!finderStatus) return;
+    finderStatus.textContent = message;
+    finderStatus.style.color = isError ? "var(--color-danger, #fb7185)" : "";
+  }
+
+  function prefillFinderContext() {
+    if (!finderSearch) return;
+
+    let pending = {};
+    try {
+      pending = JSON.parse(localStorage.getItem("tradeai_pending_country_fit") || "{}");
+    } catch (_error) {
+      pending = {};
+    }
+
+    finderSearch.value = pending.productName || localStorage.getItem("tradeai_selected_product") || finderSearch.value;
+    if (finderHsCode) finderHsCode.value = pending.hsCode || localStorage.getItem("tradeai_selected_hsCode") || "";
+
+    const targetCountry = pending.targetCountries?.[0] || localStorage.getItem("tradeai_selected_country") || "";
+    if (finderCountry && Array.from(finderCountry.options).some((option) => option.value === targetCountry)) {
+      finderCountry.value = targetCountry;
+    }
+  }
+
+  async function discoverBuyers() {
+    const buyerApi = api.api?.buyers;
+    const product = finderSearch?.value.trim() || "";
+    const hsCode = finderHsCode?.value.trim() || "";
+    const country = finderCountry?.value || "";
+
+    if (!product) {
+      setFinderStatus("Enter a product name to search buyer records.", true);
+      finderSearch?.focus();
+      return;
+    }
+
+    if (!buyerApi?.list) {
+      setFinderStatus("Buyer Discovery API is unavailable. Refresh the dashboard and try again.", true);
+      return;
+    }
+
+    try {
+      if (finderButton) finderButton.disabled = true;
+      setFinderStatus("Searching authenticated, source-labeled buyer records...");
+      const data = await buyerApi.list({ product, hsCode, country, page: 1, limit: 20 });
+      const buyers = Array.isArray(data) ? data : data.buyers || [];
+      renderFinderResults(buyers, { product, hsCode, country });
+      setFinderStatus(
+        buyers.length
+          ? `${buyers.length} record${buyers.length === 1 ? "" : "s"} found. Check each source and verification label before outreach.`
+          : "No matching records found. Broaden the search context and try again.",
+      );
+    } catch (error) {
+      if (finderResults) finderResults.hidden = true;
+      setFinderStatus(error.message || "Buyer Discovery could not load results.", true);
+    } finally {
+      if (finderButton) finderButton.disabled = false;
+    }
   }
 
   async function loadBuyers() {
@@ -397,6 +311,9 @@
 
     try {
       setLoading(true);
+      if (emptyState) {
+        emptyState.innerHTML = "<h3>No buyers found</h3><p>Add your first buyer or change the search term.</p>";
+      }
       const params = new URLSearchParams({
         page: state.page,
         limit: state.limit,
@@ -404,23 +321,27 @@
 
       if (state.search) params.set("search", state.search);
 
-      const data = await api.request(`/buyers?${params.toString()}`);
+      const data = await api.api.buyers.list(Object.fromEntries(params));
       state.buyers = Array.isArray(data) ? data : data.buyers || [];
       state.page = data.page || state.page;
       state.pages = data.pages || 1;
       state.total = data.total ?? state.buyers.length;
-      state.isDemo = state.buyers.length === 0;
-      if (state.isDemo) {
-        state.buyers = demoBuyers;
-        state.total = demoBuyers.length;
-        state.page = 1;
-        state.pages = 1;
-      }
+      state.isDemo = false;
       renderStats();
       renderTable();
       renderPagination();
     } catch (error) {
-      applyDemoBuyers();
+      state.buyers = [];
+      state.total = 0;
+      state.pages = 1;
+      state.isDemo = false;
+      renderStats();
+      renderTable();
+      renderPagination();
+      if (emptyState) {
+        emptyState.hidden = false;
+        emptyState.innerHTML = `<h3>Buyer records could not be loaded</h3><p>${escapeHtml(error.message || "Check the backend connection and try again.")}</p>`;
+      }
     } finally {
       setLoading(false);
     }
@@ -437,7 +358,6 @@
       website: form.website.value.trim(),
       contactEmail: form.contactEmail.value.trim(),
       phone: form.phone.value.trim(),
-      verified: form.verified.checked,
     };
 
     if (!payload.companyName || !payload.country || !payload.industry) {
@@ -508,12 +428,6 @@
     form?.addEventListener("submit", handleSubmit);
     cancelButton?.addEventListener("click", resetForm);
     tableBody?.addEventListener("click", handleTableAction);
-    document.addEventListener("click", (event) => {
-      const demoAction = event.target.closest("[data-buyer-demo-action='search']");
-      if (!demoAction) return;
-      finderSearch?.focus();
-      document.querySelector(".buyer-finder-shell")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
     pagination?.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-page]");
       if (!button || button.disabled) return;
@@ -530,7 +444,7 @@
     });
     finderForm?.addEventListener("submit", (event) => {
       event.preventDefault();
-      renderFinderResults(finderSearch?.value.trim());
+      discoverBuyers();
     });
   }
 
@@ -538,6 +452,7 @@
     if (!document.querySelector("[data-buyer-management]")) return;
 
     bindEvents();
+    prefillFinderContext();
 
     if (!api.auth.isLoggedIn()) {
       if (crmSummary) crmSummary.hidden = true;

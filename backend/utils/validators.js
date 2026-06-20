@@ -277,6 +277,8 @@ const buyerQuerySchema = z
         query: paginationQuery.extend({
             country: z.string().trim().max(80).optional(),
             industry: z.string().trim().max(120).optional(),
+            product: z.string().trim().max(160).optional(),
+            hsCode: z.string().trim().max(20).optional(),
             verified: z.enum(["true", "false"]).optional(),
             tradeVolumeMin: z.coerce.number().min(0).optional(),
             tradeVolumeMax: z.coerce.number().min(0).optional(),

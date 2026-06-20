@@ -152,11 +152,11 @@ async function ensureAuthBackendReady() {
 }
 
 const DASHBOARD_PATHS = {
-  explorer: "explorer-dashboard.html",
-  exporter: "export-dash.html",
-  importer: "importer-dashboard.html",
-  consultant: "analytics-dashboard.html",
-  sme: "explorer-dashboard.html",
+  explorer: "dashboard.html",
+  exporter: "dashboard.html",
+  importer: "dashboard.html",
+  consultant: "dashboard.html",
+  sme: "dashboard.html",
   admin: "admin-panel.html",
 };
 
@@ -182,6 +182,7 @@ const protectedPages = [
   "analytics-dashboard",
   "ai-reports",
   "copilot",
+  "saved-search",
   "deals",
   "search-result",
   "hs-code-detail",

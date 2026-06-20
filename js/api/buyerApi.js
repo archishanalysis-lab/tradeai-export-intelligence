@@ -1,7 +1,15 @@
 (function () {
   const buyerApi = {
     list(params = {}) {
-      return TradeAI.request(`/buyers?${new URLSearchParams(params).toString()}`);
+      const query = new URLSearchParams();
+
+      Object.entries(params).forEach(([key, value]) => {
+        const cleanValue = String(value ?? "").trim();
+        if (cleanValue) query.set(key, cleanValue);
+      });
+
+      const suffix = query.toString() ? `?${query.toString()}` : "";
+      return TradeAI.request(`/buyers${suffix}`);
     },
     get(id) {
       return TradeAI.request(`/buyers/${id}`);

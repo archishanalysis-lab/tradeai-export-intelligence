@@ -11,6 +11,12 @@ import { checkFeatureAccess, consumeUsageLimit } from "../services/usageLimitSer
 
 const normalize = (value = "") => String(value || "").trim().toLowerCase();
 
+const normalizeIdempotencyKey = (value = "") =>
+    String(value || "")
+        .trim()
+        .replace(/[^a-zA-Z0-9._:-]/g, "")
+        .slice(0, 128);
+
 const normalizeCategory = (value = "") => {
     const category = normalize(value);
 
@@ -26,8 +32,25 @@ const normalizeCategory = (value = "") => {
 
 const getCountryRecommendations = async (req, res) => {
     const query = req.method === "POST" ? req.body || {} : req.cleanQuery || req.query;
+    const userId = req.user?._id || req.user?.id || req.user?.userId;
+    const idempotencyKey = normalizeIdempotencyKey(
+        req.get("Idempotency-Key") || query.pendingCountryFitId || query.requestId,
+    );
+    const reportIdentity =
+        req.method === "POST" &&
+        idempotencyKey &&
+        userId &&
+        mongoose.Types.ObjectId.isValid(String(userId))
+            ? { userId, reportType: "country-fit", idempotencyKey }
+            : null;
+    const existingIdempotentReport = reportIdentity
+        ? await Report.findOne(reportIdentity)
+        : null;
     const access = req.user
-        ? await consumeUsageLimit(req, "countryComparison").catch((error) => ({
+        ? await (existingIdempotentReport
+              ? checkFeatureAccess(req, "countryComparison")
+              : consumeUsageLimit(req, "countryComparison")
+          ).catch((error) => ({
               allowed: false,
               plan: error.plan || "free",
               feature: "countryComparison",
@@ -78,36 +101,54 @@ const getCountryRecommendations = async (req, res) => {
     }));
     const visibleLimit = req.user ? recommendations.length : 1;
     const visibleRecommendations = recommendations.slice(0, visibleLimit);
-    const userId = req.user?._id || req.user?.id || req.user?.userId;
     let savedReportId = null;
+    let idempotentReplay = false;
 
     if (req.method === "POST" && userId && mongoose.Types.ObjectId.isValid(String(userId))) {
-        const savedReport = await Report.create({
-            userId,
-            organizationId: mongoose.Types.ObjectId.isValid(String(req.user?.organizationId))
-                ? req.user.organizationId
-                : undefined,
-            productName: String(query.productName || query.product || productCategory).trim(),
-            hsCode: filters.hsCode,
-            originCountry: query.sourceCountry || "India",
-            targetCountry: countryFit.recommendedCountry,
-            businessType: "Exporter",
-            reportType: "country-fit",
-            sourceDataType: countryFit.dataSourceLabel,
-            isDemo: !countryFit.isLiveData,
-            reportData: {
-                reportTitle: `${query.productName || productCategory} Country Fit Report`,
-                productName: query.productName || query.product || productCategory,
-                hsCodeOrCategory: filters.hsCode || productCategory,
-                country: countryFit.recommendedCountry,
-                recommendedCountry: countryFit.recommendedCountry,
-                rankedCountries: recommendations,
-                confidenceScore: countryFit.confidenceScore,
-                sourceType: countryFit.dataSourceLabel,
-                disclaimer: "Country Fit is decision-support and must be verified before commercial decisions.",
-                createdAt: new Date().toISOString(),
-            },
-        });
+        let savedReport = existingIdempotentReport;
+
+        if (savedReport) {
+            idempotentReplay = true;
+        } else {
+            const reportPayload = {
+                userId,
+                organizationId: mongoose.Types.ObjectId.isValid(String(req.user?.organizationId))
+                    ? req.user.organizationId
+                    : undefined,
+                productName: String(query.productName || query.product || productCategory).trim(),
+                hsCode: filters.hsCode,
+                originCountry: query.sourceCountry || "India",
+                targetCountry: countryFit.recommendedCountry,
+                businessType: "Exporter",
+                reportType: "country-fit",
+                sourceDataType: countryFit.dataSourceLabel,
+                idempotencyKey: idempotencyKey || undefined,
+                isDemo: !countryFit.isLiveData,
+                reportData: {
+                    reportTitle: `${query.productName || productCategory} Country Fit Report`,
+                    productName: query.productName || query.product || productCategory,
+                    hsCodeOrCategory: filters.hsCode || productCategory,
+                    country: countryFit.recommendedCountry,
+                    recommendedCountry: countryFit.recommendedCountry,
+                    rankedCountries: recommendations,
+                    confidenceScore: countryFit.confidenceScore,
+                    sourceType: countryFit.dataSourceLabel,
+                    disclaimer: "Country Fit is decision-support and must be verified before commercial decisions.",
+                    createdAt: new Date().toISOString(),
+                },
+            };
+
+            try {
+                savedReport = await Report.create(reportPayload);
+            } catch (error) {
+                if (error?.code !== 11000 || !reportIdentity) throw error;
+
+                savedReport = await Report.findOne(reportIdentity);
+                if (!savedReport) throw error;
+                idempotentReplay = true;
+            }
+        }
+
         savedReportId = savedReport._id;
     }
 
@@ -171,6 +212,7 @@ const getCountryRecommendations = async (req, res) => {
         rankedCountries: visibleRecommendations,
         savedReportId,
         saved: Boolean(savedReportId),
+        idempotentReplay,
         lockedRecommendationsCount: Math.max(recommendations.length - visibleRecommendations.length, 0),
         disclaimer:
             "Country Fit is decision-support. UN Comtrade values are historical trade-data signals when available; rule-engine and curated guidance are not legal, customs, banking or financial advice. Verify HS code, compliance, duty, buyer quality and payment terms with official sources and qualified professionals.",

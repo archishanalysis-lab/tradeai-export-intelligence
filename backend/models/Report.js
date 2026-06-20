@@ -55,6 +55,11 @@ const reportSchema = new mongoose.Schema({
         trim: true,
         default: "sample/manual",
     },
+    idempotencyKey: {
+        type: String,
+        trim: true,
+        maxlength: 128,
+    },
     downloadCount: {
         type: Number,
         default: 0,
@@ -69,6 +74,13 @@ const reportSchema = new mongoose.Schema({
 reportSchema.index({ userId: 1, createdAt: -1 });
 reportSchema.index({ userId: 1, hsCode: 1, createdAt: -1 });
 reportSchema.index({ organizationId: 1, createdAt: -1 });
+reportSchema.index(
+    { userId: 1, reportType: 1, idempotencyKey: 1 },
+    {
+        unique: true,
+        partialFilterExpression: { idempotencyKey: { $type: "string" } },
+    },
+);
 
 const Report = mongoose.model("Report", reportSchema);
 

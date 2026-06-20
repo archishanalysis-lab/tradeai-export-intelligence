@@ -30,7 +30,7 @@
     home: homePath,
     features: isInsidePages ? "../index.html#features" : "#features",
     search: `${pagePrefix}search-result.html`,
-    dashboard: `${pagePrefix}explorer-dashboard.html`,
+    dashboard: `${pagePrefix}dashboard.html`,
     pricing: `${pagePrefix}pricing.html`,
     contact: `${pagePrefix}contact.html`,
     about: `${pagePrefix}about.html`,

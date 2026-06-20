@@ -9,16 +9,41 @@
   const PLAN_KEY = "tradeai_current_plan";
   const PAID_PLANS = new Set(["growth", "pro", "premium_exporter", "verified_supplier", "ai_insights", "ai_pro", "enterprise"]);
   const DASHBOARD_PATHS = {
-    explorer: "explorer-dashboard.html",
-    exporter: "export-dash.html",
-    importer: "importer-dashboard.html",
-    consultant: "analytics-dashboard.html",
-    sme: "explorer-dashboard.html",
+    explorer: "dashboard.html",
+    exporter: "dashboard.html",
+    importer: "dashboard.html",
+    consultant: "dashboard.html",
+    sme: "dashboard.html",
     admin: "admin-panel.html",
   };
   const PROMPT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
   const GUEST_PREVIEW_PROMPT_MS = 10 * 1000;
+  const PROTECTED_PAGES = new Set([
+    "setting.html",
+    "notification.html",
+    "market-analysis.html",
+    "dashboard.html",
+    "buyer-detail.html",
+    "buyer-dashboard.html",
+    "company-profile.html",
+    "add-buyer.html",
+    "product-upload.html",
+    "product-dashboard.html",
+    "inquiry-dashboard.html",
+    "analytics-dashboard.html",
+    "ai-reports.html",
+    "copilot.html",
+    "deals.html",
+    "search-result.html",
+    "hs-code-detail.html",
+    "explorer-dashboard.html",
+    "export-dash.html",
+    "importer-dashboard.html",
+    "admin-panel.html",
+    "saved-search.html",
+  ]);
   let guestPreviewTimer = null;
+  let wasLoggedIn = false;
 
   if (!storage) {
     console.error("access-control: TradeAI.storage is required.");
@@ -41,6 +66,10 @@
     return `${getPagePrefix()}register.html`;
   }
 
+  function getLandingPath() {
+    return window.location.pathname.includes("/pages/") ? "../index.html" : "index.html";
+  }
+
   function getPricingPath() {
     return `${getPagePrefix()}pricing.html`;
   }
@@ -59,19 +88,52 @@
     return PAID_PLANS.has(getCurrentPlan());
   }
 
+  function getSessionValue(key) {
+    try {
+      return window.sessionStorage.getItem(key);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function setSessionValue(key, value) {
+    try {
+      window.sessionStorage.setItem(key, value);
+    } catch (error) {
+      // Guest prompting still works when session storage is unavailable.
+    }
+  }
+
+  function removeSessionValue(key) {
+    try {
+      window.sessionStorage.removeItem(key);
+    } catch (error) {
+      // Session storage cleanup is best effort.
+    }
+  }
+
+  function clearGuestChoice() {
+    [GUEST_KEY, CHOICE_KEY, PROMPT_SEEN_KEY].forEach((key) => {
+      removeSessionValue(key);
+      storage.remove(key);
+    });
+    document.documentElement.classList.remove("guest-mode");
+  }
+
   function setChoice(choice) {
-    storage.set(CHOICE_KEY, choice);
-    storage.set(PROMPT_SEEN_KEY, String(Date.now()));
-    storage.set(GUEST_KEY, choice === "guest" ? "true" : "false");
+    setSessionValue(CHOICE_KEY, choice);
+    setSessionValue(PROMPT_SEEN_KEY, String(Date.now()));
+    setSessionValue(GUEST_KEY, choice === "guest" ? "true" : "false");
+    document.documentElement.classList.toggle("guest-mode", choice === "guest");
     window.dispatchEvent(new CustomEvent("tradeai:access-choice", { detail: { choice } }));
   }
 
   function markPromptSeen() {
-    storage.set(PROMPT_SEEN_KEY, String(Date.now()));
+    setSessionValue(PROMPT_SEEN_KEY, String(Date.now()));
   }
 
   function hasRecentlySeenPrompt() {
-    const seenAt = Number(storage.get(PROMPT_SEEN_KEY));
+    const seenAt = Number(getSessionValue(PROMPT_SEEN_KEY));
     return Number.isFinite(seenAt) && Date.now() - seenAt < PROMPT_COOLDOWN_MS;
   }
 
@@ -111,9 +173,10 @@
 
     const {
       title = "Continue with TradeAI",
-      message = "Explore public trade intelligence as a guest, or log in to unlock your saved workspace and protected business tools.",
+      message = "Explore TradeAI as a guest or register to unlock full country-fit reports, saved searches, buyer discovery, and dashboard tools.",
       reason = "choice",
       allowGuest = true,
+      targetHref = "",
     } = options;
 
     const backdrop = document.createElement("div");
@@ -147,9 +210,8 @@
     const list = document.createElement("ul");
     list.className = "access-modal-list";
     [
-      "Guest mode can browse public pages and preview trade data.",
-      "Login unlocks dashboards, saved profiles, products and inquiries.",
-      "Paid plans unlock buyer, exporter and manufacturer contact details.",
+      "Guest access includes the landing page and free Country Fit preview.",
+      "Register or login to save work and open protected workspace tools.",
     ].forEach((item) => {
       const li = document.createElement("li");
       li.textContent = item;
@@ -174,10 +236,23 @@
     registerLink.href = getRegisterPath();
     registerLink.textContent = "Register";
 
+    if (targetHref) {
+      const redirect = new URL(targetHref, window.location.href);
+      const redirectValue = `${redirect.pathname}${redirect.search}${redirect.hash}`;
+      loginLink.href = `${getLoginPath()}?reason=login-required&redirect=${encodeURIComponent(redirectValue)}`;
+      registerLink.href = `${getRegisterPath()}?source=guest-gate&redirect=${encodeURIComponent(redirectValue)}`;
+    }
+
+    const landingLink = document.createElement("a");
+    landingLink.className = "secondary";
+    landingLink.href = getLandingPath();
+    landingLink.textContent = "Continue Browsing Landing Page";
+
     if (allowGuest) {
       actions.appendChild(guestButton);
     }
-    actions.append(loginLink, registerLink);
+    actions.append(registerLink, loginLink);
+    if (!allowGuest) actions.appendChild(landingLink);
     dialog.append(closeButton, badge, heading, body, list, actions);
     backdrop.appendChild(dialog);
     document.body.appendChild(backdrop);
@@ -293,15 +368,16 @@
     openAccessModal({
       reason: "auth",
       title: "Login to continue",
-      message: message || "This workspace uses your profile, organization and saved activity. Continue as guest for public pages, or log in to use it.",
+      message: message || "Please login or register to access this TradeAI feature.",
       allowGuest: false,
+      targetHref: event.target.closest("a[href]")?.href || "",
     });
     return false;
   }
 
   function gatePlan(event, requiredPlan, message) {
     if (!isLoggedIn()) {
-      return gateAuth(event, "Login first to check your plan and unlock this feature.");
+      return gateAuth(event);
     }
 
     if (hasAccess(requiredPlan)) return true;
@@ -334,6 +410,16 @@
       const authTarget = event.target.closest("[data-requires-auth]");
       if (authTarget && !gateAuth(event, authTarget.dataset.authMessage)) return;
 
+      const link = event.target.closest("a[href]");
+      if (link && !isLoggedIn()) {
+        const targetUrl = new URL(link.href, window.location.href);
+        const targetPage = targetUrl.pathname.split("/").pop()?.toLowerCase();
+        if (targetUrl.origin === window.location.origin && PROTECTED_PAGES.has(targetPage)) {
+          gateAuth(event);
+          return;
+        }
+      }
+
       const planTarget = event.target.closest("[data-requires-plan]");
       if (planTarget) {
         gatePlan(event, planTarget.dataset.requiresPlan || "paid", planTarget.dataset.planMessage);
@@ -347,9 +433,21 @@
       return;
     }
 
-    if (storage.get(GUEST_KEY) === "true") {
+    if (getSessionValue(GUEST_KEY) === "true") {
       document.documentElement.classList.add("guest-mode");
     }
+  }
+
+  function handleAuthChange() {
+    const loggedIn = isLoggedIn();
+
+    if (loggedIn || wasLoggedIn) {
+      clearGuestChoice();
+    }
+
+    wasLoggedIn = loggedIn;
+    markGuestExperience();
+    syncPublicAuthActions();
   }
 
   function syncPublicAuthActions() {
@@ -394,18 +492,18 @@
     if (
       !isLandingPage ||
       isLoggedIn() ||
-      storage.get(CHOICE_KEY) ||
+      getSessionValue(CHOICE_KEY) ||
       hasRecentlySeenPrompt()
     ) {
       return;
     }
 
     window.setTimeout(() => {
-      if (!isLoggedIn() && !storage.get(CHOICE_KEY) && !hasRecentlySeenPrompt()) {
+      if (!isLoggedIn() && !getSessionValue(CHOICE_KEY) && !hasRecentlySeenPrompt()) {
         markPromptSeen();
         openAccessModal();
       }
-    }, 5000);
+    }, 250);
   }
 
   async function hydratePlan() {
@@ -421,8 +519,9 @@
   }
 
   bindAccessGates();
-  window.addEventListener("tradeai:auth-change", markGuestExperience);
-  window.addEventListener("tradeai:auth-change", syncPublicAuthActions);
+  wasLoggedIn = isLoggedIn();
+  if (wasLoggedIn) clearGuestChoice();
+  window.addEventListener("tradeai:auth-change", handleAuthChange);
   window.addEventListener("DOMContentLoaded", () => {
     markGuestExperience();
     syncPublicAuthActions();

@@ -14,9 +14,15 @@
       });
     },
     countryFit(payload = {}) {
+      const idempotencyKey = String(
+        payload.pendingCountryFitId || payload.requestId || "",
+      ).trim();
+
       return TradeAI.request("/recommendations/country-fit", {
         method: "POST",
         body: JSON.stringify(payload),
+        headers: idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {},
+        retries: 0,
         skipHealthCheck: false,
       });
     },

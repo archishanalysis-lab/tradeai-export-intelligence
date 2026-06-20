@@ -1,8 +1,22 @@
 (function () {
+  const heroLabel = document.getElementById("landingHeroLabel");
   const form = document.getElementById("landingCountryFitForm");
   const result = document.getElementById("landingCountryFitResult");
   const status = document.getElementById("landingCountryFitStatus");
   const submit = document.getElementById("landingCountryFitSubmit");
+  let isGeneratingCountryFitPreview = false;
+
+  function restoreHeroLabel() {
+    if (!heroLabel) return;
+
+    const expectedLabel = heroLabel.dataset.heroLabel || "TradeAI Country Fit";
+    if (heroLabel.textContent.trim() !== expectedLabel) {
+      heroLabel.textContent = expectedLabel;
+    }
+  }
+
+  restoreHeroLabel();
+  window.addEventListener("pageshow", restoreHeroLabel);
 
   if (!form || !result || !status || !submit) return;
 
@@ -26,6 +40,9 @@
     );
 
     return {
+      pendingCountryFitId:
+        window.crypto?.randomUUID?.() ||
+        `country-fit-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
       productName: document.getElementById("landingProductName")?.value.trim() || "",
       hsCode: document.getElementById("landingHsCode")?.value.trim() || "",
       sourceCountry: "India",
@@ -81,6 +98,9 @@
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    if (isGeneratingCountryFitPreview) return;
+
     const payload = buildPayload();
 
     if (!payload.productName) {
@@ -94,6 +114,7 @@
       return;
     }
 
+    isGeneratingCountryFitPreview = true;
     submit.disabled = true;
     submit.textContent = "Comparing countries...";
     setStatus("Checking available Comtrade data and Country Fit guidance...", "info");
@@ -127,6 +148,7 @@
         "error",
       );
     } finally {
+      isGeneratingCountryFitPreview = false;
       submit.disabled = false;
       submit.textContent = "Generate Free Country-Fit Preview";
     }

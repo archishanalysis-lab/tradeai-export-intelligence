@@ -185,17 +185,32 @@
               <p>Buyer Discovery uses verified, public and source-labeled records where available. Sample records are clearly labeled and are not verified buyer leads.</p>
               <form id="buyerFinderForm" class="finder-search">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input id="buyerFinderSearch" type="search" placeholder="e.g. Spices, Rice, Pharmaceuticals..." />
+                <input id="buyerFinderSearch" type="search" required placeholder="Product name, e.g. spices or rice" aria-label="Product name" />
                 <button id="buyerFinderButton" type="submit">Find Buyers</button>
               </form>
+              <div class="finder-context-fields">
+                <label>
+                  <span>HS code</span>
+                  <input id="buyerFinderHsCode" inputmode="numeric" maxlength="20" placeholder="e.g. 0904" />
+                </label>
+                <label>
+                  <span>Country</span>
+                  <select id="buyerFinderCountry">
+                    <option value="">All available countries</option>
+                    <option>Kenya</option><option>Tanzania</option><option>Uganda</option><option>Rwanda</option>
+                    <option>UAE</option><option>Saudi Arabia</option><option>Oman</option><option>Qatar</option><option>China</option>
+                  </select>
+                </label>
+              </div>
+              <p id="buyerFinderStatus" class="table-subtext" role="status" aria-live="polite"></p>
             </div>
             <div id="buyerFinderResults" class="finder-results" hidden>
               <section class="target-importers">
                 <div class="target-importers-header">
                   <div>
-                    <span class="section-kicker">DEMO DATA</span>
-                    <h2>Top Target Importers</h2>
-                    <p class="table-subtext">Sample buyer profiles for MVP preview.</p>
+                    <span id="buyerFinderSourceLabel" class="section-kicker">SOURCE-LABELED RESULTS</span>
+                    <h2>Buyer and importer records</h2>
+                    <p class="table-subtext">Contact details appear only when the record explicitly permits access.</p>
                   </div>
                   <span id="buyerFinderCount">5 MATCHES</span>
                 </div>
@@ -208,7 +223,7 @@
             <article class="stat-card"><h3 id="buyerTotalStat">0</h3><p>Total buyers</p></article>
             <article class="stat-card"><h3 id="buyerVerifiedStat">0</h3><p>Verified</p></article>
             <article class="stat-card"><h3 id="buyerCountriesStat">0</h3><p>Countries</p></article>
-            <article class="stat-card"><h3 id="buyerMatchStat">0%</h3><p>Avg AI match</p></article>
+            <article class="stat-card"><h3 id="buyerMatchStat">0%</h3><p>Avg rule score</p></article>
           </section>
 
           <section class="management-grid buyer-crm-tools">
@@ -228,7 +243,7 @@
                   <div class="input-group"><label for="contactEmail">Email</label><input id="contactEmail" name="contactEmail" type="email" placeholder="buyer@example.com" /></div>
                 </div>
                 <div class="input-group"><label for="phone">Phone</label><input id="phone" name="phone" placeholder="+49 30 123456" /></div>
-                <label class="checkbox-row"><input id="verified" name="verified" type="checkbox" /><span>Mark as verified buyer</span></label>
+                <p class="table-subtext">New records are saved as unverified until reviewed. Private contact details remain organization-scoped.</p>
                 <div class="form-actions">
                   <button id="buyerSubmitButton" type="submit" class="primary">Save buyer</button>
                   <button id="buyerCancelButton" type="button" class="secondary" hidden>Cancel edit</button>
@@ -245,7 +260,7 @@
               <div id="buyerEmptyState" class="empty-state" hidden><h3>No buyers found</h3><p>Add your first buyer or change the search term.</p></div>
               <div id="buyerTableWrap" class="dashboard-table-wrapper">
                 <table class="dashboard-table buyer-table">
-                  <thead><tr><th>Company</th><th>Country</th><th>Industry</th><th>Products</th><th>AI score</th><th>Status</th><th>Actions</th></tr></thead>
+                  <thead><tr><th>Company</th><th>Country</th><th>Industry</th><th>Products</th><th>Rule score</th><th>Status</th><th>Actions</th></tr></thead>
                   <tbody id="buyerTableBody"></tbody>
                 </table>
               </div>
@@ -524,20 +539,21 @@
     <script src="../js/state/authState.js" defer></script>
     <script src="../js/state/appState.js" defer></script>
     <script src="../js/state/notificationState.js" defer></script>
-    <script src="../js/config.js" defer></script>
-    <script src="../js/api.js" defer></script>
-    <script src="../js/auth.js" defer></script>
+    <script src="../js/config.js?v=tradeai-phase1-20260620" defer></script>
+    <script src="../js/api.js?v=tradeai-phase1-20260620" defer></script>
+    <script src="../js/auth.js?v=tradeai-phase1-20260620" defer></script>
     <script src="../js/api/tradeApi.js" defer></script>
+    <script src="../js/api/buyerApi.js" defer></script>
     <script src="../js/api/billingApi.js" defer></script>
     <script src="../js/access-control.js" defer></script>
     <script src="../js/api/savedItemApi.js" defer></script>
     <script src="../js/api/reportApi.js" defer></script>
-    <script src="../js/api/recommendationApi.js" defer></script>
+    <script src="../js/api/recommendationApi.js?v=tradeai-phase1-20260620" defer></script>
     <script src="../js/api/preferencesApi.js" defer></script>
     <script src="../js/navbar.js" defer></script>
     <script src="../js/theme.js" defer></script>
     <script src="../js/dashboard-tabs.js" defer></script>
-    <script src="../js/dashboard.js" defer></script>
+    <script src="../js/dashboard.js?v=tradeai-phase1-20260620" defer></script>
     <script src="../js/hs-code-directory.js" defer></script>
     <script src="../js/buyers.js" defer></script>
     <script src="../js/trade-analytics.js" defer></script>

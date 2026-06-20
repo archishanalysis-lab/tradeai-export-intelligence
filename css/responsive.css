@@ -383,6 +383,10 @@
     width: 100%;
   }
 
+  .finder-context-fields {
+    grid-template-columns: 1fr;
+  }
+
   .finder-insights {
     grid-template-columns: 1fr;
   }

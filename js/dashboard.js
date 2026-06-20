@@ -1667,14 +1667,30 @@ async function initializeUserPreferences() {
    DASHBOARD INIT
 ========================================================= */
 
+let isCompletingPendingCountryFit = false;
+let isDashboardInitialized = false;
+
 async function completePendingCountryFit() {
   const storage = window.TradeAI?.storage;
   const raw = storage?.get("tradeai_pending_country_fit");
 
-  if (!raw || !window.TradeAI?.api?.recommendations?.countryFit || !window.TradeAI?.auth?.isLoggedIn?.()) return;
+  if (
+    isCompletingPendingCountryFit ||
+    !raw ||
+    !window.TradeAI?.api?.recommendations?.countryFit ||
+    !window.TradeAI?.auth?.isLoggedIn?.()
+  ) return;
+
+  isCompletingPendingCountryFit = true;
 
   try {
     const payload = JSON.parse(raw);
+    payload.pendingCountryFitId =
+      payload.pendingCountryFitId ||
+      window.crypto?.randomUUID?.() ||
+      `country-fit-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    storage.set("tradeai_pending_country_fit", JSON.stringify(payload));
+
     const result = await window.TradeAI.api.recommendations.countryFit(payload);
 
     if (result.saved) {
@@ -1684,10 +1700,15 @@ async function completePendingCountryFit() {
     }
   } catch (error) {
     window.TradeAI?.toast?.("Your Country Fit preview is still available. Open Country Fit to retry the full result.", "error");
+  } finally {
+    isCompletingPendingCountryFit = false;
   }
 }
 
 function initializeDashboard() {
+
+  if (isDashboardInitialized) return;
+  isDashboardInitialized = true;
 
   renderDashboardPersonalization();
 

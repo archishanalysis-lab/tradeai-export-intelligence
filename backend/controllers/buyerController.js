@@ -18,16 +18,35 @@ const buyerReadScope = (user) => {
     };
 };
 
+const getDataSourceCategory = (buyer) => {
+    if (buyer.isDemo) return "Sample/demo";
+
+    if (
+        buyer.source === "trade_data" ||
+        (buyer.verificationStatus === "manually_verified" && buyer.sourceName && buyer.sourceUrl)
+    ) {
+        return "Real/API-backed";
+    }
+
+    return "Curated/rule-engine";
+};
+
 const sanitizeBuyerForViewer = (buyer, user) => {
     const sameOrganization =
         buyer.organizationId && user.organizationId && String(buyer.organizationId) === String(user.organizationId);
+    const isOwner = String(buyer.createdBy?._id || buyer.createdBy || "") === String(user._id);
+    const canSeePrivateContact = user.role === "admin" || sameOrganization || isOwner;
+    const sourceMetadata = {
+        dataSourceCategory: getDataSourceCategory(buyer),
+        contactAccess: canSeePrivateContact ? "organization-private" : "public-only",
+    };
 
-    if (user.role === "admin" || sameOrganization || String(buyer.createdBy?._id || buyer.createdBy || "") === String(user._id)) {
-        return buyer;
+    if (canSeePrivateContact) {
+        return { ...buyer, ...sourceMetadata };
     }
 
     const { contactEmail, phone, notes, ...publicBuyer } = buyer;
-    return publicBuyer;
+    return { ...publicBuyer, ...sourceMetadata };
 };
 
 /* =========================================
@@ -53,8 +72,14 @@ const getBuyers = async (req, res, next) => {
                 "productCategories",
                 "hsCodes",
             ]);
+        const productFilter = buildTextOrRegexSearch(req.query.product, [
+            "products",
+            "productCategories",
+            "industry",
+        ]);
+        const hsCodeFilter = buildTextOrRegexSearch(req.query.hsCode, ["hsCodes"]);
         const keyword = {
-            $and: [buyerReadScope(req.user), searchFilter],
+            $and: [buyerReadScope(req.user), searchFilter, productFilter, hsCodeFilter],
             ...(req.query.country ? { country: req.query.country } : {}),
             ...(req.query.industry ? { industry: req.query.industry } : {}),
             ...(req.query.verified ? { verified: req.query.verified === "true" } : {}),
@@ -64,7 +89,7 @@ const getBuyers = async (req, res, next) => {
         const [buyers, total] = await Promise.all([
             Buyer.find(keyword)
 
-            .populate("createdBy", "name email")
+            .populate("createdBy", "name")
 
             .sort(sort)
 
@@ -82,6 +107,11 @@ const getBuyers = async (req, res, next) => {
             page,
             pages: Math.max(Math.ceil(total / limit), 1),
             total,
+            query: {
+                product: req.query.product || "",
+                hsCode: req.query.hsCode || "",
+                country: req.query.country || "",
+            },
         });
 
     } catch (error) {
@@ -205,7 +235,7 @@ const getBuyerById = async (req, res, next) => {
             ...buyerReadScope(req.user),
         })
 
-            .populate("createdBy", "name email")
+            .populate("createdBy", "name")
 
             .lean();
 
